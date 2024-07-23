@@ -1,0 +1,49 @@
+services:
+  mysql:
+    image: mysql:8.0
+    env_file:
+      - .env.backend
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD_ROOT}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    ports:
+      - "${DB_PORT}:3306"
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  nestjs-app:
+    image: ${BACK_IMAGE}
+    ports:
+      - "${BACK_PORT}:3000"
+    env_file:
+      - .env.backend
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  #reactjs-app:
+  #  image: ${FRONT_IMAGE}
+  #  ports:
+  #    - "${FRONT_PORT}:3000"
+  #  env_file:
+  #    - .env.frontend
+  #  depends_on:
+  #    - nestjs-app
+  #  networks:
+  #    - app-network
+  #  restart: unless-stopped
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+    driver: local
