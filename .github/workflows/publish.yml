@@ -128,4 +128,4 @@ jobs:
           curl -H "Content-Type: application/json" \
           -X POST \
           -d "{\"content\": \"❌ Build or tests failed! <@$FAILURE_USER_ID>\n\`\`\`${ERROR_MESSAGE}\`\`\`\"}" \
-          ${{ secrets.DISCORD_WEBHOOK_URL }}
+          ${{ secrets.DISCORD_WEBHOOK_URL }} 
