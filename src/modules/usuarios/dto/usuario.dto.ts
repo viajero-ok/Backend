@@ -1,11 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
 import {
 	IsNotEmpty,
 	IsString,
-	IsDate,
 	Length,
 	IsNumber,
+	IsDateString,
 } from 'class-validator';
 
 export class UsuarioDto {
@@ -40,9 +39,12 @@ export class UsuarioDto {
 	@Length(11, 11)
 	readonly telefono: string;
 
+	//@ApiProperty()
+	@IsString()
+	readonly id_domicilio: string;
+
 	@ApiProperty()
 	@IsNotEmpty()
-	@IsDate()
-	@Type(() => Date)
+	@IsDateString()
 	readonly fecha_nacimiento: Date;
 }

@@ -4,8 +4,10 @@ import { EntityManager, Repository } from 'typeorm';
 import { Usuario } from 'src/modules/usuarios/entities/usuario.entity';
 import { TuristaDto } from 'src/modules/usuarios/dto/turista.dto';
 import { PrestadorTuristicoDto } from 'src/modules/usuarios/dto/prestador-turistico.dto';
-import { AccountAuthDto } from './dto/account-auth.dto';
-import { VerifyAccountAuthDto } from './dto/verify-account-auth.dto';
+import { CuentaAuthDto } from './dto/cuenta-auth.dto';
+import { VerificarCuentaDto } from './dto/verificar-cuenta.dto';
+import { RegistrarTuristaDto } from './dto/registrar-turista.dto';
+import { RegistrarPrestadorDto } from './dto/registrar-prestador.dto';
 
 @Injectable()
 export class AuthRepositoryService {
@@ -16,7 +18,7 @@ export class AuthRepositoryService {
 		private usersRepository: Repository<Usuario>,
 	) {}
 
-	async findOneUserByEmail(MAIL: string) {
+	async obtenerUsuarioPorMail(MAIL: string) {
 		const result = await this.entityManager.query(
 			'CALL SP_OBT_USUARIO_X_EMAIL(?)',
 			[MAIL],
@@ -24,14 +26,14 @@ export class AuthRepositoryService {
 		return result[0][0];
 	}
 
-	async getUserInfo(ID_USUARIO: string) {
-		const result = await this.entityManager.query('CALL SP_USER_INFO(?)', [
-			ID_USUARIO,
+	async obtenerInfoUsuario(id_usuario: string, id_perfil: string) {
+		const result = await this.entityManager.query('CALL SP_OBT_DATOS_USUARIO(?, ?)', [
+			id_usuario, id_perfil
 		]);
 		return result[0][0];
 	}
 
-	async verificarCuenta(verificarCuentaDto: VerifyAccountAuthDto) {
+	async verificarCuenta(verificarCuentaDto: VerificarCuentaDto) {
 		const result = await this.entityManager.query(
 			'CALL SP_VERIFICAR_CUENTA(?, ?)',
 			[
@@ -42,14 +44,11 @@ export class AuthRepositoryService {
 		return result[0][0];
 	}
 
-	async registrarCuenta(registrarCuentaDto: AccountAuthDto) {
+	async registrarCuenta(registrarCuentaDto: CuentaAuthDto) {
 		const result = await this.entityManager.query(
-			'CALL SP_ABM_USUARIOS(?, ?, ?, ?, ?, ?, ?)',
+			'CALL SP_ABM_USUARIOS(?, ?, ?, ?)',
 			[
 				registrarCuentaDto.mail,
-				null,
-				null,
-				null,
 				registrarCuentaDto.contraseña,
 				null,
 				registrarCuentaDto.codigo_verificacion,
@@ -73,34 +72,35 @@ export class AuthRepositoryService {
 		return result[0][0];
 	}
 
-	async registrarTurista(turistaDto: TuristaDto) {
+	async registrarTurista(registrarTuristaDto: RegistrarTuristaDto) {
 		const result = await this.entityManager.query(
-			'CALL SP_ABM_USUARIOS(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			'CALL SP_REGISTRAR_TURISTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
-				//userModified.mail,
-				turistaDto.nombre,
-				turistaDto.apellido,
-				turistaDto.fecha_nacimiento,
-				//userModified.contraseña,
-				turistaDto.id_genero,
-				turistaDto.nro_documento_identidad,
-				turistaDto.id_tipo_documento,
-				turistaDto.id_localidad_origen,
-				turistaDto.id_idioma,
-				null,
+				registrarTuristaDto.id_usuario,
+				registrarTuristaDto.nombre,
+				registrarTuristaDto.apellido,
+				registrarTuristaDto.fecha_nacimiento,
+				registrarTuristaDto.nro_documento_identidad,
+				registrarTuristaDto.id_tipo_documento,
+				registrarTuristaDto.id_localidad,
+				registrarTuristaDto.id_departamento,
+				registrarTuristaDto.id_provincia,
+				registrarTuristaDto.id_pais,
+				registrarTuristaDto.id_idioma,
+				registrarTuristaDto.id_genero,
 			],
 		);
 		return result[0][0];
 	}
 
-	async registrarPrestador(prestadorTuristicoDto: PrestadorTuristicoDto) {
+	async registrarPrestador(registrarPrestadorDto: RegistrarPrestadorDto) {
 		const result = await this.entityManager.query(
 			'CALL SP_ABM_USUARIOS(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
 				//prestadorTuristico.mail,
-				prestadorTuristicoDto.nombre,
-				prestadorTuristicoDto.apellido,
-				prestadorTuristicoDto.fecha_nacimiento,
+				registrarPrestadorDto.nombre,
+				registrarPrestadorDto.apellido,
+				registrarPrestadorDto.fecha_nacimiento,
 				//prestadorTuristico.contraseña,
 				//prestadorTuristico.id_genero,
 				//prestadorTuristico.NRO_DOCUMENTO_IDENTIDAD,
@@ -111,5 +111,13 @@ export class AuthRepositoryService {
 			],
 		);
 		return result;
+	}
+
+	async obtenerPermisosUsuario(id_usuario: string) {
+		const result = await this.entityManager.query(
+			'CALL SP_OBT_PERMISOS_X_USUARIO(?)',
+			[id_usuario],
+		);
+		return result[0][0];
 	}
 }

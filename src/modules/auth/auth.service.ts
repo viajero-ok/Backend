@@ -6,8 +6,10 @@ import { PrestadorTuristicoDto } from 'src/modules/usuarios/dto/prestador-turist
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { JwtService } from '@nestjs/jwt';
 import { AuthRepositoryService } from './auth-repository.service';
-import { AccountAuthDto } from './dto/account-auth.dto';
-import { VerifyAccountAuthDto } from './dto/verify-account-auth.dto';
+import { CuentaAuthDto } from './dto/cuenta-auth.dto';
+import { VerificarCuentaDto } from './dto/verificar-cuenta.dto';
+import { RegistrarTuristaDto } from './dto/registrar-turista.dto';
+import { RegistrarPrestadorDto } from './dto/registrar-prestador.dto';
 
 @Injectable()
 export class AuthService {
@@ -17,7 +19,7 @@ export class AuthService {
 		private readonly authReposirotyService: AuthRepositoryService,
 	) {}
 
-	async registrarCuenta(registrarCuentaDto: AccountAuthDto) {
+	async registrarCuenta(registrarCuentaDto: CuentaAuthDto) {
 		const { contraseña: contraseña, ...user } = registrarCuentaDto;
 
 		//Generar codigo de verificacion
@@ -54,7 +56,7 @@ export class AuthService {
 		return result;
 	}
 
-	async verificarCuenta(verificarCuentaDto: VerifyAccountAuthDto) {
+	async verificarCuenta(verificarCuentaDto: VerificarCuentaDto) {
 		//Llamar al procedimiento
 		const result =
 			await this.authReposirotyService.verificarCuenta(
@@ -71,7 +73,7 @@ export class AuthService {
 
 	async login(loginAuthDto: LoginAuthDto) {
 		//Verificar si el usuario existe
-		const userExists = await this.authReposirotyService.findOneUserByEmail(
+		const userExists = await this.authReposirotyService.obtenerUsuarioPorMail(
 			loginAuthDto.mail,
 		);
 		if (userExists.resultado === 'error') {
@@ -82,7 +84,7 @@ export class AuthService {
 		}
 
 		//Verificar si el usuario esta verificado
-		if (!userExists.verificado) {
+		if (userExists.verificado == 0) {
 			throw new HttpException(
 				'Email no verificado',
 				HttpStatus.FORBIDDEN,
@@ -100,7 +102,7 @@ export class AuthService {
 				HttpStatus.UNAUTHORIZED,
 			);
 		}
-		if (userExists.cant_perfiles === 0) {
+		if (userExists.cantidad_perfiles === 0) {
 			//firmar el token y devolverlo junto con los datos del usuario
 			const payload = { id: userExists.id_usuario };
 			const token = this.jwtService.sign(payload);
@@ -111,8 +113,8 @@ export class AuthService {
 			return data;
 		}
 		//consultar informacion del usuario
-		const userInfo = await this.authReposirotyService.getUserInfo(
-			userExists.id_usuario,
+		const userInfo = await this.authReposirotyService.obtenerInfoUsuario(
+			userExists.id_usuario, userExists.perfil
 		);
 
 		//firmar el token y devolverlo junto con los datos del usuario
@@ -127,10 +129,10 @@ export class AuthService {
 	}
 
 	// PARA PREGUNTAR: Pedir SP que registre al turista y devuelva el mail y el nombre del idioma
-	async registrarTurista(turistaDto: TuristaDto) {
+	async registrarTurista(registrarTuristaDto: RegistrarTuristaDto) {
 		//Llamar al procedimiento
 		const result =
-			await this.authReposirotyService.registrarTurista(turistaDto);
+			await this.authReposirotyService.registrarTurista(registrarTuristaDto);
 
 		//comprobar si se registro correctamente
 		if (result.resultado === 'error') {
@@ -142,24 +144,24 @@ export class AuthService {
 			'turista.created',
 			result.mail,
 			result.idioma,
-			turistaDto.nombre,
-			turistaDto.apellido,
+			registrarTuristaDto.nombre,
+			registrarTuristaDto.apellido,
 		);
 		return result;
 	}
 
 	// PARA PREGUNTAR: Pedir SP que registre al prestador y devuelva el mail
-	async registrarPrestador(prestadorTuristicoDto: PrestadorTuristicoDto) {
+	async registrarPrestador(registrarPrestadorDto: RegistrarPrestadorDto) {
 		//Llamar al procedimiento
 		const result = await this.authReposirotyService.registrarPrestador(
-			prestadorTuristicoDto,
+			registrarPrestadorDto,
 		);
 
 		//enviar evento de mail
 		this.eventEmitter.emit(
 			'prestador.created',
 			result.mail,
-			prestadorTuristicoDto.razon_social,
+			registrarPrestadorDto.razon_social,
 		);
 
 		return result;

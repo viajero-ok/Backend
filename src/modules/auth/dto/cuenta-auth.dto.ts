@@ -8,7 +8,7 @@ import {
 	MinLength,
 } from 'class-validator';
 
-export class AccountAuthDto {
+export class CuentaAuthDto {
 	@ApiProperty()
 	@IsNotEmpty()
 	@IsString()

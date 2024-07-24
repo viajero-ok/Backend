@@ -34,40 +34,19 @@ export class AuthorizationGuard implements CanActivate {
 			'\nurl',
 			url,
 		);
-
+		
 		//validar que los datos necesarios estén presentes
 		if (!user || !method || !url) {
 			return false;
 		}
-
+		
 		// Consulta para verificar si el usuario tiene permiso para acceder a la URL con el método especificado
-		/* const hasPermission = await this.entityManager
-			.createQueryBuilder()
-			.select('COUNT(*)', 'count')
-			.from('USUARIOS', 'u')
-			.innerJoin(
-				'PERFILES_X_USUARIO',
-				'pxu',
-				'u.ID_USUARIO = pxu.ID_USUARIO',
-			)
-			.innerJoin(
-				'FUNCIONALIDADES_X_PERFIL',
-				'fxp',
-				'pxu.ID_PERFIL = fxp.ID_PERFIL',
-			)
-			.innerJoin(
-				'URLS_X_FUNCIONALIDAD',
-				'uxf',
-				'fxp.ID_FUNCIONALIDAD = uxf.ID_FUNCIONALIDAD',
-			)
-			.innerJoin('URLS', 'url', 'uxf.ID_URL = url.ID_URL')
-			.innerJoin('METODOS', 'm', 'url.ID_METODO = m.ID_METODO')
-			.where('u.ID_USUARIO = :userId', { userId: user.ID_USUARIO })
-			.andWhere('url.TX_URL = :url', { url })
-			.andWhere('m.TX_METODO = :method', { method })
-			.getRawOne();
-
-		return parseInt(hasPermission.count) > 0; */
+		const permisos = await this.entityManager.query(
+			'CALL SP_OBT_PERMISOS_X_USUARIO(?)',
+			// REVISAR: si es id_usuario o que devuelve el SP a poner en jwt.strategy
+			[user.id_usuario],
+		);
+		console.log(permisos)
 		return true;
 	}
 }

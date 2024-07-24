@@ -1,13 +1,13 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginAuthDto } from './dto/login-auth.dto';
-import { TuristaDto } from 'src/modules/usuarios/dto/turista.dto';
-import { PrestadorTuristicoDto } from 'src/modules/usuarios/dto/prestador-turistico.dto';
 import { OficinaDto } from 'src/modules/usuarios/dto/oficina.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from '../../common/decorators/public/public.decorator';
-import { AccountAuthDto } from './dto/account-auth.dto';
-import { VerifyAccountAuthDto } from './dto/verify-account-auth.dto';
+import { CuentaAuthDto } from './dto/cuenta-auth.dto';
+import { VerificarCuentaDto } from './dto/verificar-cuenta.dto';
+import { RegistrarTuristaDto } from './dto/registrar-turista.dto';
+import { RegistrarPrestadorDto } from './dto/registrar-prestador.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -22,26 +22,26 @@ export class AuthController {
 
 	@Public()
 	@Post('registrar/cuenta')
-	async registrarCuenta(@Body() registrarCuentaDto: AccountAuthDto) {
+	async registrarCuenta(@Body() registrarCuentaDto: CuentaAuthDto) {
 		return this.authService.registrarCuenta(registrarCuentaDto);
 	}
 
 	@Public()
 	@Post('verificar/cuenta')
-	async verificarCuenta(@Body() verificarCuentaDto: VerifyAccountAuthDto) {
+	async verificarCuenta(@Body() verificarCuentaDto: VerificarCuentaDto) {
 		return this.authService.verificarCuenta(verificarCuentaDto);
 	}
 
 	@ApiBearerAuth()
 	@Post('registrar/turista')
-	async registrarTurista(@Body() registrarTuristaDto: TuristaDto) {
+	async registrarTurista(@Body() registrarTuristaDto: RegistrarTuristaDto) {
 		return this.authService.registrarTurista(registrarTuristaDto);
 	}
 
 	@ApiBearerAuth()
 	@Post('registrar/prestador')
 	async registrarPrestador(
-		@Body() registrarPrestadorDto: PrestadorTuristicoDto,
+		@Body() registrarPrestadorDto: RegistrarPrestadorDto,
 	) {
 		return this.authService.registrarPrestador(registrarPrestadorDto);
 	}

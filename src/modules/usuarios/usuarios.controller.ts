@@ -24,9 +24,6 @@ export class UsuariosController {
 
 	@Get()
 	findAll() {
-		return new Promise((resolve) =>
-			setTimeout(() => resolve('Done!'), 6000),
-		); // This will timeout
 		return this.usuariosService.findAll();
 	}
 

@@ -42,6 +42,28 @@ async function bootstrap() {
 		.addTag('usuarios')
 		.build();
 	const document = SwaggerModule.createDocument(app, config);
+	if (document.components && document.components.schemas) {
+		const schemas = document.components.schemas;
+		document.components.schemas = {
+		  Auth: {
+			type: 'object',
+			properties: {
+				CuentaAuthDto: { $ref: '#/components/schemas/CuentaAuthDto' },
+				VerificarCuentaDto: { $ref: '#/components/schemas/VerificarCuentaDto' },
+				LoginAuthDto: { $ref: '#/components/schemas/LoginAuthDto' },
+				RegistrarTuristaDto: { $ref: '#/components/schemas/RegistrarTuristaDto' },
+				RegistrarPrestadorDto: { $ref: '#/components/schemas/RegistrarPrestadorDto' },
+			}
+		  },
+		  Usuario: {
+			type: 'object',
+			properties: {
+			  ProductoDto: { $ref: '#/components/schemas/ProductoDto' }
+			}
+		  },
+		  ...schemas
+		};
+	  }
 	SwaggerModule.setup('api/docs', app, document);
 
 	//Iniciar la aplicación
