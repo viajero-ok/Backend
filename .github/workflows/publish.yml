@@ -111,9 +111,6 @@ jobs:
       - name: Send Failure Notification to Discord
         if: failure()
         run: |
-          ERROR_MESSAGE=$(cat build_and_test.log | tail -n 20)
-          echo "Error message content:"
-          echo "$ERROR_MESSAGE"
           MENTION="@everyone"
           IMAGE_URL="https://i.ibb.co/PjzYgQk/PANIC.png"
           LINK_URL="https://github.com/${{ env.REPOSITORIO }}/actions/runs/${{ github.run_id }}"
