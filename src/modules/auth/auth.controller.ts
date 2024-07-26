@@ -9,7 +9,7 @@ import { VerificarCuentaDto } from './dto/verificar-cuenta.dto';
 import { RegistrarTuristaDto } from './dto/registrar-turista.dto';
 import { RegistrarPrestadorDto } from './dto/registrar-prestador.dto';
 
-@ApiTags('auth')
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
 	constructor(private readonly authService: AuthService) {}

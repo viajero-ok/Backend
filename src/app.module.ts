@@ -5,7 +5,6 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsuariosModule } from './modules/usuarios/usuarios.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Usuario } from './modules/usuarios/entities/usuario.entity';
 import { AuthorizationGuard } from './common/guards/authorization/authorization.guard';
 import { GlobalJwtGuard } from './common/guards/jwt/global-jwt.guard';
 import { EmailModule } from './modules/email/email.module';
@@ -23,7 +22,7 @@ import { EventMailModule } from './common/events/event-mail/event-mail.module';
 			username: process.env.DB_USER,
 			password: process.env.DB_PASSWORD,
 			database: process.env.DB_NAME,
-			entities: [Usuario],
+			autoLoadEntities: true,
 			synchronize: false, // Deshabilitar en producción
 		}),
 		AuthModule,

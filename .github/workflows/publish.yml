@@ -72,44 +72,33 @@ jobs:
           VPS_USER: ${{ secrets.VPS_USER }}
           VPS_HOST: ${{ secrets.VPS_HOST }}
         run: |
-          sshpass -p ${{ secrets.SSH_PASS }} ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER_Y_HOST }} "mkdir -p /apps/${{ env.RAMA }}"
           sshpass -p ${{ secrets.SSH_PASS }} sftp -o StrictHostKeyChecking=no ${{ secrets.VPS_USER_Y_HOST }} << EOF
-            cd /apps/${{ env.RAMA }}
+            cd apps/${{ env.RAMA }}
             put .env.backend
             put .env.frontend
             put compose.yaml
             bye
           EOF
           sshpass -p ${{ secrets.SSH_PASS }} ssh -o StrictHostKeyChecking=no -v ${{ secrets.VPS_USER_Y_HOST }} "
-            cd /apps/${{ env.RAMA }} &&
+            ls
+            cd apps/${{ env.RAMA }} &&
+            ls
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose --env-file .env.backend --env-file .env.frontend pull &&
-            echo "Imagenes actualizadas..." &&
             docker compose --env-file .env.backend --env-file .env.frontend -f compose.yaml up -d
           "
 
       - name: Send Success Notification to Discord
         if: success()
-        env:
-          DEV_SUCCESS_USER_ID: ${{ secrets.DEV_SUCCESS_USER_ID }}
-          TEST_SUCCESS_USER_ID: ${{ secrets.TEST_SUCCESS_USER_ID }}
         run: |
-          if [[ "${{ github.ref_name }}" == "dev" ]]; then
-            USER_ID=$DEV_SUCCESS_USER_ID
-          elif [[ "${{ github.ref_name }}" == "test" ]]; then
-            USER_ID=$TEST_SUCCESS_USER_ID
-          else
-            USER_ID=""
-          fi
-    
-          MENTION=""
-          if [[ -n "$USER_ID" ]]; then
-            MENTION="<@$USER_ID>"
-          fi
+          MENTION="@everyone"
+
+          IMAGE_URL="https://i.ibb.co/XXkzSdC/SUCCESS.png"
+          LINK_URL="https://github.com/${{ env.REPOSITORIO }}/actions/runs/${{ github.run_id }}"
 
           curl -H "Content-Type: application/json" \
           -X POST \
-          -d "{\"content\": \"✅ Despliegue exitoso para la rama \`${{ github.ref_name }}\` $MENTION\nCommit: ${{ github.sha }}\"}" \
+          -d "{\"content\": \"✅ Despliegue exitoso para la rama \`${{ github.ref_name }}\` $MENTION\nCommit: ${{ github.sha }}\", \"embeds\": [{\"image\": {\"url\": \"$IMAGE_URL\"}, \"url\": \"$LINK_URL\"}]}" \
           ${{ secrets.DISCORD_WEBHOOK_URL }}
 
       - name: Archive logs
@@ -121,11 +110,14 @@ jobs:
 
       - name: Send Failure Notification to Discord
         if: failure()
-        env:
-          FAILURE_USER_ID: ${{ secrets.FAILURE_USER_ID }}
         run: |
           ERROR_MESSAGE=$(cat build_and_test.log | tail -n 20)
+          echo "Error message content:"
+          echo "$ERROR_MESSAGE"
+          MENTION="@everyone"
+          IMAGE_URL="https://i.ibb.co/PjzYgQk/PANIC.png"
+          LINK_URL="https://github.com/${{ env.REPOSITORIO }}/actions/runs/${{ github.run_id }}"
           curl -H "Content-Type: application/json" \
           -X POST \
-          -d "{\"content\": \"❌ Build or tests failed! <@$FAILURE_USER_ID>\n\`\`\`${ERROR_MESSAGE}\`\`\`\"}" \
+          -d "{\"content\": \"❌ Despliegue fallido para la rama \`${{ github.ref_name }}\` $MENTION\nPara más info hace click en la imagen\", \"embeds\": [{\"image\": {\"url\": \"$IMAGE_URL\"}, \"url\": \"$LINK_URL\"}]}" \ 
           ${{ secrets.DISCORD_WEBHOOK_URL }} 

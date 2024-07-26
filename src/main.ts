@@ -27,43 +27,15 @@ async function bootstrap() {
 	const jwtRefreshInterceptor = new JwtRefreshInterceptor(jwtService);
 	app.useGlobalInterceptors(jwtRefreshInterceptor, new TimeOutInterceptor());
 
-	//Versionamiento de la API
-	app.enableVersioning({
-		defaultVersion: '1',
-		type: VersioningType.URI,
-	});
-
 	//Documentación de swagger
 	const config = new DocumentBuilder()
 		.addBearerAuth()
 		.setTitle('Documentación Viajero API')
 		.setVersion('1.0')
-		.addTag('auth')
-		.addTag('usuarios')
+		.addTag('Auth')
+		//.addTag('usuarios')
 		.build();
 	const document = SwaggerModule.createDocument(app, config);
-	if (document.components && document.components.schemas) {
-		const schemas = document.components.schemas;
-		document.components.schemas = {
-		  Auth: {
-			type: 'object',
-			properties: {
-				CuentaAuthDto: { $ref: '#/components/schemas/CuentaAuthDto' },
-				VerificarCuentaDto: { $ref: '#/components/schemas/VerificarCuentaDto' },
-				LoginAuthDto: { $ref: '#/components/schemas/LoginAuthDto' },
-				RegistrarTuristaDto: { $ref: '#/components/schemas/RegistrarTuristaDto' },
-				RegistrarPrestadorDto: { $ref: '#/components/schemas/RegistrarPrestadorDto' },
-			}
-		  },
-		  Usuario: {
-			type: 'object',
-			properties: {
-			  ProductoDto: { $ref: '#/components/schemas/ProductoDto' }
-			}
-		  },
-		  ...schemas
-		};
-	  }
 	SwaggerModule.setup('api/docs', app, document);
 
 	//Iniciar la aplicación
