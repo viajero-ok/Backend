@@ -80,9 +80,7 @@ jobs:
             bye
           EOF
           sshpass -p ${{ secrets.SSH_PASS }} ssh -o StrictHostKeyChecking=no -v ${{ secrets.VPS_USER_Y_HOST }} "
-            ls
             cd apps/${{ env.RAMA }} &&
-            ls
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose --env-file .env.backend --env-file .env.frontend pull &&
             docker compose --env-file .env.backend --env-file .env.frontend -f compose.yaml up -d
@@ -114,7 +112,8 @@ jobs:
           MENTION="@everyone"
           IMAGE_URL="https://i.ibb.co/PjzYgQk/PANIC.png"
           LINK_URL="https://github.com/${{ env.REPOSITORIO }}/actions/runs/${{ github.run_id }}"
+
           curl -H "Content-Type: application/json" \
-          -X POST \
-          -d "{\"content\": \"❌ Despliegue fallido para la rama \`${{ github.ref_name }}\` $MENTION\nPara más info hace click en la imagen\", \"embeds\": [{\"image\": {\"url\": \"$IMAGE_URL\"}, \"url\": \"$LINK_URL\"}]}" \ 
-          ${{ secrets.DISCORD_WEBHOOK_URL }} 
+            -X POST \
+            -d "{\"content\": \"❌ Despliegue fallido para la rama \`${{ github.ref_name }}\` $MENTION\nPara más info hace click en la imagen\", \"embeds\": [{\"image\": {\"url\": \"$IMAGE_URL\"}, \"url\": \"$LINK_URL\"}]}" \
+            ${{ secrets.DISCORD_WEBHOOK_URL }} 
