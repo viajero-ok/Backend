@@ -96,7 +96,7 @@ jobs:
 
           curl -H "Content-Type: application/json" \
           -X POST \
-          -d "{\"content\": \"✅ Despliegue exitoso para la rama \`${{ github.ref_name }}\` $MENTION\nCommit: ${{ github.sha }}\", \"embeds\": [{\"image\": {\"url\": \"$IMAGE_URL\"}, \"url\": \"$LINK_URL\"}]}" \
+          -d "{\"content\": \"✅ Despliegue exitoso para la rama \`${{ github.ref_name }}\` $MENTION\nCommit: ${{ github.sha }}\nPara más detalles, haz clic en el enlace a continuación:\", \"embeds\": [{\"title\": \"Más detalles aquí\", \"url\": \"$LINK_URL\", \"image\": {\"url\": \"$IMAGE_URL\"}}]}" \
           ${{ secrets.DISCORD_WEBHOOK_URL }}
 
       - name: Archive logs
@@ -115,5 +115,5 @@ jobs:
 
           curl -H "Content-Type: application/json" \
             -X POST \
-            -d "{\"content\": \"❌ Despliegue fallido para la rama \`${{ github.ref_name }}\` $MENTION\nPara más info hace click en la imagen\", \"embeds\": [{\"image\": {\"url\": \"$IMAGE_URL\"}, \"url\": \"$LINK_URL\"}]}" \
+            -d "{\"content\": \"❌ Despliegue fallido para la rama \`${{ github.ref_name }}\` $MENTION\nPara más info haz clic en el enlace a continuación.\", \"embeds\": [{\"title\": \"Más información sobre el error\", \"url\": \"$LINK_URL\", \"image\": {\"url\": \"$IMAGE_URL\"}}]}" \
             ${{ secrets.DISCORD_WEBHOOK_URL }} 
