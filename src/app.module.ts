@@ -24,6 +24,11 @@ import { EventMailModule } from './common/events/event-mail/event-mail.module';
 			database: process.env.DB_NAME,
 			autoLoadEntities: true,
 			synchronize: false, // Deshabilitar en producción
+			extra: {
+				connectionLimit: 10,
+				keepAlive: true,
+				keepAliveInitialDelay: 10000,
+			},
 		}),
 		AuthModule,
 		UsuariosModule,

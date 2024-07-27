@@ -48,7 +48,11 @@ export class AuthService {
 			userModified.codigo_verificacion,
 		);
 
-		return result;
+		return {
+			resultado: 'ok',
+			statusCode: 201,
+			id_usuario: result.id_usuario,
+		};
 	}
 
 	async verificarCuenta(verificarCuentaDto: VerificarCuentaDto) {
@@ -63,20 +67,37 @@ export class AuthService {
 			throw new HttpException(result.descripcion, HttpStatus.CONFLICT);
 		}
 
-		return result;
+		if (result.nro_intentos >= 3) {
+			throw new HttpException(
+				'Superó el máximo de 3 intentos de verificación, debe volver a crear su cuenta.',
+				HttpStatus.FORBIDDEN,
+			);
+		}
+
+		return { resultado: 'ok', statusCode: 201 };
 	}
 
 	async login(loginAuthDto: LoginAuthDto) {
-		//Verificar si el usuario existe
+		//Llamar al procedimiento
 		const userExists =
 			await this.authReposirotyService.obtenerUsuarioPorMail(
 				loginAuthDto.mail,
 			);
+		console.log(userExists);
+
+		//Verificar si el usuario existe
 		if (userExists.resultado === 'error') {
-			throw new HttpException(
-				userExists.descripcion,
-				HttpStatus.BAD_REQUEST,
-			);
+			if (userExists.descripcion === 'Error al obtener usuario. ') {
+				throw new HttpException(
+					'Credenciales invalidas',
+					HttpStatus.FORBIDDEN,
+				);
+			} else {
+				throw new HttpException(
+					userExists.descripcion,
+					HttpStatus.BAD_REQUEST,
+				);
+			}
 		}
 
 		//Verificar si el usuario esta verificado
@@ -98,86 +119,81 @@ export class AuthService {
 				HttpStatus.UNAUTHORIZED,
 			);
 		}
-		if (userExists.cantidad_perfiles === 0) {
-			//firmar el token y devolverlo junto con los datos del usuario
-			const payload = { id: userExists.id_usuario };
-			const token = this.jwtService.sign(payload);
-			const data = {
-				token: token,
-				tiene_perfil: false,
-			};
-			return data;
-		}
-		//consultar informacion del usuario
-		const userInfo = await this.authReposirotyService.obtenerInfoUsuario(
-			userExists.id_usuario,
-			userExists.perfil,
-		);
+
+		//Verificar si el usuario tiene perfiles
+		const tiene_perfil = userExists.cantidad_perfiles > 0;
 
 		//firmar el token y devolverlo junto con los datos del usuario
 		const payload = { id: userExists.id_usuario };
 		const token = this.jwtService.sign(payload);
 		const data = {
+			resultado: 'ok',
+			statusCode: 200,
+			id_usuario: userExists.id_usuario,
 			token: token,
-			user: userInfo,
-			tiene_perfil: true,
+			tiene_perfil,
 		};
 		return data;
 	}
 
-	// PARA PREGUNTAR: Pedir SP que registre al turista y devuelva el mail y el nombre del idioma
 	async registrarTurista(registrarTuristaDto: RegistrarTuristaDto) {
 		//Llamar al procedimiento
-		const result =
+		const registro =
 			await this.authReposirotyService.registrarTurista(
 				registrarTuristaDto,
 			);
 
 		//comprobar si se registro correctamente
-		if (result.resultado === 'error') {
-			throw new HttpException(result.descripcion, HttpStatus.CONFLICT);
+		if (registro.resultado === 'error') {
+			throw new HttpException(
+				'Error al registrar turista.',
+				HttpStatus.CONFLICT,
+			);
 		}
+
+		const result = await this.authReposirotyService.obtenerInfoUsuario(
+			registrarTuristaDto.id_usuario,
+			1,
+		);
 
 		//enviar evento de mail
 		this.eventEmitter.emit(
 			'turista.created',
 			result.mail,
 			result.idioma,
-			registrarTuristaDto.nombre,
-			registrarTuristaDto.apellido,
+			result.nombre,
+			result.apellido,
 		);
-		return result;
+		return { resultado: 'ok', statusCode: 201 };
 	}
 
-	// PARA PREGUNTAR: Pedir SP que registre al prestador y devuelva el mail
 	async registrarPrestador(registrarPrestadorDto: RegistrarPrestadorDto) {
 		//Llamar al procedimiento
-		const result = await this.authReposirotyService.registrarPrestador(
+		const registro = await this.authReposirotyService.registrarPrestador(
 			registrarPrestadorDto,
 		);
+
+		//comprobar si se registro correctamente
+		if (registro.resultado === 'error') {
+			throw new HttpException(
+				'Error al registrar prestador.',
+				HttpStatus.CONFLICT,
+			);
+		}
+
+		const result = await this.authReposirotyService.obtenerInfoUsuario(
+			registrarPrestadorDto.id_usuario,
+			2,
+		);
+		console.log(result);
 
 		//enviar evento de mail
 		this.eventEmitter.emit(
 			'prestador.created',
 			result.mail,
-			registrarPrestadorDto.razon_social,
+			result.razon_social,
 		);
 
-		return result;
+		return { resultado: 'ok', statusCode: 201 };
 	}
-
-	/* async registrarOficina(registrarOficinaDto: OficinaDto) {
-		const { contraseña, ...user } = registrarOficinaDto;
-		const userModified = {
-			...user,
-			contraseña: await plainToHash(contraseña),
-		};
-
-		const userCreated = userModified;
-
-		//enviar evento de mail
-		this.eventEmitter.emit('oficina.created', userCreated);
-
-		return userCreated;
-	} */
 }

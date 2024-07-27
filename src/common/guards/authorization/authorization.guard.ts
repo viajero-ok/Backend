@@ -29,7 +29,7 @@ export class AuthorizationGuard implements CanActivate {
 		// sacarle el /api/ a la url
 		const urlWithoutApi = url.replace(/^\/api\//, '');
 		console.log(
-			'usuario AuthorizationGuard',
+			'*******AuthorizationGuard*******\nusuario',
 			user,
 			'\nmethod',
 			method,

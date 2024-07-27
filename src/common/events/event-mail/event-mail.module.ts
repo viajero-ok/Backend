@@ -53,7 +53,7 @@ export class EventMailModule {
 			context: {
 				razon_social,
 				tiempo_estimado: '24hs',
-				email_soporte: process.env.EMAIL_SOPORTE,
+				email_soporte: 'viajeroapp24@gmail.com',
 			},
 		});
 	}

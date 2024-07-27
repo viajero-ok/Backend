@@ -19,7 +19,7 @@ export class AuthController {
 	constructor(private readonly authService: AuthService) {}
 
 	@Public()
-	@ApiOperation({ summary: 'CREAR CUENTA' })
+	@ApiOperation({ summary: 'REGISTRAR CUENTA' })
 	@ApiResponse({
 		status: 201,
 		schema: {
@@ -29,14 +29,29 @@ export class AuthController {
 					type: 'string',
 					example: 'ok',
 				},
-				descripcion: {
-					type: 'string',
-					nullable: true,
-					example: null,
+				statusCode: {
+					type: 'number',
+					example: 201,
 				},
 				id_usuario: {
 					type: 'string',
-					example: 'e11e1111-1eee-11ee-11e1-1111ee111111',
+				},
+			},
+		},
+	})
+	@ApiResponse({
+		status: 409,
+		schema: {
+			type: 'object',
+			properties: {
+				statusCode: {
+					type: 'number',
+					example: 409,
+				},
+				message: {
+					type: 'string',
+					example:
+						'Error al crear usuario. Ya existe un usuario con el email ingresado. ',
 				},
 			},
 		},
@@ -55,10 +70,43 @@ export class AuthController {
 					type: 'string',
 					example: 'ok',
 				},
-				descripcion: {
+				statusCode: {
+					type: 'number',
+					example: 201,
+				},
+			},
+		},
+	})
+	@ApiResponse({
+		status: 409,
+		schema: {
+			type: 'object',
+			properties: {
+				statusCode: {
+					type: 'number',
+					example: 409,
+				},
+				message: {
 					type: 'string',
-					nullable: true,
-					example: null,
+					example:
+						'Error al verificar usuario. El código ingresado no es correcto. ',
+				},
+			},
+		},
+	})
+	@ApiResponse({
+		status: 403,
+		schema: {
+			type: 'object',
+			properties: {
+				statusCode: {
+					type: 'number',
+					example: 403,
+				},
+				message: {
+					type: 'string',
+					example:
+						'Superó el máximo de 3 intentos de verificación, debe volver a crear su cuenta.',
 				},
 			},
 		},
@@ -71,30 +119,38 @@ export class AuthController {
 	}
 
 	@ApiResponse({
-		status: 201,
+		status: 200,
 		schema: {
 			type: 'object',
 			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'string',
+					example: 200,
+				},
+				id_usuario: {
+					type: 'string',
+				},
 				token: {
 					type: 'string',
-					example:
-						'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImYyNDMyYjIyLTQ5NTAtMTFlZi05N2QzLTAyNDJhYzEyMDAwMiIsImlhdCI6MTcyMjA0NTM0MSwiZXhwIjoxNzIyMTMxNzQxfQ.EuDx1RUvnsdBHTd3b69l1YgKMjvZLvOpEm5FrgigKRE',
 				},
 				tiene_perfil: {
 					type: 'boolean',
-					example: false,
 				},
 			},
 		},
 	})
 	@ApiResponse({
-		status: 400,
+		status: 403,
 		schema: {
 			type: 'object',
 			properties: {
 				statusCode: {
 					type: 'string',
-					example: 400,
+					example: 403,
 				},
 				message: {
 					type: 'string',
@@ -119,6 +175,29 @@ export class AuthController {
 			},
 		},
 	})
+	@Public()
+	@ApiOperation({ summary: 'LOGIN' })
+	@Post('login')
+	async login(@Body() loginAuthDto: LoginAuthDto) {
+		return this.authService.login(loginAuthDto);
+	}
+
+	@ApiResponse({
+		status: 201,
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 201,
+				},
+			},
+		},
+	})
 	@ApiResponse({
 		status: 409,
 		schema: {
@@ -130,19 +209,11 @@ export class AuthController {
 				},
 				message: {
 					type: 'string',
-					example:
-						'Error al crear usuario. Ya existe un usuario con el email ingresado. ',
+					example: 'Error al registrar turista.',
 				},
 			},
 		},
 	})
-	@Public()
-	@ApiOperation({ summary: 'LOGIN' })
-	@Post('login')
-	async login(@Body() loginAuthDto: LoginAuthDto) {
-		return this.authService.login(loginAuthDto);
-	}
-
 	@ApiBearerAuth()
 	@ApiOperation({ summary: 'REGISTRAR TURISTA' })
 	@Post('registrar/turista')
@@ -150,6 +221,38 @@ export class AuthController {
 		return this.authService.registrarTurista(registrarTuristaDto);
 	}
 
+	@ApiResponse({
+		status: 201,
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 201,
+				},
+			},
+		},
+	})
+	@ApiResponse({
+		status: 409,
+		schema: {
+			type: 'object',
+			properties: {
+				statusCode: {
+					type: 'number',
+					example: 409,
+				},
+				message: {
+					type: 'string',
+					example: 'Error al registrar prestador.',
+				},
+			},
+		},
+	})
 	@ApiBearerAuth()
 	@ApiOperation({ summary: 'REGISTRAR PRESTADOR' })
 	@Post('registrar/prestador')

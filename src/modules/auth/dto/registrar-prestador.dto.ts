@@ -56,11 +56,6 @@ export class RegistrarPrestadorDto {
 	@Length(11, 11)
 	telefono: string;
 
-	@ApiProperty({ example: '2001-05-30', description: 'Fecha de nacimiento' })
-	@IsNotEmpty()
-	@IsDateString()
-	fecha_nacimiento: string;
-
 	@ApiProperty({ example: 1, description: 'ID de la localidad' })
 	@IsNotEmpty()
 	@IsInt()
@@ -76,18 +71,39 @@ export class RegistrarPrestadorDto {
 	@IsInt()
 	id_provincia: number;
 
-	@ApiProperty()
+	@ApiProperty({
+		example: '20-12345678-9',
+		description: 'CUIT del prestador',
+	})
 	@IsNotEmpty()
 	@IsString()
+	@Length(11, 11, { message: 'El CUIT debe tener 11 caracteres' })
+	@Matches(/^[0-9]+$/, {
+		message: 'El número de documento debe contener solo dígitos',
+	})
 	readonly cuit: string;
 
-	@ApiProperty()
+	@ApiProperty({
+		example: 'Fulano Alojamientos',
+		description: 'Razón social del prestador',
+	})
 	@IsNotEmpty()
 	@IsString()
 	readonly razon_social: string;
 
-	@ApiProperty()
+	@ApiProperty({
+		example: 'www.fulanoalojamientos.com',
+		description: 'Sitio web del prestador',
+	})
 	@IsOptional()
 	@IsString()
 	readonly sitio_web: string;
+
+	@ApiProperty({ example: '2001-05-30', description: 'Fecha de nacimiento' })
+	@IsNotEmpty()
+	@IsDateString(
+		{},
+		{ message: 'La fecha de nacimiento debe ser una fecha válida' },
+	)
+	readonly fecha_nacimiento: string;
 }

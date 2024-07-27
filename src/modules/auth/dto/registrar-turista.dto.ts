@@ -17,19 +17,19 @@ export class RegistrarTuristaDto {
 	@IsNotEmpty()
 	@IsString()
 	@Length(10, 70)
-	id_usuario: string;
+	readonly id_usuario: string;
 
 	@ApiProperty({ example: 'Mariano', description: 'Nombre del usuario' })
 	@IsNotEmpty()
 	@IsString()
 	@Length(1, 100)
-	nombre: string;
+	readonly nombre: string;
 
 	@ApiProperty({ example: 'Luque', description: 'Apellido del usuario' })
 	@IsNotEmpty()
 	@IsString()
 	@Length(1, 100)
-	apellido: string;
+	readonly apellido: string;
 
 	@ApiProperty({
 		example: 44444444,
@@ -43,51 +43,51 @@ export class RegistrarTuristaDto {
 	@Matches(/^[0-9]+$/, {
 		message: 'El número de documento debe contener solo dígitos',
 	})
-	nro_documento_identidad: string;
+	readonly nro_documento_identidad: string;
 
 	@ApiProperty({ example: 1, description: 'ID del tipo de documento' })
 	@IsNotEmpty()
 	@IsInt()
-	id_tipo_documento: number;
+	readonly id_tipo_documento: number;
 
 	@ApiProperty({ example: '03515285324', description: 'Número de teléfono' })
 	@IsOptional()
 	@IsString()
 	@Length(11, 11)
-	telefono: string;
-
-	@ApiProperty({ example: '2001-05-30', description: 'Fecha de nacimiento' })
-	@IsNotEmpty()
-	@IsDateString()
-	fecha_nacimiento: string;
+	readonly telefono: string;
 
 	@ApiProperty({ example: 1, description: 'ID de la localidad' })
 	@IsNotEmpty()
 	@IsInt()
-	id_localidad: number;
+	readonly id_localidad: number;
 
 	@ApiProperty({ example: 1, description: 'ID del departamento' })
 	@IsNotEmpty()
 	@IsInt()
-	id_departamento: number;
+	readonly id_departamento: number;
 
 	@ApiProperty({ example: 1, description: 'ID de la provincia' })
 	@IsNotEmpty()
 	@IsInt()
-	id_provincia: number;
+	readonly id_provincia: number;
 
 	@ApiProperty({ example: 1, description: 'ID del país' })
 	@IsNotEmpty()
 	@IsInt()
-	id_pais: number;
+	readonly id_pais: number;
 
 	@ApiProperty({ example: 1, description: 'ID del idioma' })
 	@IsNotEmpty()
 	@IsInt()
-	id_idioma: number;
+	readonly id_idioma: number;
 
 	@ApiProperty({ example: 2, description: 'ID del género' })
 	@IsNotEmpty()
 	@IsInt()
-	id_genero: number;
+	readonly id_genero: number;
+
+	@ApiProperty({ example: '2001-05-30', description: 'Fecha de nacimiento' })
+	@IsNotEmpty()
+	@IsDateString()
+	readonly fecha_nacimiento: string;
 }

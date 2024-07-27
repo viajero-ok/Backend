@@ -2,8 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 import { Usuario } from 'src/modules/usuarios/entities/usuario.entity';
-import { TuristaDto } from 'src/modules/usuarios/dto/turista.dto';
-import { PrestadorTuristicoDto } from 'src/modules/usuarios/dto/prestador-turistico.dto';
 import { CuentaAuthDto } from './dto/cuenta-auth.dto';
 import { VerificarCuentaDto } from './dto/verificar-cuenta.dto';
 import { RegistrarTuristaDto } from './dto/registrar-turista.dto';
@@ -26,7 +24,7 @@ export class AuthRepositoryService {
 		return result[0][0];
 	}
 
-	async obtenerInfoUsuario(id_usuario: string, id_perfil: string) {
+	async obtenerInfoUsuario(id_usuario: string, id_perfil: number) {
 		const result = await this.entityManager.query(
 			'CALL SP_OBT_DATOS_USUARIO(?, ?)',
 			[id_usuario, id_perfil],
@@ -97,19 +95,21 @@ export class AuthRepositoryService {
 
 	async registrarPrestador(registrarPrestadorDto: RegistrarPrestadorDto) {
 		const result = await this.entityManager.query(
-			'CALL SP_ABM_USUARIOS(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			'CALL SP_REGISTRAR_PRESTADOR(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
-				//prestadorTuristico.mail,
+				registrarPrestadorDto.id_usuario,
 				registrarPrestadorDto.nombre,
 				registrarPrestadorDto.apellido,
 				registrarPrestadorDto.fecha_nacimiento,
-				//prestadorTuristico.contraseña,
-				//prestadorTuristico.id_genero,
-				//prestadorTuristico.NRO_DOCUMENTO_IDENTIDAD,
-				//prestadorTuristico.ID_TIPO_DOCUMENTO,
-				//prestadorTuristico.ID_LOCALIDAD_ORIGEN,
-				//prestadorTuristico.ID_IDIOMA,
-				null,
+				registrarPrestadorDto.nro_documento_identidad,
+				registrarPrestadorDto.id_tipo_documento,
+				registrarPrestadorDto.telefono,
+				registrarPrestadorDto.id_localidad,
+				registrarPrestadorDto.id_departamento,
+				registrarPrestadorDto.id_provincia,
+				registrarPrestadorDto.cuit,
+				registrarPrestadorDto.razon_social,
+				registrarPrestadorDto.sitio_web,
 			],
 		);
 		return result[0][0];
