@@ -27,9 +27,10 @@ export class AuthRepositoryService {
 	}
 
 	async obtenerInfoUsuario(id_usuario: string, id_perfil: string) {
-		const result = await this.entityManager.query('CALL SP_OBT_DATOS_USUARIO(?, ?)', [
-			id_usuario, id_perfil
-		]);
+		const result = await this.entityManager.query(
+			'CALL SP_OBT_DATOS_USUARIO(?, ?)',
+			[id_usuario, id_perfil],
+		);
 		return result[0][0];
 	}
 
@@ -74,7 +75,7 @@ export class AuthRepositoryService {
 
 	async registrarTurista(registrarTuristaDto: RegistrarTuristaDto) {
 		const result = await this.entityManager.query(
-			'CALL SP_REGISTRAR_TURISTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			'CALL SP_REGISTRAR_TURISTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
 				registrarTuristaDto.id_usuario,
 				registrarTuristaDto.nombre,
@@ -82,6 +83,7 @@ export class AuthRepositoryService {
 				registrarTuristaDto.fecha_nacimiento,
 				registrarTuristaDto.nro_documento_identidad,
 				registrarTuristaDto.id_tipo_documento,
+				registrarTuristaDto.telefono,
 				registrarTuristaDto.id_localidad,
 				registrarTuristaDto.id_departamento,
 				registrarTuristaDto.id_provincia,
@@ -110,7 +112,7 @@ export class AuthRepositoryService {
 				null,
 			],
 		);
-		return result;
+		return result[0][0];
 	}
 
 	async obtenerPermisosUsuario(id_usuario: string) {

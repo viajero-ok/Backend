@@ -1,8 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { comparePlainToHash, plainToHash } from './utils/handleBcrypt';
 import { LoginAuthDto } from './dto/login-auth.dto';
-import { TuristaDto } from 'src/modules/usuarios/dto/turista.dto';
-import { PrestadorTuristicoDto } from 'src/modules/usuarios/dto/prestador-turistico.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { JwtService } from '@nestjs/jwt';
 import { AuthRepositoryService } from './auth-repository.service';
@@ -40,10 +38,7 @@ export class AuthService {
 
 		//comprobar si se registro correctamente
 		if (result.resultado === 'error') {
-			throw new HttpException(
-				result.descripcion,
-				HttpStatus.INTERNAL_SERVER_ERROR,
-			);
+			throw new HttpException(result.descripcion, HttpStatus.CONFLICT);
 		}
 
 		//enviar evento de mail
@@ -73,9 +68,10 @@ export class AuthService {
 
 	async login(loginAuthDto: LoginAuthDto) {
 		//Verificar si el usuario existe
-		const userExists = await this.authReposirotyService.obtenerUsuarioPorMail(
-			loginAuthDto.mail,
-		);
+		const userExists =
+			await this.authReposirotyService.obtenerUsuarioPorMail(
+				loginAuthDto.mail,
+			);
 		if (userExists.resultado === 'error') {
 			throw new HttpException(
 				userExists.descripcion,
@@ -114,7 +110,8 @@ export class AuthService {
 		}
 		//consultar informacion del usuario
 		const userInfo = await this.authReposirotyService.obtenerInfoUsuario(
-			userExists.id_usuario, userExists.perfil
+			userExists.id_usuario,
+			userExists.perfil,
 		);
 
 		//firmar el token y devolverlo junto con los datos del usuario
@@ -132,7 +129,9 @@ export class AuthService {
 	async registrarTurista(registrarTuristaDto: RegistrarTuristaDto) {
 		//Llamar al procedimiento
 		const result =
-			await this.authReposirotyService.registrarTurista(registrarTuristaDto);
+			await this.authReposirotyService.registrarTurista(
+				registrarTuristaDto,
+			);
 
 		//comprobar si se registro correctamente
 		if (result.resultado === 'error') {

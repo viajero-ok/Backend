@@ -5,7 +5,7 @@ module.exports = {
 		tsconfigRootDir: __dirname,
 		sourceType: 'module',
 	},
-	plugins: ['@typescript-eslint', 'prettier', 'filenames'],
+	plugins: ['@typescript-eslint', 'prettier'],
 	extends: [
 		'plugin:@typescript-eslint/recommended',
 		'plugin:prettier/recommended',
@@ -21,13 +21,15 @@ module.exports = {
 		'@typescript-eslint/explicit-function-return-type': 'off',
 		'@typescript-eslint/explicit-module-boundary-types': 'off',
 		'@typescript-eslint/no-explicit-any': 'off',
-		"new-cap": ["error", { "newIsCap": true, "capIsNew": false }],
+		'new-cap': ['error', { newIsCap: true, capIsNew: false }],
 		'prettier/prettier': [
 			'error',
 			{
+				singleQuote: true,
+				trailingComma: 'all',
 				endOfLine: 'crlf',
-				useTabs: true,
 				tabWidth: 4,
+				useTabs: true,
 			},
 		],
 	},

@@ -96,7 +96,7 @@ jobs:
 
           curl -H "Content-Type: application/json" \
           -X POST \
-          -d "{\"content\": \"✅ Despliegue exitoso para la rama \`${{ github.ref_name }}\` $MENTION\nCommit: ${{ github.sha }}\nPara más detalles, haz clic en el enlace a continuación:\", \"embeds\": [{\"title\": \"Más detalles aquí\", \"url\": \"$LINK_URL\", \"image\": {\"url\": \"$IMAGE_URL\"}}]}" \
+          -d "{\"content\": \"✅ Despliegue exitoso para la rama \`${{ github.ref_name }}\` $MENTION\nPara más detalles, haz clic en el enlace a continuación:\", \"embeds\": [{\"title\": \"Más detalles aquí\", \"url\": \"$LINK_URL\", \"image\": {\"url\": \"$IMAGE_URL\"}}]}" \
           ${{ secrets.DISCORD_WEBHOOK_URL }}
 
       - name: Archive logs

@@ -9,13 +9,19 @@ import {
 } from 'class-validator';
 
 export class CuentaAuthDto {
-	@ApiProperty()
+	@ApiProperty({
+		example: 'algo@algo.com',
+		description: 'Correo electrónico del usuario',
+	})
 	@IsNotEmpty()
 	@IsString()
 	@IsEmail({}, { message: 'El correo electrónico no es válido.' })
 	readonly mail: string;
 
-	@ApiProperty()
+	@ApiProperty({
+		example: 'ContraseñaSegura123#',
+		description: 'Contraseña del usuario',
+	})
 	@IsNotEmpty()
 	@IsString()
 	@MinLength(8, {

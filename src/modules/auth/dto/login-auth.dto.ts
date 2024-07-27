@@ -1,15 +1,20 @@
 import { ApiProperty, ApiTags } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
-@ApiTags('auth')
 export class LoginAuthDto {
-	@ApiProperty()
+	@ApiProperty({
+		example: 'algo@algo.com',
+		description: 'Correo electrónico del usuario',
+	})
 	@IsNotEmpty()
 	@IsString()
 	@IsEmail()
 	readonly mail: string;
 
-	@ApiProperty()
+	@ApiProperty({
+		example: 'ContraseñaSegura123#',
+		description: 'Contraseña del usuario',
+	})
 	@IsNotEmpty()
 	@IsString()
 	readonly contraseña: string;

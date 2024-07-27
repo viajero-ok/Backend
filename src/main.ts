@@ -1,12 +1,17 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe, VersioningType } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
+import {
+	DocumentBuilder,
+	SwaggerDocumentOptions,
+	SwaggerModule,
+} from '@nestjs/swagger';
 import { AuthorizationGuard } from './common/guards/authorization/authorization.guard'; // Import the AuthorizationGuard
 import { GlobalJwtGuard } from './common/guards/jwt/global-jwt.guard';
 import { JwtRefreshInterceptor } from './common/interceptors/jwt-refresh/jwt-refresh.interceptor';
 import { JwtService } from '@nestjs/jwt';
 import { TimeOutInterceptor } from './common/interceptors/time-out/time-out.interceptor';
+import { AuthModule } from './modules/auth/auth.module';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule, { cors: true });
@@ -35,7 +40,28 @@ async function bootstrap() {
 		.addTag('Auth')
 		//.addTag('usuarios')
 		.build();
-	const document = SwaggerModule.createDocument(app, config);
+	const options: SwaggerDocumentOptions = {
+		include: [AuthModule],
+	};
+	const document = SwaggerModule.createDocument(app, config, options);
+
+	// Define el esquema general de respuestas en Swagger
+	document.components.schemas.GeneralResponse = {
+		type: 'object',
+		properties: {
+			message: {
+				type: 'string',
+				example: 'mensaje',
+				description: 'Mensaje de la respuesta',
+			},
+			statusCode: {
+				type: 'integer',
+				example: 400,
+				description: 'Código de estado HTTP',
+			},
+		},
+	};
+
 	SwaggerModule.setup('api/docs', app, document);
 
 	//Iniciar la aplicación

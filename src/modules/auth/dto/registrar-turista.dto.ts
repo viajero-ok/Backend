@@ -1,8 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsInt, IsNotEmpty, IsString, Length, Matches } from 'class-validator';
+import {
+	IsDateString,
+	IsInt,
+	IsNotEmpty,
+	IsOptional,
+	IsString,
+	Length,
+	Matches,
+} from 'class-validator';
 
 export class RegistrarTuristaDto {
-	@ApiProperty({ example: 'f2432b22-4950-11ef-97d3-0242ac120002', description: 'ID del usuario' })
+	@ApiProperty({
+		example: 'f2432b22-4950-11ef-97d3-0242ac120002',
+		description: 'ID del usuario',
+	})
 	@IsNotEmpty()
 	@IsString()
 	@Length(10, 70)
@@ -20,11 +31,18 @@ export class RegistrarTuristaDto {
 	@Length(1, 100)
 	apellido: string;
 
-	@ApiProperty({ example: 44444444, description: 'Número de documento de identidad' })
+	@ApiProperty({
+		example: 44444444,
+		description: 'Número de documento de identidad',
+	})
 	@IsNotEmpty()
 	@IsString()
-	@Length(7, 8, { message: 'El número de documento debe tener entre 7 y 8 dígitos' })
-	@Matches(/^[0-9]+$/, { message: 'El número de documento debe contener solo dígitos' })
+	@Length(7, 8, {
+		message: 'El número de documento debe tener entre 7 y 8 dígitos',
+	})
+	@Matches(/^[0-9]+$/, {
+		message: 'El número de documento debe contener solo dígitos',
+	})
 	nro_documento_identidad: string;
 
 	@ApiProperty({ example: 1, description: 'ID del tipo de documento' })
@@ -32,8 +50,8 @@ export class RegistrarTuristaDto {
 	@IsInt()
 	id_tipo_documento: number;
 
-	@ApiProperty({ example: '03515285722', description: 'Número de teléfono' })
-	@IsNotEmpty()
+	@ApiProperty({ example: '03515285324', description: 'Número de teléfono' })
+	@IsOptional()
 	@IsString()
 	@Length(11, 11)
 	telefono: string;
