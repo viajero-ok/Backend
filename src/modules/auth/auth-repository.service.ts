@@ -115,6 +115,31 @@ export class AuthRepositoryService {
 		return result[0][0];
 	}
 
+	async obtenerDatosRegistro() {
+		const localidades_con_jerarquia = await this.entityManager.query(
+			'CALL SP_LISTAR_LOCALIDADES_CON_JERARQUIA()',
+		);
+		console.log(localidades_con_jerarquia);
+		const tipos_documento = await this.entityManager.query(
+			'CALL SP_LISTAR_TIPOS_DOCUMENTO_IDENTIDAD()',
+		);
+		const generos = await this.entityManager.query(
+			'CALL SP_LISTAR_GENEROS()',
+		);
+
+		const idiomas = await this.entityManager.query(
+			'CALL SP_LISTAR_IDIOMAS()',
+		);
+		const result = {
+			localidades: localidades_con_jerarquia[0],
+			tipos_documento: tipos_documento[0],
+			generos: generos[0],
+			idiomas: idiomas[0],
+		};
+
+		return result;
+	}
+
 	async obtenerPermisosUsuario(id_usuario: string) {
 		const result = await this.entityManager.query(
 			'CALL SP_OBT_PERMISOS_X_USUARIO(?)',

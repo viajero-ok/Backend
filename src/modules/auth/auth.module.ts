@@ -10,6 +10,7 @@ import { AuthRepositoryService } from './auth-repository.service';
 import { GlobalJwtGuard } from 'src/common/guards/jwt/global-jwt.guard';
 import { JwtGuard } from 'src/common/guards/jwt/jwt.guard';
 import { AuthorizationGuard } from 'src/common/guards/authorization/authorization.guard';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
 	imports: [
@@ -23,6 +24,7 @@ import { AuthorizationGuard } from 'src/common/guards/authorization/authorizatio
 		}),
 		EventEmitterModule.forRoot(),
 		TypeOrmModule.forFeature([Usuario]),
+		CacheModule.register(),
 	],
 	controllers: [AuthController],
 	providers: [

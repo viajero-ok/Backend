@@ -77,9 +77,12 @@ export class RegistrarPrestadorDto {
 	})
 	@IsNotEmpty()
 	@IsString()
-	@Length(11, 11, { message: 'El CUIT debe tener 11 caracteres' })
-	@Matches(/^[0-9]+$/, {
-		message: 'El número de documento debe contener solo dígitos',
+	@Length(13, 13, {
+		message: 'El CUIT debe tener 13 caracteres, incluyendo los guiones',
+	})
+	@Matches(/^[0-9]{2}-[0-9]{8}-[0-9]$/, {
+		message:
+			'El CUIT debe seguir el formato XX-XXXXXXXX-X y contener solo dígitos y guiones en las posiciones correctas',
 	})
 	readonly cuit: string;
 

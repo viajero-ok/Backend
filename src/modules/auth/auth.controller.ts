@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseInterceptors } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import {
@@ -12,6 +12,7 @@ import { CuentaAuthDto } from './dto/cuenta-auth.dto';
 import { VerificarCuentaDto } from './dto/verificar-cuenta.dto';
 import { RegistrarTuristaDto } from './dto/registrar-turista.dto';
 import { RegistrarPrestadorDto } from './dto/registrar-prestador.dto';
+import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -260,5 +261,109 @@ export class AuthController {
 		@Body() registrarPrestadorDto: RegistrarPrestadorDto,
 	) {
 		return this.authService.registrarPrestador(registrarPrestadorDto);
+	}
+
+	@ApiResponse({
+		status: 200,
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 200,
+				},
+				datos_registro: {
+					type: 'object',
+					properties: {
+						idiomas: {
+							type: 'array',
+							items: {
+								type: 'object',
+								properties: {
+									id_idioma: {
+										type: 'string',
+									},
+									idioma: {
+										type: 'string',
+									},
+								},
+							},
+						},
+						generos: {
+							type: 'array',
+							items: {
+								type: 'object',
+								properties: {
+									id_genero: {
+										type: 'string',
+									},
+									genero: {
+										type: 'string',
+									},
+								},
+							},
+						},
+						tipos_documento: {
+							type: 'array',
+							items: {
+								type: 'object',
+								properties: {
+									id_tipo_documento_identidad: {
+										type: 'string',
+									},
+									tipo_documento_identidad: {
+										type: 'string',
+									},
+								},
+							},
+						},
+						localidades: {
+							type: 'array',
+							items: {
+								type: 'object',
+								properties: {
+									id_localidad: {
+										type: 'string',
+									},
+									localidad: {
+										type: 'string',
+									},
+									id_departamento: {
+										type: 'string',
+									},
+									departamento: {
+										type: 'string',
+									},
+									id_provincia: {
+										type: 'string',
+									},
+									provincia: {
+										type: 'string',
+									},
+									id_pais: {
+										type: 'string',
+									},
+									pais: {
+										type: 'string',
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+	@ApiBearerAuth()
+	@ApiOperation({ summary: 'OBTENER DATOS PARA REGISTRO' })
+	@UseInterceptors(CacheInterceptor)
+	@CacheTTL(60 * 60 * 72) // 3 días en segundos
+	@Get('datos-registro')
+	async datosRegistro() {
+		return this.authService.obtenerDatosRegistro();
 	}
 }

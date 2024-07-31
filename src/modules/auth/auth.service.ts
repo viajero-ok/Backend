@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { comparePlainToHash, plainToHash } from './utils/handleBcrypt';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -8,6 +8,7 @@ import { CuentaAuthDto } from './dto/cuenta-auth.dto';
 import { VerificarCuentaDto } from './dto/verificar-cuenta.dto';
 import { RegistrarTuristaDto } from './dto/registrar-turista.dto';
 import { RegistrarPrestadorDto } from './dto/registrar-prestador.dto';
+import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +16,7 @@ export class AuthService {
 		private readonly jwtService: JwtService,
 		private readonly eventEmitter: EventEmitter2,
 		private readonly authReposirotyService: AuthRepositoryService,
+		@Inject(CACHE_MANAGER) private cacheManager: Cache,
 	) {}
 
 	async registrarCuenta(registrarCuentaDto: CuentaAuthDto) {
@@ -195,5 +197,19 @@ export class AuthService {
 		);
 
 		return { resultado: 'ok', statusCode: 201 };
+	}
+
+	async obtenerDatosRegistro() {
+		const cacheKey = 'datos_registro';
+		let result = await this.cacheManager.get(cacheKey);
+
+		//si no esta en cache
+		if (!result) {
+			//llamar al procedimiento
+			result = await this.authReposirotyService.obtenerDatosRegistro();
+			await this.cacheManager.set(cacheKey, result);
+		}
+
+		return { resultado: 'ok', statusCode: 200, datos_registro: result };
 	}
 }

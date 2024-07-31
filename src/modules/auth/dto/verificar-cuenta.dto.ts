@@ -13,6 +13,9 @@ export class VerificarCuentaDto {
 	@ApiProperty({ example: '12345678', description: 'Código de verificación' })
 	@IsNotEmpty()
 	@IsString()
-	@Length(8, 8)
+	@Length(8, 8, {
+		message:
+			'El código de verificación debe tener exactamente 11 caracteres.',
+	})
 	readonly codigo_verificacion: string;
 }

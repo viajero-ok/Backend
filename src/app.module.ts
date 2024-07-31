@@ -10,6 +10,9 @@ import { GlobalJwtGuard } from './common/guards/jwt/global-jwt.guard';
 import { EmailModule } from './modules/email/email.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { EventMailModule } from './common/events/event-mail/event-mail.module';
+import { AlojamientosModule } from './modules/oferta-turistica/alojamientos/alojamientos.module';
+import { ActividadesModule } from './modules/oferta-turistica/actividades/actividades.module';
+import { EventosModule } from './modules/oferta-turistica/eventos/eventos.module';
 
 @Module({
 	imports: [
@@ -26,14 +29,18 @@ import { EventMailModule } from './common/events/event-mail/event-mail.module';
 			synchronize: false, // Deshabilitar en producción
 			extra: {
 				connectionLimit: 10,
-				keepAlive: true,
-				keepAliveInitialDelay: 10000,
+				connectTimeout: 60000,
 			},
+			keepConnectionAlive: true,
+			poolSize: 10,
 		}),
 		AuthModule,
 		UsuariosModule,
 		EmailModule,
 		EventMailModule,
+		AlojamientosModule,
+		ActividadesModule,
+		EventosModule,
 	],
 	controllers: [AppController],
 	providers: [AppService, AuthorizationGuard, GlobalJwtGuard],
