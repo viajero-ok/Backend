@@ -1,9 +1,17 @@
-import { Body, Controller, Get, Post, UseInterceptors } from '@nestjs/common';
+import {
+	Body,
+	Controller,
+	Get,
+	Post,
+	Query,
+	UseInterceptors,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import {
 	ApiBearerAuth,
 	ApiOperation,
+	ApiQuery,
 	ApiResponse,
 	ApiTags,
 } from '@nestjs/swagger';
@@ -62,6 +70,7 @@ export class AuthController {
 		return this.authService.registrarCuenta(registrarCuentaDto);
 	}
 
+	@ApiOperation({ summary: 'VERIFICAR CUENTA' })
 	@ApiResponse({
 		status: 201,
 		schema: {
@@ -113,12 +122,12 @@ export class AuthController {
 		},
 	})
 	@Public()
-	@ApiOperation({ summary: 'VERIFICAR CUENTA' })
 	@Post('verificar/cuenta')
 	async verificarCuenta(@Body() verificarCuentaDto: VerificarCuentaDto) {
 		return this.authService.verificarCuenta(verificarCuentaDto);
 	}
 
+	@ApiOperation({ summary: 'LOGIN' })
 	@ApiResponse({
 		status: 200,
 		schema: {
@@ -177,12 +186,12 @@ export class AuthController {
 		},
 	})
 	@Public()
-	@ApiOperation({ summary: 'LOGIN' })
 	@Post('login')
 	async login(@Body() loginAuthDto: LoginAuthDto) {
 		return this.authService.login(loginAuthDto);
 	}
 
+	@ApiOperation({ summary: 'REGISTRAR TURISTA' })
 	@ApiResponse({
 		status: 201,
 		schema: {
@@ -216,12 +225,12 @@ export class AuthController {
 		},
 	})
 	@ApiBearerAuth()
-	@ApiOperation({ summary: 'REGISTRAR TURISTA' })
 	@Post('registrar/turista')
 	async registrarTurista(@Body() registrarTuristaDto: RegistrarTuristaDto) {
 		return this.authService.registrarTurista(registrarTuristaDto);
 	}
 
+	@ApiOperation({ summary: 'REGISTRAR PRESTADOR' })
 	@ApiResponse({
 		status: 201,
 		schema: {
@@ -255,7 +264,6 @@ export class AuthController {
 		},
 	})
 	@ApiBearerAuth()
-	@ApiOperation({ summary: 'REGISTRAR PRESTADOR' })
 	@Post('registrar/prestador')
 	async registrarPrestador(
 		@Body() registrarPrestadorDto: RegistrarPrestadorDto,
@@ -263,8 +271,15 @@ export class AuthController {
 		return this.authService.registrarPrestador(registrarPrestadorDto);
 	}
 
+	@ApiOperation({ summary: 'OBTENER DATOS PARA REGISTRO' })
+	@ApiQuery({
+		name: 'perfil',
+		enum: ['turista', 'prestador'],
+		description: 'Perfil del usuario',
+	})
 	@ApiResponse({
 		status: 200,
+		description: 'Datos de registro para turista',
 		schema: {
 			type: 'object',
 			properties: {
@@ -321,34 +336,58 @@ export class AuthController {
 								},
 							},
 						},
-						localidades: {
+						ubicaciones: {
 							type: 'array',
 							items: {
 								type: 'object',
 								properties: {
-									id_localidad: {
-										type: 'string',
+									localidades: {
+										type: 'array',
+										items: {
+											type: 'object',
+											properties: {
+												id_localidad: {
+													type: 'string',
+												},
+												localidad: { type: 'string' },
+											},
+										},
 									},
-									localidad: {
-										type: 'string',
+									departamentos: {
+										type: 'array',
+										items: {
+											type: 'object',
+											properties: {
+												id_departamento: {
+													type: 'string',
+												},
+												departamento: {
+													type: 'string',
+												},
+											},
+										},
 									},
-									id_departamento: {
-										type: 'string',
+									provincias: {
+										type: 'array',
+										items: {
+											type: 'object',
+											properties: {
+												id_provincia: {
+													type: 'string',
+												},
+												provincia: { type: 'string' },
+											},
+										},
 									},
-									departamento: {
-										type: 'string',
-									},
-									id_provincia: {
-										type: 'string',
-									},
-									provincia: {
-										type: 'string',
-									},
-									id_pais: {
-										type: 'string',
-									},
-									pais: {
-										type: 'string',
+									paises: {
+										type: 'array',
+										items: {
+											type: 'object',
+											properties: {
+												id_pais: { type: 'string' },
+												pais: { type: 'string' },
+											},
+										},
 									},
 								},
 							},
@@ -359,11 +398,10 @@ export class AuthController {
 		},
 	})
 	@ApiBearerAuth()
-	@ApiOperation({ summary: 'OBTENER DATOS PARA REGISTRO' })
 	@UseInterceptors(CacheInterceptor)
 	@CacheTTL(60 * 60 * 72) // 3 días en segundos
 	@Get('datos-registro')
-	async datosRegistro() {
-		return this.authService.obtenerDatosRegistro();
+	async datosRegistro(@Query('perfil') perfil: string) {
+		return this.authService.obtenerDatosRegistro(perfil);
 	}
 }

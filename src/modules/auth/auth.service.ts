@@ -48,6 +48,7 @@ export class AuthService {
 			'account.created',
 			userModified.mail,
 			userModified.codigo_verificacion,
+			result.id_usuario,
 		);
 
 		return {
@@ -147,6 +148,7 @@ export class AuthService {
 
 		//comprobar si se registro correctamente
 		if (registro.resultado === 'error') {
+			console.log(registro.descripcion);
 			throw new HttpException(
 				'Error al registrar turista.',
 				HttpStatus.CONFLICT,
@@ -187,7 +189,6 @@ export class AuthService {
 			registrarPrestadorDto.id_usuario,
 			2,
 		);
-		console.log(result);
 
 		//enviar evento de mail
 		this.eventEmitter.emit(
@@ -199,14 +200,15 @@ export class AuthService {
 		return { resultado: 'ok', statusCode: 201 };
 	}
 
-	async obtenerDatosRegistro() {
+	async obtenerDatosRegistro(perfil: string) {
 		const cacheKey = 'datos_registro';
 		let result = await this.cacheManager.get(cacheKey);
 
 		//si no esta en cache
 		if (!result) {
 			//llamar al procedimiento
-			result = await this.authReposirotyService.obtenerDatosRegistro();
+			result =
+				await this.authReposirotyService.obtenerDatosRegistro(perfil);
 			await this.cacheManager.set(cacheKey, result);
 		}
 

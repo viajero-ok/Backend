@@ -7,9 +7,12 @@ export class EventMailModule {
 	constructor(private readonly mailService: MailerService) {}
 
 	@OnEvent('account.created')
-	async handleAccountCreatedEvent(mail: string, codigo_verificacion: string) {
-		const url_verificacion = `${process.env.URL_FRONT}?CODIGO_VERIFICACION=${codigo_verificacion}&&TX_MAIL=${mail}`;
-		console.log(process.env.MAIL_FROM);
+	async handleAccountCreatedEvent(
+		mail: string,
+		codigo_verificacion: string,
+		id_usuario: string,
+	) {
+		const url_verificacion = `${process.env.URL_FRONT}?codigo_verificacion=${codigo_verificacion}&&id_usuario=${id_usuario}`;
 		await this.mailService.sendMail({
 			from: '"Viajero" <hi@viajeroturismo.com.ar>',
 			to: mail,

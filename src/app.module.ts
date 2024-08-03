@@ -13,6 +13,7 @@ import { EventMailModule } from './common/events/event-mail/event-mail.module';
 import { AlojamientosModule } from './modules/oferta-turistica/alojamientos/alojamientos.module';
 import { ActividadesModule } from './modules/oferta-turistica/actividades/actividades.module';
 import { EventosModule } from './modules/oferta-turistica/eventos/eventos.module';
+import { CargarUbicacionesModule } from './modules/utils/cargar-ubicaciones/cargar-ubicaciones.module';
 
 @Module({
 	imports: [
@@ -31,8 +32,10 @@ import { EventosModule } from './modules/oferta-turistica/eventos/eventos.module
 				connectionLimit: 10,
 				connectTimeout: 60000,
 			},
-			keepConnectionAlive: true,
+			keepConnectionAlive: false,
 			poolSize: 10,
+			retryAttempts: 10,
+			retryDelay: 3000,
 		}),
 		AuthModule,
 		UsuariosModule,
@@ -41,6 +44,7 @@ import { EventosModule } from './modules/oferta-turistica/eventos/eventos.module
 		AlojamientosModule,
 		ActividadesModule,
 		EventosModule,
+		CargarUbicacionesModule,
 	],
 	controllers: [AppController],
 	providers: [AppService, AuthorizationGuard, GlobalJwtGuard],

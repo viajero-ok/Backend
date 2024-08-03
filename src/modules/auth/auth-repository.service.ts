@@ -115,27 +115,39 @@ export class AuthRepositoryService {
 		return result[0][0];
 	}
 
-	async obtenerDatosRegistro() {
+	async obtenerDatosRegistro(perfil: string) {
 		const localidades_con_jerarquia = await this.entityManager.query(
-			'CALL SP_LISTAR_LOCALIDADES_CON_JERARQUIA()',
+			'CALL SP_LISTAR_UBICACIONES()',
 		);
-		console.log(localidades_con_jerarquia);
+
 		const tipos_documento = await this.entityManager.query(
 			'CALL SP_LISTAR_TIPOS_DOCUMENTO_IDENTIDAD()',
 		);
-		const generos = await this.entityManager.query(
-			'CALL SP_LISTAR_GENEROS()',
-		);
 
-		const idiomas = await this.entityManager.query(
-			'CALL SP_LISTAR_IDIOMAS()',
-		);
-		const result = {
-			localidades: localidades_con_jerarquia[0],
+		let generos = [];
+		let idiomas = [];
+		if (perfil === 'turista') {
+			generos = await this.entityManager.query(
+				'CALL SP_LISTAR_GENEROS()',
+			);
+
+			idiomas = await this.entityManager.query(
+				'CALL SP_LISTAR_IDIOMAS()',
+			);
+		}
+		const result: any = {
+			ubicaciones: {
+				localidades: localidades_con_jerarquia[0],
+				departamentos: localidades_con_jerarquia[1],
+				provincias: localidades_con_jerarquia[2],
+				paises: localidades_con_jerarquia[3],
+			},
 			tipos_documento: tipos_documento[0],
-			generos: generos[0],
-			idiomas: idiomas[0],
 		};
+		if (perfil === 'turista') {
+			result.generos = generos[0];
+			result.idiomas = idiomas[0];
+		}
 
 		return result;
 	}
