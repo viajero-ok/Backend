@@ -9,6 +9,8 @@ import { VerificarCuentaDto } from './dto/verificar-cuenta.dto';
 import { RegistrarTuristaDto } from './dto/registrar-turista.dto';
 import { RegistrarPrestadorDto } from './dto/registrar-prestador.dto';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
+import { Profile } from 'passport';
+import { DataLoginDto } from './dto/data-login.dto';
 
 @Injectable()
 export class AuthService {
@@ -80,7 +82,88 @@ export class AuthService {
 		return { resultado: 'ok', statusCode: 201 };
 	}
 
-	async login(loginAuthDto: LoginAuthDto) {
+	async googleStrategyLogin(profile: Profile) {
+		// verificar si el usuario ya existe
+		const userExists =
+			await this.authReposirotyService.buscarUsuarioPorMail(
+				profile.emails[0].value,
+			);
+
+		let usuarioRegistrado;
+
+		//Si el usuario no existe, se registra
+		if (!userExists) {
+			usuarioRegistrado =
+				await this.authReposirotyService.registrarCuenta({
+					mail: profile.emails[0].value,
+					contraseña: null,
+					codigo_verificacion: null,
+				});
+			if (usuarioRegistrado.resultado === 'error') {
+				throw new HttpException(
+					'Error al registrar usuario',
+					HttpStatus.CONFLICT,
+				);
+			}
+		} else {
+			usuarioRegistrado = userExists;
+		}
+		return {
+			id_usuario: usuarioRegistrado.id_usuario,
+			mail: profile.emails[0].value,
+		};
+	}
+
+	async googleLogin(req): Promise<DataLoginDto> {
+		//Verificar si el usuario ya esta logueado
+		if (!req.user) {
+			throw new HttpException(
+				'Usuario no autorizado',
+				HttpStatus.UNAUTHORIZED,
+			);
+		}
+		const user = req.user;
+		// verificar si el usuario ya existe
+		const userExists =
+			await this.authReposirotyService.obtenerUsuarioPorMail(user.mail);
+
+		//Si el usuario no existe, se registra
+		if (userExists.descripcion === 'Error al obtener usuario. ') {
+			throw new HttpException(
+				'Error al iniciar sesion con google',
+				HttpStatus.CONFLICT,
+			);
+		}
+
+		//Verificar si el usuario tiene perfiles
+		const perfilesUsuario =
+			await this.authReposirotyService.obtenerPerfilesUsuario(
+				userExists.id_usuario,
+			);
+		const tiene_perfil = perfilesUsuario.length > 0;
+
+		//firmar el token y devolverlo junto con los datos del usuario
+		const payload = { id: userExists.id_usuario };
+		const token = this.jwtService.sign(payload);
+		const data: DataLoginDto = {
+			resultado: 'ok',
+			statusCode: 200,
+			id_usuario: userExists.id_usuario,
+			token: token,
+			tiene_perfil,
+		};
+
+		// Agregar la propiedad "perfiles" si tiene_perfil es true
+		if (data.tiene_perfil) {
+			data.perfiles = perfilesUsuario.map((perfil) => ({
+				id_perfil: perfil.id_perfil,
+				nombre: perfil.tx_perfil,
+			}));
+		}
+		return data;
+	}
+
+	async login(loginAuthDto: LoginAuthDto): Promise<DataLoginDto> {
 		//Llamar al procedimiento
 		const userExists =
 			await this.authReposirotyService.obtenerUsuarioPorMail(
@@ -124,18 +207,30 @@ export class AuthService {
 		}
 
 		//Verificar si el usuario tiene perfiles
-		const tiene_perfil = userExists.cantidad_perfiles > 0;
+		const perfilesUsuario =
+			await this.authReposirotyService.obtenerPerfilesUsuario(
+				userExists.id_usuario,
+			);
+		const tiene_perfil = perfilesUsuario.length > 0;
 
 		//firmar el token y devolverlo junto con los datos del usuario
 		const payload = { id: userExists.id_usuario };
 		const token = this.jwtService.sign(payload);
-		const data = {
+		const data: DataLoginDto = {
 			resultado: 'ok',
 			statusCode: 200,
 			id_usuario: userExists.id_usuario,
 			token: token,
 			tiene_perfil,
 		};
+
+		// Agregar la propiedad "perfiles" si tiene_perfil es true
+		if (data.tiene_perfil) {
+			data.perfiles = perfilesUsuario.map((perfil) => ({
+				id_perfil: perfil.id_perfil,
+				nombre: perfil.tx_perfil,
+			}));
+		}
 		return data;
 	}
 

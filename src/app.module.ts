@@ -14,6 +14,9 @@ import { AlojamientosModule } from './modules/oferta-turistica/alojamientos/aloj
 import { ActividadesModule } from './modules/oferta-turistica/actividades/actividades.module';
 import { EventosModule } from './modules/oferta-turistica/eventos/eventos.module';
 import { CargarUbicacionesModule } from './modules/utils/cargar-ubicaciones/cargar-ubicaciones.module';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
 	imports: [
@@ -37,6 +40,12 @@ import { CargarUbicacionesModule } from './modules/utils/cargar-ubicaciones/carg
 			retryAttempts: 10,
 			retryDelay: 3000,
 		}),
+		ThrottlerModule.forRoot([
+			{
+				ttl: 60000, // Tiempo de vida del registro en milisegundos
+				limit: 50, // Cantidad de peticiones permitidas
+			},
+		]),
 		AuthModule,
 		UsuariosModule,
 		EmailModule,
@@ -45,8 +54,17 @@ import { CargarUbicacionesModule } from './modules/utils/cargar-ubicaciones/carg
 		ActividadesModule,
 		EventosModule,
 		CargarUbicacionesModule,
+		PassportModule.register({ session: true }),
 	],
 	controllers: [AppController],
-	providers: [AppService, AuthorizationGuard, GlobalJwtGuard],
+	providers: [
+		{
+			provide: APP_GUARD,
+			useClass: ThrottlerGuard,
+		},
+		AppService,
+		AuthorizationGuard,
+		GlobalJwtGuard,
+	],
 })
 export class AppModule {}

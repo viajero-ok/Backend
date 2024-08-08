@@ -24,7 +24,7 @@ export class JwtRefreshInterceptor implements NestInterceptor {
 						const newToken = this.jwtService.sign({
 							id: decoded.id,
 						});
-						response.setHeader('New-Token', newToken);
+						response.setHeader('new_token', newToken);
 					} catch (error) {
 						// Token inválido, no hacemos nada
 					}

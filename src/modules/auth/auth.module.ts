@@ -11,6 +11,8 @@ import { GlobalJwtGuard } from 'src/common/guards/jwt/global-jwt.guard';
 import { JwtGuard } from 'src/common/guards/jwt/jwt.guard';
 import { AuthorizationGuard } from 'src/common/guards/authorization/authorization.guard';
 import { CacheModule } from '@nestjs/cache-manager';
+import { GoogleStrategy } from './strategy/google.strategy';
+import { SessionSerializer } from './utils/serializer';
 
 @Module({
 	imports: [
@@ -34,6 +36,8 @@ import { CacheModule } from '@nestjs/cache-manager';
 		GlobalJwtGuard,
 		JwtGuard,
 		AuthorizationGuard,
+		GoogleStrategy,
+		SessionSerializer,
 	],
 })
 export class AuthModule {}

@@ -4,6 +4,8 @@ import {
 	Get,
 	Post,
 	Query,
+	Req,
+	UseGuards,
 	UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -21,13 +23,15 @@ import { VerificarCuentaDto } from './dto/verificar-cuenta.dto';
 import { RegistrarTuristaDto } from './dto/registrar-turista.dto';
 import { RegistrarPrestadorDto } from './dto/registrar-prestador.dto';
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
+import { GoogleGuard } from 'src/common/guards/authentication/google.guard';
+import { Request } from 'express';
+import { DataLoginDto } from './dto/data-login.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
 	constructor(private readonly authService: AuthService) {}
 
-	@Public()
 	@ApiOperation({ summary: 'REGISTRAR CUENTA' })
 	@ApiResponse({
 		status: 201,
@@ -65,6 +69,7 @@ export class AuthController {
 			},
 		},
 	})
+	@Public()
 	@Post('registrar/cuenta')
 	async registrarCuenta(@Body() registrarCuentaDto: CuentaAuthDto) {
 		return this.authService.registrarCuenta(registrarCuentaDto);
@@ -130,28 +135,7 @@ export class AuthController {
 	@ApiOperation({ summary: 'LOGIN' })
 	@ApiResponse({
 		status: 200,
-		schema: {
-			type: 'object',
-			properties: {
-				resultado: {
-					type: 'string',
-					example: 'ok',
-				},
-				statusCode: {
-					type: 'string',
-					example: 200,
-				},
-				id_usuario: {
-					type: 'string',
-				},
-				token: {
-					type: 'string',
-				},
-				tiene_perfil: {
-					type: 'boolean',
-				},
-			},
-		},
+		type: DataLoginDto,
 	})
 	@ApiResponse({
 		status: 403,
@@ -399,9 +383,48 @@ export class AuthController {
 	})
 	@ApiBearerAuth()
 	@UseInterceptors(CacheInterceptor)
-	@CacheTTL(60 * 60 * 72) // 3 días en segundos
+	@CacheTTL(60 * 60 * 24 * 15) // 15 días en segundos
 	@Get('datos-registro')
 	async datosRegistro(@Query('perfil') perfil: string) {
 		return this.authService.obtenerDatosRegistro(perfil);
+	}
+
+	@ApiOperation({ summary: 'GOOGLE LOGIN' })
+	@ApiResponse({
+		status: 200,
+		type: DataLoginDto,
+	})
+	@Public()
+	@Get('google/login')
+	@UseGuards(GoogleGuard)
+	async googleAuth() {
+		return { msg: 'Google Authentication' };
+	}
+
+	@Public()
+	@Get('google/redirect')
+	@UseGuards(GoogleGuard)
+	async googleAuthRedirect(@Req() req: Request) {
+		return await this.authService.googleLogin(req);
+	}
+
+	@Public()
+	@Get('status')
+	user(@Req() request: Request) {
+		if (request.user) {
+			return { msg: 'Authenticated' };
+		} else {
+			return { msg: 'Not Authenticated' };
+		}
+	}
+
+	@Public()
+	@Get('perfil')
+	perfilUsuario(@Req() req) {
+		if (req.isAuthenticated()) {
+			return { mensaje: 'Perfil del usuario', usuario: req.user };
+		} else {
+			return { mensaje: 'Usuario no autenticado' };
+		}
 	}
 }

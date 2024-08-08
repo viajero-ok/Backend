@@ -3,14 +3,14 @@ import { Column, Entity } from 'typeorm';
 @Entity({ name: 'USUARIOS' })
 export class Usuario {
 	@Column({ name: 'ID_USUARIO', primary: true })
-	ID_USUARIO: string;
+	id_usuario: string;
 
 	@Column({ name: 'TX_MAIL' })
-	TX_MAIL: string;
+	mail: string;
 
 	@Column({ name: 'TX_NOMBRE' })
-	TX_NOMBRE: string;
+	nombre: string;
 
 	@Column({ name: 'TX_APELLIDO' })
-	TX_APELLIDO: string;
+	apellido: string;
 }

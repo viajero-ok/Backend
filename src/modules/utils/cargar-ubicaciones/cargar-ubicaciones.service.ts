@@ -38,11 +38,9 @@ export class CargarUbicacionesService {
 
 				// Process 'Gobierno Local' column
 				if (row.getCell('F').value) {
-					console.log(row.getCell('F').value);
 					row.getCell('F').value = this.formatName(
 						row.getCell('F').value as string,
 					);
-					console.log(row.getCell('F').value);
 				}
 
 				// Process 'Departamento' column
@@ -106,7 +104,6 @@ export class CargarUbicacionesService {
 
 				ubicaciones.push(fila);
 			});
-			console.log(ubicaciones);
 			await this.cargarDatosEnBD(ubicaciones);
 			if (this.noActualizadas.length > 0) {
 				return (await this.guardarNoActualizadasEnExcel()) as Buffer;
@@ -154,37 +151,25 @@ export class CargarUbicacionesService {
 
 		try {
 			const result = await queryRunner.query(
-				`UPDATE LOCALIDADES l
-				JOIN DEPARTAMENTOS d ON l.ID_DEPARTAMENTO= d.ID_DEPARTAMENTO
-				JOIN PROVINCIAS p ON d.ID_PROVINCIA = p.ID_PROVINCIA
-				SET 
-				l.TX_LATITUD = ?,
-				l.TX_LONGITUD = ?
-				WHERE 
-				l.TX_LOCALIDAD = ? AND
-				d.TX_DEPARTAMENTO = ? AND
-				p.TX_PROVINCIA = ?`,
+				`CALL SP_CARGAR_UBICACIONES(?, ?, ?, ?, ?)`,
 				[
+					datos.localidad,
 					datos.latitud,
 					datos.longitud,
-					datos.localidad,
 					datos.departamento,
 					datos.provincia,
 				],
 			);
 
-			if (result.affectedRows === 0) {
-				console.log(
-					`No se encontró coincidencia para: ${datos.localidad}, ${datos.departamento}, ${datos.provincia}`,
-				);
+			// Verifica el resultado del procedimiento almacenado
+			if (result[1][0].resultado === 'ok') {
+				await queryRunner.commitTransaction();
+				return true;
 			} else {
-				console.log(
-					`Actualizada ubicación para: ${datos.localidad}, ${datos.departamento}, ${datos.provincia}`,
-				);
+				// Si el resultado no es 'ok', realiza un rollback
+				await queryRunner.rollbackTransaction();
+				return false;
 			}
-
-			await queryRunner.commitTransaction();
-			return result.affectedRows > 0;
 		} catch (err) {
 			await queryRunner.rollbackTransaction();
 			throw new Error(`Error al actualizar ubicación: ${err.message}`);

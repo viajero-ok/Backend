@@ -12,9 +12,14 @@ import { JwtRefreshInterceptor } from './common/interceptors/jwt-refresh/jwt-ref
 import { JwtService } from '@nestjs/jwt';
 import { TimeOutInterceptor } from './common/interceptors/time-out/time-out.interceptor';
 import { AuthModule } from './modules/auth/auth.module';
+import * as session from 'express-session';
+import * as passport from 'passport';
 
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule, { cors: true });
+	const app = await NestFactory.create(AppModule);
+	app.enableCors({
+		credentials: true,
+	});
 
 	//Prefijo de las rutas
 	app.setGlobalPrefix('api');
@@ -31,6 +36,20 @@ async function bootstrap() {
 	const jwtService = app.get(JwtService);
 	const jwtRefreshInterceptor = new JwtRefreshInterceptor(jwtService);
 	app.useGlobalInterceptors(jwtRefreshInterceptor, new TimeOutInterceptor());
+
+	//Configuración de la sesión
+	//(app as any).set('trust proxy', 1);
+	app.use(
+		session({
+			secret: process.env.SESSION_SECRET,
+			resave: false,
+			saveUninitialized: false,
+			cookie: { maxAge: 86400000 }, // 1 dia 86400000
+		}),
+	);
+	//Inicializar passport
+	app.use(passport.initialize());
+	app.use(passport.session());
 
 	//Documentación de swagger
 	const config = new DocumentBuilder()

@@ -10,7 +10,6 @@ import {
 import { UsuariosService } from './usuarios.service';
 import { UsuarioDto } from './dto/usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
-import { ApiTags } from '@nestjs/swagger';
 
 //@ApiTags('usuarios')
 @Controller('usuarios')

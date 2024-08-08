@@ -56,19 +56,16 @@ export class AuthRepositoryService {
 		return result[0][0];
 	}
 
-	async findOneUserById(id: string) {
+	async buscarUsuarioPorId(id: string) {
 		return this.usersRepository.findOne({
-			where: { ID_USUARIO: id },
+			where: { id_usuario: id },
 		});
 	}
 
-	// PARA PREGUNTAR: Pedirle a fede un SP que devuelva el usuario por ID
-	async findUserById(id: string) {
-		const result = await this.entityManager.query(
-			'CALL SP_OBT_USUARIO_X_ID(?)',
-			[id],
-		);
-		return result[0][0];
+	async buscarUsuarioPorMail(mail: string) {
+		return this.usersRepository.findOne({
+			where: { mail: mail },
+		});
 	}
 
 	async registrarTurista(registrarTuristaDto: RegistrarTuristaDto) {
@@ -150,6 +147,14 @@ export class AuthRepositoryService {
 		}
 
 		return result;
+	}
+
+	async obtenerPerfilesUsuario(id_usuario: string) {
+		const result = await this.entityManager.query(
+			'CALL SP_OBT_PERFILES_X_USUARIO(?)',
+			[id_usuario],
+		);
+		return result[0];
 	}
 
 	async obtenerPermisosUsuario(id_usuario: string) {
