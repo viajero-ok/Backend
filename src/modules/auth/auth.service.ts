@@ -309,4 +309,29 @@ export class AuthService {
 
 		return { resultado: 'ok', statusCode: 200, datos_registro: result };
 	}
+
+	async obtenerDatosUsuario(user) {
+		if (!user) {
+			throw new HttpException(
+				'Usuario no autorizado',
+				HttpStatus.UNAUTHORIZED,
+			);
+		}
+		const result = await this.authReposirotyService.obtenerInfoUsuarioPorId(
+			user.id,
+		);
+		//Verificar si el usuario tiene perfiles
+		const perfilesUsuario =
+			await this.authReposirotyService.obtenerPerfilesUsuario(
+				user.id_usuario,
+			);
+		const tiene_perfil = perfilesUsuario.length > 0;
+		return {
+			resultado: 'ok',
+			statusCode: 200,
+			datos_usuario: result,
+			tiene_perfil: tiene_perfil,
+			perfilesUsuario: perfilesUsuario,
+		};
+	}
 }

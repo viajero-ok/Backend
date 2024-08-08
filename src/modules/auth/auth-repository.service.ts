@@ -26,7 +26,7 @@ export class AuthRepositoryService {
 
 	async obtenerInfoUsuario(id_usuario: string, id_perfil: number) {
 		const result = await this.entityManager.query(
-			'CALL SP_OBT_DATOS_USUARIO(?, ?)',
+			'CALL SP_OBT_DATOS_USUARIOS_X_PERFIL(?, ?)',
 			[id_usuario, id_perfil],
 		);
 		return result[0][0];
@@ -160,6 +160,14 @@ export class AuthRepositoryService {
 	async obtenerPermisosUsuario(id_usuario: string) {
 		const result = await this.entityManager.query(
 			'CALL SP_OBT_PERMISOS_X_USUARIO(?)',
+			[id_usuario],
+		);
+		return result[0][0];
+	}
+
+	async obtenerInfoUsuarioPorId(id_usuario: string) {
+		const result = await this.entityManager.query(
+			'CALL SP_OBT_DATOS_USUARIO_X_ID(?)',
 			[id_usuario],
 		);
 		return result[0][0];

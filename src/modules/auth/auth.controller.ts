@@ -408,14 +408,10 @@ export class AuthController {
 		return await this.authService.googleLogin(req);
 	}
 
-	@Public()
-	@Get('status')
-	user(@Req() request: Request) {
-		if (request.user) {
-			return { msg: 'Authenticated' };
-		} else {
-			return { msg: 'Not Authenticated' };
-		}
+	@ApiBearerAuth()
+	@Get('datos-usuario')
+	async obtenerDatosUsuario(@Req() req: Request) {
+		return await this.authService.obtenerDatosUsuario(req.user);
 	}
 
 	@Public()
