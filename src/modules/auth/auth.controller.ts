@@ -2,6 +2,8 @@ import {
 	Body,
 	Controller,
 	Get,
+	HttpException,
+	HttpStatus,
 	Post,
 	Query,
 	Req,
@@ -401,6 +403,7 @@ export class AuthController {
 		return { msg: 'Google Authentication' };
 	}
 
+	@ApiOperation({ summary: 'REDIRECCIÓN QUE USA GOOGLE' })
 	@Public()
 	@Get('google/redirect')
 	@UseGuards(GoogleGuard)
@@ -408,19 +411,63 @@ export class AuthController {
 		return await this.authService.googleLogin(req);
 	}
 
+	@ApiOperation({ summary: 'OBTENER DATOS USUARIO' })
+	@ApiResponse({
+		status: 200,
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 201,
+				},
+				datos_usuario: {
+					type: 'object',
+				},
+				tiene_perfil: {
+					type: 'boolean',
+				},
+				perfilesUsuario: {
+					type: 'array',
+				},
+			},
+		},
+	})
 	@ApiBearerAuth()
 	@Get('datos-usuario')
 	async obtenerDatosUsuario(@Req() req: Request) {
 		return await this.authService.obtenerDatosUsuario(req.user);
 	}
 
+	@ApiOperation({ summary: 'OBTENER DATOS DEL USUARIO LOGUEADO' })
+	@ApiResponse({
+		status: 200,
+		schema: {
+			type: 'object',
+			properties: {
+				mensaje: {
+					type: 'Perfil del usuario',
+				},
+				usuario: {
+					type: 'usuario',
+				},
+			},
+		},
+	})
 	@Public()
 	@Get('perfil')
 	perfilUsuario(@Req() req) {
 		if (req.isAuthenticated()) {
 			return { mensaje: 'Perfil del usuario', usuario: req.user };
 		} else {
-			return { mensaje: 'Usuario no autenticado' };
+			throw new HttpException(
+				'Usuario no autenticado',
+				HttpStatus.CONFLICT,
+			);
 		}
 	}
 }

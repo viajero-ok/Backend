@@ -250,7 +250,7 @@ export class AuthService {
 			);
 		}
 
-		const result = await this.authReposirotyService.obtenerInfoUsuario(
+		const result = await this.authReposirotyService.obtenerInfoUsuarioPorPerfil(
 			registrarTuristaDto.id_usuario,
 			1,
 		);
@@ -280,7 +280,7 @@ export class AuthService {
 			);
 		}
 
-		const result = await this.authReposirotyService.obtenerInfoUsuario(
+		const result = await this.authReposirotyService.obtenerInfoUsuarioPorPerfil(
 			registrarPrestadorDto.id_usuario,
 			2,
 		);
@@ -317,19 +317,30 @@ export class AuthService {
 				HttpStatus.UNAUTHORIZED,
 			);
 		}
-		const result = await this.authReposirotyService.obtenerInfoUsuarioPorId(
+		/* const result = await this.authReposirotyService.obtenerInfoUsuarioPorId(
 			user.id,
-		);
+		); */
 		//Verificar si el usuario tiene perfiles
 		const perfilesUsuario =
 			await this.authReposirotyService.obtenerPerfilesUsuario(
 				user.id_usuario,
 			);
+
+		const datos_usuario_perfil = [];
+		perfilesUsuario.forEach(async (perfil) => {
+			const datos_perfil =
+				await this.authReposirotyService.obtenerInfoUsuarioPorPerfil(
+					user.id,
+					perfil.id_perfil,
+				);
+			datos_usuario_perfil.push(datos_perfil);
+		});
+
 		const tiene_perfil = perfilesUsuario.length > 0;
 		return {
 			resultado: 'ok',
 			statusCode: 200,
-			datos_usuario: result,
+			datos_usuario: datos_usuario_perfil,
 			tiene_perfil: tiene_perfil,
 			perfilesUsuario: perfilesUsuario,
 		};
