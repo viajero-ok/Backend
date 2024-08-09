@@ -116,4 +116,4 @@ jobs:
           curl -H "Content-Type: application/json" \
             -X POST \
             -d "{\"content\": \"❌ Despliegue fallido para la rama \`${{ github.ref_name }}\` $MENTION\nPara más info haz clic en el enlace a continuación.\", \"embeds\": [{\"title\": \"Más información sobre el error\", \"url\": \"$LINK_URL\", \"image\": {\"url\": \"$IMAGE_URL\"}}]}" \
-            ${{ secrets.DISCORD_WEBHOOK_URL }} 
+            ${{ secrets.DISCORD_WEBHOOK_URL }}
