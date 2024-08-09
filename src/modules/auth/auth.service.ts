@@ -228,7 +228,7 @@ export class AuthService {
 		if (data.tiene_perfil) {
 			data.perfiles = perfilesUsuario.map((perfil) => ({
 				id_perfil: perfil.id_perfil,
-				nombre: perfil.tx_perfil,
+				nombre: perfil.nombre_perfil,
 			}));
 		}
 		return data;
@@ -250,10 +250,11 @@ export class AuthService {
 			);
 		}
 
-		const result = await this.authReposirotyService.obtenerInfoUsuarioPorPerfil(
-			registrarTuristaDto.id_usuario,
-			1,
-		);
+		const result =
+			await this.authReposirotyService.obtenerInfoUsuarioPorPerfil(
+				registrarTuristaDto.id_usuario,
+				1,
+			);
 
 		//enviar evento de mail
 		this.eventEmitter.emit(
@@ -280,10 +281,11 @@ export class AuthService {
 			);
 		}
 
-		const result = await this.authReposirotyService.obtenerInfoUsuarioPorPerfil(
-			registrarPrestadorDto.id_usuario,
-			2,
-		);
+		const result =
+			await this.authReposirotyService.obtenerInfoUsuarioPorPerfil(
+				registrarPrestadorDto.id_usuario,
+				2,
+			);
 
 		//enviar evento de mail
 		this.eventEmitter.emit(
@@ -326,21 +328,24 @@ export class AuthService {
 				user.id_usuario,
 			);
 
-		const datos_usuario_perfil = [];
-		perfilesUsuario.forEach(async (perfil) => {
+		const datos_usuario_perfil: { [key: string]: any } = {};
+		for (const perfil of perfilesUsuario) {
 			const datos_perfil =
 				await this.authReposirotyService.obtenerInfoUsuarioPorPerfil(
-					user.id,
+					user.id_usuario,
 					perfil.id_perfil,
 				);
-			datos_usuario_perfil.push(datos_perfil);
-		});
-
+			if (perfil.nombre_perfil === 'Turista') {
+				datos_usuario_perfil.datos_turista = datos_perfil;
+			} else if (perfil.nombre_perfil === 'Prestador') {
+				datos_usuario_perfil.datos_prestador = datos_perfil;
+			}
+		}
 		const tiene_perfil = perfilesUsuario.length > 0;
 		return {
 			resultado: 'ok',
 			statusCode: 200,
-			datos_usuario: datos_usuario_perfil,
+			datos_usuario_perfil,
 			tiene_perfil: tiene_perfil,
 			perfilesUsuario: perfilesUsuario,
 		};
