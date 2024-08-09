@@ -10,14 +10,8 @@ import {
 } from 'class-validator';
 
 export class RegistrarTuristaDto {
-	@ApiProperty({
-		example: 'f2432b22-4950-11ef-97d3-0242ac120002',
-		description: 'ID del usuario',
-	})
-	@IsNotEmpty()
-	@IsString()
-	@Length(10, 70)
-	readonly id_usuario: string;
+	@IsOptional()
+	id_usuario: string;
 
 	@ApiProperty({ example: 'Mariano', description: 'Nombre del usuario' })
 	@IsNotEmpty()

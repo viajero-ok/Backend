@@ -212,8 +212,11 @@ export class AuthController {
 	})
 	@ApiBearerAuth()
 	@Post('registrar/turista')
-	async registrarTurista(@Body() registrarTuristaDto: RegistrarTuristaDto) {
-		return this.authService.registrarTurista(registrarTuristaDto);
+	async registrarTurista(
+		@Body() registrarTuristaDto: RegistrarTuristaDto,
+		@Req() req: Request,
+	) {
+		return this.authService.registrarTurista(registrarTuristaDto, req);
 	}
 
 	@ApiOperation({ summary: 'REGISTRAR PRESTADOR' })
@@ -253,8 +256,9 @@ export class AuthController {
 	@Post('registrar/prestador')
 	async registrarPrestador(
 		@Body() registrarPrestadorDto: RegistrarPrestadorDto,
+		@Req() req: Request,
 	) {
-		return this.authService.registrarPrestador(registrarPrestadorDto);
+		return this.authService.registrarPrestador(registrarPrestadorDto, req);
 	}
 
 	@ApiOperation({ summary: 'OBTENER DATOS PARA REGISTRO' })
@@ -450,10 +454,17 @@ export class AuthController {
 			type: 'object',
 			properties: {
 				mensaje: {
-					type: 'Perfil del usuario',
+					type: 'string',
+					example: 'Perfil del usuario',
 				},
 				usuario: {
-					type: 'usuario',
+					type: 'object',
+					properties: {
+						id_usuario: { type: 'string' },
+						mail: { type: 'string' },
+						nombre: { type: 'string' },
+						apellido: { type: 'string' },
+					},
 				},
 			},
 		},

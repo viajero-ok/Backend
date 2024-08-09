@@ -36,5 +36,5 @@ export class CuentaAuthDto {
 	readonly contraseña: string;
 
 	@IsOptional()
-	readonly codigo_verificacion: string;
+	codigo_verificacion: string;
 }

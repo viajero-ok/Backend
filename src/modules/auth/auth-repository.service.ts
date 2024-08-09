@@ -106,7 +106,7 @@ export class AuthRepositoryService {
 				registrarPrestadorDto.id_provincia,
 				registrarPrestadorDto.cuit,
 				registrarPrestadorDto.razon_social,
-				registrarPrestadorDto.sitio_web,
+				//registrarPrestadorDto.sitio_web,
 			],
 		);
 		return result[0][0];

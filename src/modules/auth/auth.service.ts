@@ -234,7 +234,8 @@ export class AuthService {
 		return data;
 	}
 
-	async registrarTurista(registrarTuristaDto: RegistrarTuristaDto) {
+	async registrarTurista(registrarTuristaDto: RegistrarTuristaDto, req) {
+		registrarTuristaDto.id_usuario = req.user.id_usuario;
 		//Llamar al procedimiento
 		const registro =
 			await this.authReposirotyService.registrarTurista(
@@ -267,7 +268,11 @@ export class AuthService {
 		return { resultado: 'ok', statusCode: 201 };
 	}
 
-	async registrarPrestador(registrarPrestadorDto: RegistrarPrestadorDto) {
+	async registrarPrestador(
+		registrarPrestadorDto: RegistrarPrestadorDto,
+		req,
+	) {
+		registrarPrestadorDto.id_usuario = req.user.id_usuario;
 		//Llamar al procedimiento
 		const registro = await this.authReposirotyService.registrarPrestador(
 			registrarPrestadorDto,
