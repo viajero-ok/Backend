@@ -92,7 +92,7 @@ export class AuthRepositoryService {
 
 	async registrarPrestador(registrarPrestadorDto: RegistrarPrestadorDto) {
 		const result = await this.entityManager.query(
-			'CALL SP_REGISTRAR_PRESTADOR(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			'CALL SP_REGISTRAR_PRESTADOR(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
 				registrarPrestadorDto.id_usuario,
 				registrarPrestadorDto.nombre,

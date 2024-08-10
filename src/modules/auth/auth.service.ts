@@ -272,7 +272,9 @@ export class AuthService {
 		registrarPrestadorDto: RegistrarPrestadorDto,
 		req,
 	) {
-		registrarPrestadorDto.id_usuario = req.user.id_usuario;
+		if (!registrarPrestadorDto.id_usuario) {
+			registrarPrestadorDto.id_usuario = req.user.id_usuario;
+		}
 		//Llamar al procedimiento
 		const registro = await this.authReposirotyService.registrarPrestador(
 			registrarPrestadorDto,
