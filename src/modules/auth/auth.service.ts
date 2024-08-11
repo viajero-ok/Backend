@@ -127,7 +127,6 @@ export class AuthService {
 		const userExists =
 			await this.authReposirotyService.obtenerUsuarioPorMail(user.mail);
 
-		//Si el usuario no existe, se registra
 		if (userExists.descripcion === 'Error al obtener usuario. ') {
 			throw new HttpException(
 				'Error al iniciar sesion con google',
@@ -235,7 +234,9 @@ export class AuthService {
 	}
 
 	async registrarTurista(registrarTuristaDto: RegistrarTuristaDto, req) {
-		registrarTuristaDto.id_usuario = req.user.id_usuario;
+		if (!registrarTuristaDto.id_usuario) {
+			registrarTuristaDto.id_usuario = req.user.id_usuario;
+		}
 		//Llamar al procedimiento
 		const registro =
 			await this.authReposirotyService.registrarTurista(

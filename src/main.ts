@@ -14,6 +14,7 @@ import { TimeOutInterceptor } from './common/interceptors/time-out/time-out.inte
 import { AuthModule } from './modules/auth/auth.module';
 import * as session from 'express-session';
 import * as passport from 'passport';
+import { AlojamientosModule } from './modules/oferta-turistica/alojamientos/alojamientos.module';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
@@ -57,10 +58,11 @@ async function bootstrap() {
 		.setTitle('Documentación Viajero API')
 		.setVersion('1.0')
 		.addTag('Auth')
+		.addTag('Alojamientos')
 		//.addTag('usuarios')
 		.build();
 	const options: SwaggerDocumentOptions = {
-		include: [AuthModule],
+		include: [AuthModule, AlojamientosModule],
 	};
 	const document = SwaggerModule.createDocument(app, config, options);
 

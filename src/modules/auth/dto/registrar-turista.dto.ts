@@ -16,13 +16,17 @@ export class RegistrarTuristaDto {
 	@ApiProperty({ example: 'Mariano', description: 'Nombre del usuario' })
 	@IsNotEmpty()
 	@IsString()
-	@Length(1, 100)
+	@Length(1, 100, {
+		message: 'La longitud del nombre debe ser entre 1 y 100 caracteres',
+	})
 	readonly nombre: string;
 
 	@ApiProperty({ example: 'Luque', description: 'Apellido del usuario' })
 	@IsNotEmpty()
 	@IsString()
-	@Length(1, 100)
+	@Length(1, 100, {
+		message: 'La longitud del apellido debe ser entre 1 y 100 caracteres',
+	})
 	readonly apellido: string;
 
 	@ApiProperty({
@@ -47,7 +51,9 @@ export class RegistrarTuristaDto {
 	@ApiProperty({ example: '03515285324', description: 'Número de teléfono' })
 	@IsOptional()
 	@IsString()
-	@Length(11, 11)
+	@Length(11, 11, {
+		message: 'El teléfono debe tener 11 dígitos',
+	})
 	readonly telefono: string;
 
 	@ApiProperty({ example: 1, description: 'ID de la localidad' })

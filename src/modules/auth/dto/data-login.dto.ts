@@ -25,12 +25,11 @@ export class DataLoginDto {
 	readonly statusCode: number;
 
 	@ApiProperty({
-		example: '123asd',
 		description: 'Id del usuario',
 	})
 	@IsNotEmpty()
 	@IsString()
-	readonly id_usuario: number;
+	readonly id_usuario: string;
 
 	@ApiProperty({
 		example: 'HEADER.PAYLOAD.VERIFY SIGNATURE',

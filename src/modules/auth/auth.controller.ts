@@ -387,6 +387,23 @@ export class AuthController {
 			},
 		},
 	})
+	@ApiResponse({
+		status: 409,
+		schema: {
+			type: 'object',
+			properties: {
+				statusCode: {
+					type: 'number',
+					example: 409,
+				},
+				message: {
+					type: 'string',
+					example:
+						'Error al iniciar sesion con google',
+				},
+			},
+		},
+	})
 	@ApiBearerAuth()
 	@UseInterceptors(CacheInterceptor)
 	@CacheTTL(60 * 60 * 24 * 15) // 15 días en segundos

@@ -47,7 +47,9 @@ export class RegistrarPrestadorDto {
 	@ApiProperty({ example: '03515285722', description: 'Número de teléfono' })
 	@IsNotEmpty()
 	@IsString()
-	@Length(11, 11)
+	@Length(11, 11, {
+		message: 'El teléfono debe tener 11 dígitos',
+	})
 	readonly telefono: string;
 
 	@ApiProperty({ example: 1, description: 'ID de la localidad' })
