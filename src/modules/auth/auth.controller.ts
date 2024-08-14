@@ -398,8 +398,7 @@ export class AuthController {
 				},
 				message: {
 					type: 'string',
-					example:
-						'Error al iniciar sesion con google',
+					example: 'Error al iniciar sesion con google',
 				},
 			},
 		},

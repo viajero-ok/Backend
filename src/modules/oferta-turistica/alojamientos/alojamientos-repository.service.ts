@@ -5,10 +5,10 @@ import { EntityManager } from 'typeorm';
 
 @Injectable()
 export class AlojamientosRepositoryService {
-    constructor(
+	constructor(
 		@InjectEntityManager()
 		private entityManager: EntityManager,
-    ) { }
+	) {}
 
 	async registrarEstablecimiento(establecimientoDto: EstablecimientoDto) {
 		const result = await this.entityManager.query(

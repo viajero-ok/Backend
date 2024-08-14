@@ -28,18 +28,6 @@ services:
       - app-network
     restart: unless-stopped
 
-  #reactjs-app:
-  #  image: ${FRONT_IMAGE}
-  #  ports:
-  #    - "${FRONT_PORT}:3000"
-  #  env_file:
-  #    - .env.frontend
-  #  depends_on:
-  #    - nestjs-app
-  #  networks:
-  #    - app-network
-  #  restart: unless-stopped
-
 networks:
   app-network:
     external: true

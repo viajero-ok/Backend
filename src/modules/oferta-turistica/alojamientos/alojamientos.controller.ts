@@ -1,16 +1,11 @@
-import {
-	Controller,
-	Get,
-	Post,
-	Body,
-	Patch,
-	Param,
-	Delete,
-} from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { AlojamientosService } from './alojamientos.service';
-import { CreateAlojamientoDto } from './dto/create-alojamiento.dto';
-import { UpdateAlojamientoDto } from './dto/update-alojamiento.dto';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+	ApiBearerAuth,
+	ApiOperation,
+	ApiResponse,
+	ApiTags,
+} from '@nestjs/swagger';
 import { EstablecimientoDto } from './dto/establecimiento.dto';
 
 @ApiTags('Alojamientos')
@@ -46,8 +41,7 @@ export class AlojamientosController {
 				},
 				message: {
 					type: 'string',
-					example:
-						'Error al registrar establecimiento',
+					example: 'Error al registrar establecimiento',
 				},
 			},
 		},
@@ -55,6 +49,8 @@ export class AlojamientosController {
 	@ApiBearerAuth()
 	@Post('registrar-establecimiento')
 	registrarEstablecimiento(@Body() establecimientoDto: EstablecimientoDto) {
-		return this.alojamientosService.registrarEstablecimiento(establecimientoDto);
+		return this.alojamientosService.registrarEstablecimiento(
+			establecimientoDto,
+		);
 	}
 }
