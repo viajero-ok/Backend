@@ -34,7 +34,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: Dockerfile.${{ env.RAMA }} # Ejemplo: Dockerfile.dev
+          file: Dockerfile.${{ env.RAMA }} # Ejemplo:  Dockerfile.dev
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.REPOSITORIO_LC }}:${{ env.RAMA }} # Ejemplo: ghcr.io/organizacion_o_usuario/nombre_repositorio:dev
 
