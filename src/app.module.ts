@@ -16,6 +16,9 @@ import { APP_GUARD } from '@nestjs/core';
 import { PassportModule } from '@nestjs/passport';
 import { OfertaTuristicaModule } from './modules/oferta-turistica/oferta-turistica.module';
 import { UbicacionesModule } from './modules/tipificados/ubicaciones/ubicaciones.module';
+import { MulterModule } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 @Module({
 	imports: [
@@ -53,6 +56,33 @@ import { UbicacionesModule } from './modules/tipificados/ubicaciones/ubicaciones
 		PassportModule.register({ session: true }),
 		OfertaTuristicaModule,
 		UbicacionesModule,
+		MulterModule.register({
+			storage: diskStorage({
+				destination: './uploads',
+				filename: (req, file, callback) => {
+					const uniqueSuffix =
+						Date.now() + '-' + Math.round(Math.random() * 1e9);
+					callback(
+						null,
+						file.fieldname +
+							'-' +
+							uniqueSuffix +
+							extname(file.originalname),
+					);
+				},
+			}),
+			fileFilter: (req, file, callback) => {
+				// Acepta cualquier campo que comience con "habitaciones[" y termine con "].imagenes"
+				if (file.fieldname.match(/^habitaciones\[\d+\]\.imagenes$/)) {
+					callback(null, true);
+				} else {
+					callback(
+						new Error('Formato de campo de archivo no válido'),
+						false,
+					);
+				}
+			},
+		}),
 	],
 	controllers: [AppController],
 	providers: [
