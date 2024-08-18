@@ -41,6 +41,7 @@
     "express-session": "^1.18.0",
     "handlebars": "^4.7.8",
     "lodash": "^4.17.21",
+    "multer": "1.4.5-lts.1",
     "mysql2": "^3.10.2",
     "nodemailer": "^6.9.14",
     "passport": "^0.7.0",
