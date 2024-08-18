@@ -14,7 +14,12 @@ import { TimeOutInterceptor } from './common/interceptors/time-out/time-out.inte
 import { AuthModule } from './modules/auth/auth.module';
 import * as session from 'express-session';
 import * as passport from 'passport';
+import { OfertaTuristicaModule } from './modules/oferta-turistica/oferta-turistica.module';
 import { AlojamientosModule } from './modules/oferta-turistica/alojamientos/alojamientos.module';
+import { EventosModule } from './modules/oferta-turistica/eventos/eventos.module';
+import { ActividadesModule } from './modules/oferta-turistica/actividades/actividades.module';
+import { EstablecimientosModule } from './modules/oferta-turistica/establecimientos/establecimientos.module';
+import { UbicacionesModule } from './modules/tipificados/ubicaciones/ubicaciones.module';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
@@ -58,11 +63,23 @@ async function bootstrap() {
 		.setTitle('Documentación Viajero API')
 		.setVersion('1.0')
 		.addTag('Auth')
+		.addTag('Ofertas Turísticas')
+		.addTag('Establecimientos')
 		.addTag('Alojamientos')
-		//.addTag('usuarios')
+		.addTag('Eventos')
+		.addTag('Actividades')
+		.addTag('Ubicaciones')
 		.build();
 	const options: SwaggerDocumentOptions = {
-		include: [AuthModule, AlojamientosModule],
+		include: [
+			AuthModule,
+			OfertaTuristicaModule,
+			AlojamientosModule,
+			EventosModule,
+			ActividadesModule,
+			EstablecimientosModule,
+			UbicacionesModule,
+		],
 	};
 	const document = SwaggerModule.createDocument(app, config, options);
 

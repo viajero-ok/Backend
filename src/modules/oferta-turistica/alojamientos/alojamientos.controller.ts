@@ -1,19 +1,31 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import {
+	Body,
+	Controller,
+	Post,
+	Req,
+	UploadedFiles,
+	UseInterceptors,
+} from '@nestjs/common';
 import { AlojamientosService } from './alojamientos.service';
 import {
 	ApiBearerAuth,
+	ApiConsumes,
 	ApiOperation,
 	ApiResponse,
 	ApiTags,
 } from '@nestjs/swagger';
-import { EstablecimientoDto } from './dto/establecimiento.dto';
+import { AlojamientoDto } from './dto/alojamiento.dto';
+import { Request } from 'express';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { multerConfig } from '../utils/multer.config';
 
 @ApiTags('Alojamientos')
+@ApiBearerAuth()
 @Controller('alojamientos')
 export class AlojamientosController {
 	constructor(private readonly alojamientosService: AlojamientosService) {}
 
-	@ApiOperation({ summary: 'REGISTRAR ESTABLECIMIENTO' })
+	@ApiOperation({ summary: 'REGISTRAR ALOJAMIENTO' })
 	@ApiResponse({
 		status: 201,
 		schema: {
@@ -30,27 +42,24 @@ export class AlojamientosController {
 			},
 		},
 	})
-	@ApiResponse({
-		status: 409,
-		schema: {
-			type: 'object',
-			properties: {
-				statusCode: {
-					type: 'number',
-					example: 409,
-				},
-				message: {
-					type: 'string',
-					example: 'Error al registrar establecimiento',
-				},
-			},
-		},
-	})
-	@ApiBearerAuth()
-	@Post('registrar-establecimiento')
-	registrarEstablecimiento(@Body() establecimientoDto: EstablecimientoDto) {
-		return this.alojamientosService.registrarEstablecimiento(
-			establecimientoDto,
+	@ApiConsumes('multipart/form-data')
+	@Post('registrar-alojamiento')
+	@UseInterceptors(
+		FileFieldsInterceptor(
+			[{ name: 'habitaciones', maxCount: 100 }],
+			multerConfig,
+		),
+	)
+	async registrarAlojamiento(
+		@Req() req: Request,
+		@Body('alojamiento') alojamientoJson: AlojamientoDto,
+		@UploadedFiles() files: { [fieldname: string]: Express.Multer.File[] },
+	) {
+		console.log(alojamientoJson);
+		return await this.alojamientosService.registrarAlojamiento(
+			req,
+			alojamientoJson,
+			files,
 		);
 	}
 }

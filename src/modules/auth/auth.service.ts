@@ -327,9 +327,6 @@ export class AuthService {
 				HttpStatus.UNAUTHORIZED,
 			);
 		}
-		/* const result = await this.authReposirotyService.obtenerInfoUsuarioPorId(
-			user.id,
-		); */
 		//Verificar si el usuario tiene perfiles
 		const perfilesUsuario =
 			await this.authReposirotyService.obtenerPerfilesUsuario(

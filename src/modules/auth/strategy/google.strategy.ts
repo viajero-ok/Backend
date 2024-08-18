@@ -31,17 +31,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
 		profile: Profile,
 		done: VerifyCallback,
 	) {
-		/* const user = await this.authRepositoryService.buscarUsuarioPorMail(
-			profile.emails[0].value,
-		);
-		console.log(user); */
-		/* const { name, emails } = profile;
-		const user = {
-			mail: emails[0].value,
-			nombre: name.givenName,
-			apellido: name.familyName,
-			accessToken,
-		}; */
 		const user = await this.authService.googleStrategyLogin(profile);
 		done(null, user);
 		return user || null;

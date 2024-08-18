@@ -1,24 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
-import { AlojamientoDto } from './dto/alojamiento.dto';
 
 @Injectable()
-export class AlojamientosRepositoryService {
+export class OfertaTuristicaRepositoryService {
 	constructor(
 		@InjectEntityManager()
 		private entityManager: EntityManager,
 	) {}
 
-	async registrarAlojamiento(
-		id_usuario: string,
-		alojamientoDto: AlojamientoDto,
-	) {
+	async obtenerOfertasPorPrestador(id_usuario: string) {
 		const result = await this.entityManager.query(
-			'CALL SP_ABM_ALOJAMIENTOS(?)',
+			'CALL SP_OBT_OFERTAS_POR_PRESTADOR(?)',
 			[id_usuario],
-			// atributos de alojamientoDto
 		);
-		return result[0][0];
+		return result[0];
+	}
+
+	async obtenerTiposSubtipos() {
+		const result = await this.entityManager.query(
+			'CALL SP_OBT_TIPOS_SUBTIPOS()',
+		);
+		return result[0];
 	}
 }

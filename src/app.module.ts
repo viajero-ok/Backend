@@ -10,13 +10,12 @@ import { GlobalJwtGuard } from './common/guards/jwt/global-jwt.guard';
 import { EmailModule } from './modules/email/email.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { EventMailModule } from './common/events/event-mail/event-mail.module';
-import { AlojamientosModule } from './modules/oferta-turistica/alojamientos/alojamientos.module';
-import { ActividadesModule } from './modules/oferta-turistica/actividades/actividades.module';
-import { EventosModule } from './modules/oferta-turistica/eventos/eventos.module';
 import { CargarUbicacionesModule } from './modules/utils/cargar-ubicaciones/cargar-ubicaciones.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { PassportModule } from '@nestjs/passport';
+import { OfertaTuristicaModule } from './modules/oferta-turistica/oferta-turistica.module';
+import { UbicacionesModule } from './modules/tipificados/ubicaciones/ubicaciones.module';
 
 @Module({
 	imports: [
@@ -50,11 +49,10 @@ import { PassportModule } from '@nestjs/passport';
 		UsuariosModule,
 		EmailModule,
 		EventMailModule,
-		AlojamientosModule,
-		ActividadesModule,
-		EventosModule,
 		CargarUbicacionesModule,
 		PassportModule.register({ session: true }),
+		OfertaTuristicaModule,
+		UbicacionesModule,
 	],
 	controllers: [AppController],
 	providers: [

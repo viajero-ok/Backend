@@ -27,6 +27,10 @@
 		"json"
 	],
 	"eslint.run": "onType",
-	"editor.formatOnType": true
+	"editor.formatOnType": true,
+	"editor.fontSize": 13,
+	"debug.console.fontSize": 14,
+	"terminal.integrated.fontSize": 12,
+	"editor.minimap.sectionHeaderFontSize": 9
 }
 
