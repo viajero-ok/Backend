@@ -14,8 +14,10 @@ export class EstablecimientosRepositoryService {
 		id_usuario: string,
 		establecimientoDto: EstablecimientoDto,
 	) {
+		console.log(id_usuario);
+		console.log(establecimientoDto);
 		const result = await this.entityManager.query(
-			'CALL SP_ABM_ESTABLECIMIENTOS(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			'CALL SP_ABM_ESTABLECIMIENTOS(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
 				establecimientoDto.nombre,
 				establecimientoDto.descripcion,
