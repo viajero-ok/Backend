@@ -14,7 +14,7 @@ export class AlojamientoDto {
 	@IsNotEmpty()
 	@ValidateNested()
 	@Type(() => ComodidadesYServiciosDto)
-	readonly comodidades_y_servicios: ComodidadesYServiciosDto;
+	comodidades_y_servicios: ComodidadesYServiciosDto;
 
 	@ApiProperty({
 		type: PoliticasYNormasDto,
@@ -23,7 +23,7 @@ export class AlojamientoDto {
 	@IsNotEmpty()
 	@ValidateNested()
 	@Type(() => PoliticasYNormasDto)
-	readonly politicas_y_normas: PoliticasYNormasDto;
+	politicas_y_normas: PoliticasYNormasDto;
 
 	@ApiProperty({
 		type: HabitacionesDto,
@@ -32,5 +32,5 @@ export class AlojamientoDto {
 	@IsNotEmpty()
 	@ValidateNested()
 	@Type(() => HabitacionesDto)
-	readonly habitaciones: HabitacionesDto;
+	habitaciones: HabitacionesDto;
 }

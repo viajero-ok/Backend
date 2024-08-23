@@ -65,7 +65,7 @@ class ComodidadesDto {
 	@IsOptional()
 	@ValidateIf((o) => !o.apta_movilidad_reducida)
 	@IsNumber()
-	@Min(1)
+	@Min(0)
 	@Validate(
 		(o) => o.cantidad_apta_movilidad_reducida <= o.cantidad_habitaciones,
 		{
@@ -159,11 +159,11 @@ class ServiciosDto {
 class ImagenProcesadaDto {
 	@ApiProperty({ description: 'Nombre original del archivo' })
 	@IsString()
-	readonly nombreOriginal: string;
+	readonly nombre_original: string;
 
 	@ApiProperty({ description: 'Nombre único del archivo' })
 	@IsString()
-	readonly nombreUnico: string;
+	readonly nombre_unico: string;
 
 	@ApiProperty({ description: 'Ruta del archivo' })
 	@IsString()
@@ -171,11 +171,11 @@ class ImagenProcesadaDto {
 
 	@ApiProperty({ description: 'Tipo MIME del archivo' })
 	@IsString()
-	readonly mimeType: string;
+	readonly mime_type: string;
 
 	@ApiProperty({ description: 'Tamaño del archivo en bytes' })
 	@IsNumber()
-	readonly tamano: number;
+	readonly tamaño: number;
 }
 
 class ContenidoMultimediaDto {

@@ -8,6 +8,12 @@ export class UbicacionesService {
 	) {}
 
 	async obtenerUbicaciones() {
-		return await this.ubicacionesRepositoryService.obtenerUbicaciones();
+		const ubicaciones =
+			await this.ubicacionesRepositoryService.obtenerUbicaciones();
+		return {
+			resultado: 'ok',
+			statusCode: 200,
+			ubicaciones,
+		};
 	}
 }

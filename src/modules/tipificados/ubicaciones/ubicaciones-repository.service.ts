@@ -10,9 +10,15 @@ export class UbicacionesRepositoryService {
 	) {}
 
 	async obtenerUbicaciones() {
-		const result = await this.entityManager.query(
+		const localidades_con_jerarquia = await this.entityManager.query(
 			'CALL SP_LISTAR_UBICACIONES()',
 		);
-		return result[0];
+		const result: any = {
+			localidades: localidades_con_jerarquia[0],
+			departamentos: localidades_con_jerarquia[1],
+			provincias: localidades_con_jerarquia[2],
+			paises: localidades_con_jerarquia[3],
+		};
+		return result;
 	}
 }

@@ -12,8 +12,6 @@ export class SessionSerializer extends PassportSerializer {
 	}
 
 	serializeUser(user: Usuario, done: Function) {
-		console.log('********SERIALIZE********');
-		console.log(user);
 		done(null, user);
 	}
 
@@ -21,9 +19,6 @@ export class SessionSerializer extends PassportSerializer {
 		const user = await this.authReposirotyService.buscarUsuarioPorId(
 			payload.id_usuario,
 		);
-		console.log('********DESERIALIZE********');
-		console.log(payload);
-		console.log(user);
 		return user ? done(null, user) : done(null, null);
 	}
 }

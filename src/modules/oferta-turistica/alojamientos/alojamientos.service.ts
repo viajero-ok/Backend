@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AlojamientosRepositoryService } from './alojamientos-repository.service';
 import { AlojamientoDto } from './dto/alojamiento.dto';
-import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path';
+import { eliminarArchivos } from '../utils/eliminar-archivos';
 
 @Injectable()
 export class AlojamientosService {
@@ -12,65 +12,81 @@ export class AlojamientosService {
 
 	async registrarAlojamiento(
 		req,
-		alojamientoDto,
+		alojamientoDto: AlojamientoDto,
 		files: { [fieldname: string]: Express.Multer.File[] },
 	) {
-		const habitacionesConImagenes = this.procesarImagenes(
-			alojamientoDto,
-			files,
-		);
-		console.log(
-			'*********************HABITACIONES CON IMAGENES*********************',
-		);
-		console.log(habitacionesConImagenes);
-
-		const alojamientoConImagenes: AlojamientoDto = {
-			...alojamientoDto,
-			habitaciones: {
-				habitaciones: habitacionesConImagenes,
-			},
-		};
-		console.log(
-			'*********************ALOJAMIENTO CON IMAGENES*********************',
-		);
-		console.log(alojamientoConImagenes);
-		/* const result =
-			await this.alojamientosRepositoryService.registrarAlojamiento(
-				req.user.id_usuario,
-				alojamientoConImagenes,
+		const rutasImagenesSubidas: string[] = [];
+		try {
+			const habitacionesConImagenes = this.procesarImagenes(
+				alojamientoDto,
+				files,
+				rutasImagenesSubidas,
 			);
 
-		if (result.resultado === 'error') {
-			throw new HttpException(
-				'Error al registrar alojamiento.',
-				HttpStatus.CONFLICT,
+			const alojamientoConImagenes: AlojamientoDto = {
+				...alojamientoDto,
+				habitaciones: {
+					habitaciones: habitacionesConImagenes,
+				},
+			};
+
+			/* const result =
+				await this.alojamientosRepositoryService.registrarAlojamiento(
+					req.user.id_usuario,
+					alojamientoConImagenes,
+				);
+
+			if (result.resultado === 'error') {
+				throw new HttpException(
+					'Error al registrar alojamiento.',
+					HttpStatus.CONFLICT,
+				);
+			} */
+			return { resultado: 'ok', statusCode: 201 };
+		} catch (error) {
+			eliminarArchivos(rutasImagenesSubidas);
+			throw error;
+		} finally {
+			// Almacenar todas las rutas de imágenes
+			const todasLasImagenes: string[] = [];
+			Object.values(files)
+				.flat()
+				.forEach((file) => {
+					const filePath = `uploads/${file.filename}`;
+					todasLasImagenes.push(filePath);
+				});
+			// Identificar y eliminar las imágenes que no se usaron
+			const imagenesNoUsadas = todasLasImagenes.filter(
+				(imagen) => !rutasImagenesSubidas.includes(imagen),
 			);
-		} */
-		return { resultado: 'ok', statusCode: 201 };
+			if (imagenesNoUsadas.length > 0) {
+				await eliminarArchivos(imagenesNoUsadas);
+			}
+		}
 	}
 
 	private procesarImagenes(
 		alojamientoDto: AlojamientoDto,
 		files: { [fieldname: string]: Express.Multer.File[] },
+		rutasImagenesSubidas: string[],
 	) {
 		return alojamientoDto.habitaciones.habitaciones.map(
 			(habitacion, index) => {
-				const imagenesKey = `habitaciones[${index}].contenido_multimedia.imagenes`;
-				const imagenes = files[imagenesKey] || [];
-
-				const imagenesProcessadas = imagenes.map((file) => {
-					const uniqueFilename = `${uuidv4()}${path.extname(file.originalname)}`;
+				const campoImagen = `habitacion${index + 1}`;
+				const imagenes = files[campoImagen] || [];
+				const imagenesProcesadas = imagenes.map((file) => {
+					const uniqueFilename = `${path.basename(file.filename, path.extname(file.filename))}${path.extname(file.originalname)}`;
 					const filePath = `uploads/${uniqueFilename}`;
 
-					// Aquí deberías mover el archivo a la ubicación final
-					// Por ejemplo: fs.renameSync(file.path, filePath);
+					// Agrega la ruta al arreglo para ser eliminada en caso de error
+					rutasImagenesSubidas.push(filePath);
 
 					return {
-						nombreOriginal: file.originalname,
-						nombreUnico: uniqueFilename,
+						nombre_original: file.originalname,
+						nombre_unico: uniqueFilename,
 						ruta: filePath,
-						mimeType: file.mimetype,
-						tamano: file.size,
+						mime_type: file.mimetype,
+						tamaño: file.size,
 					};
 				});
 
@@ -78,7 +94,7 @@ export class AlojamientosService {
 					...habitacion,
 					contenido_multimedia: {
 						...habitacion.contenido_multimedia,
-						imagenes: imagenesProcessadas,
+						imagenes: imagenesProcesadas,
 					},
 				};
 			},

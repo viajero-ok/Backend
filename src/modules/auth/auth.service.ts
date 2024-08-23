@@ -168,7 +168,6 @@ export class AuthService {
 			await this.authReposirotyService.obtenerUsuarioPorMail(
 				loginAuthDto.mail,
 			);
-		console.log(userExists);
 
 		//Verificar si el usuario existe
 		if (userExists.resultado === 'error') {
@@ -245,7 +244,6 @@ export class AuthService {
 
 		//comprobar si se registro correctamente
 		if (registro.resultado === 'error') {
-			console.log(registro.descripcion);
 			throw new HttpException(
 				'Error al registrar turista.',
 				HttpStatus.CONFLICT,

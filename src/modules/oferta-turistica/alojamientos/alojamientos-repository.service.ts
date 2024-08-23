@@ -20,5 +20,16 @@ export class AlojamientosRepositoryService {
 			// atributos de alojamientoDto
 		);
 		return result[0][0];
+		return this.entityManager.transaction(
+			async (manager: EntityManager) => {
+				await manager.query(`CALL sp_procedimiento1(?, ?)`, []);
+				await manager.query(`CALL sp_procedimiento2(?)`, []);
+				await manager.query(`CALL sp_procedimiento3(?, ?, ?)`, []);
+				await manager.query(`CALL sp_procedimiento4(?, ?)`, []);
+				await manager.query(`CALL sp_procedimiento5(?)`, []);
+
+				// Aquí puedes realizar otras operaciones con el manager
+			},
+		);
 	}
 }
