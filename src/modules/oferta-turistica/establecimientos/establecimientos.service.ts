@@ -1,11 +1,13 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { EstablecimientoDto } from './dto/establecimiento.dto';
 import { EstablecimientosRepositoryService } from './establecimientos-repository.service';
+import { ExceptionHandlingService } from 'src/common/services/exception-handler.service';
 
 @Injectable()
 export class EstablecimientosService {
 	constructor(
 		private readonly establecimientosRepositoryService: EstablecimientosRepositoryService,
+		private readonly exceptionHandlingService: ExceptionHandlingService,
 	) {}
 	async registrarEstablecimiento(
 		req,
@@ -16,12 +18,11 @@ export class EstablecimientosService {
 				req.user.id_usuario,
 				establecimientoDto,
 			);
-		if (result.resultado == 'error') {
-			throw new HttpException(
-				'Error al registrar establecimiento',
-				HttpStatus.CONFLICT,
-			);
-		}
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al registrar establecimiento',
+			HttpStatus.CONFLICT,
+		);
 		return {
 			resultado: 'ok',
 			statusCode: 201,
@@ -33,12 +34,11 @@ export class EstablecimientosService {
 			await this.establecimientosRepositoryService.obtenerEstablecimientosPorPrestador(
 				req.user.id_usuario,
 			);
-		if (result.resultado == 'error') {
-			throw new HttpException(
-				'Error al registrar establecimiento',
-				HttpStatus.CONFLICT,
-			);
-		}
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al obtener establecimientos',
+			HttpStatus.CONFLICT,
+		);
 		return {
 			resultado: 'ok',
 			statusCode: 200,

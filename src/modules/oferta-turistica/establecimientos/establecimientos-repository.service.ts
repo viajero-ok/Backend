@@ -14,8 +14,6 @@ export class EstablecimientosRepositoryService {
 		id_usuario: string,
 		establecimientoDto: EstablecimientoDto,
 	) {
-		console.log(id_usuario);
-		console.log(establecimientoDto);
 		const result = await this.entityManager.query(
 			'CALL SP_ABM_ESTABLECIMIENTOS(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
@@ -35,6 +33,7 @@ export class EstablecimientosRepositoryService {
 				establecimientoDto.longitud,
 			],
 		);
+		console.log(result);
 		return result[0][0];
 	}
 

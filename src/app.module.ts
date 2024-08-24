@@ -19,6 +19,7 @@ import { UbicacionesModule } from './modules/tipificados/ubicaciones/ubicaciones
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { GlobalModule } from './common/services/global.module';
 
 @Module({
 	imports: [
@@ -83,6 +84,7 @@ import { extname } from 'path';
 				}
 			},
 		}),
+		GlobalModule,
 	],
 	controllers: [AppController],
 	providers: [
