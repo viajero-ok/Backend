@@ -39,7 +39,7 @@ export class EstablecimientosRepositoryService {
 
 	async obtenerEstablecimientosPorPrestador(id_usuario: number) {
 		const result = await this.entityManager.query(
-			'CALL SP_OBT_ESTABLECIMIENTOS(?)',
+			'CALL SP_OBT_DATOS_ESTABLECIMIENTO_X_USUARIO(?)',
 			[id_usuario],
 		);
 		return result[0];

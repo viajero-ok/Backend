@@ -1,13 +1,16 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { AlojamientosRepositoryService } from './alojamientos-repository.service';
 import { AlojamientoDto } from './dto/alojamiento.dto';
 import * as path from 'path';
 import { eliminarArchivos } from '../utils/eliminar-archivos';
+import { ExceptionHandlingService } from 'src/common/services/exception-handler.service';
+import { RegistrarCaracteristicasAlojamientoDto } from './dto/registrar-caracteristicas-alojamiento.dto';
 
 @Injectable()
 export class AlojamientosService {
 	constructor(
 		private readonly alojamientosRepositoryService: AlojamientosRepositoryService,
+		private readonly exceptionHandlingService: ExceptionHandlingService,
 	) {}
 
 	async registrarAlojamiento(
@@ -99,5 +102,21 @@ export class AlojamientosService {
 				};
 			},
 		);
+	}
+
+	async registrarCaracteristicasAlojamiento(
+		req,
+		registrarCaracteristicasAlojamientoDto: RegistrarCaracteristicasAlojamientoDto,
+	) {
+		const result =
+			await this.alojamientosRepositoryService.registrarCaracteristicasAlojamiento(
+				registrarCaracteristicasAlojamientoDto,
+			);
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al registrar políticas y normas.',
+			HttpStatus.CONFLICT,
+		);
+		return { resultado: 'ok', statusCode: 201 };
 	}
 }

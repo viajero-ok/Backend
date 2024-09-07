@@ -261,7 +261,7 @@ export class AuthController {
 		return this.authService.registrarPrestador(registrarPrestadorDto, req);
 	}
 
-	@ApiOperation({ summary: 'OBTENER DATOS PARA REGISTRO' })
+	@ApiOperation({ summary: 'OBTENER DATOS PARA REGISTRO SEGUN PERFIL' })
 	@ApiQuery({
 		name: 'perfil',
 		enum: ['turista', 'prestador'],

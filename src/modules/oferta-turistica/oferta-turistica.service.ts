@@ -13,6 +13,8 @@ export class OfertaTuristicaService {
 	}
 
 	async obtenerTiposSubtipos() {
-		return await this.ofertaTuristicaRepositoryService.obtenerTiposSubtipos();
+		const result =
+			await this.ofertaTuristicaRepositoryService.obtenerTiposSubtipos();
+		return { resultado: 'ok', statusCode: 200, tipos_y_subtipos: result };
 	}
 }

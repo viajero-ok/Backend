@@ -19,8 +19,8 @@ export class OfertaTuristicaRepositoryService {
 
 	async obtenerTiposSubtipos() {
 		const result = await this.entityManager.query(
-			'CALL SP_OBT_TIPOS_SUBTIPOS()',
+			'CALL SP_LISTAR_TIPOS_SUBTIPOS_OFERTA()',
 		);
-		return result[0];
+		return { tipos: result[0], subtipos: result[1] };
 	}
 }

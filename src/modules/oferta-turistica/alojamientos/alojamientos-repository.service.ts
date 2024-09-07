@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 import { AlojamientoDto } from './dto/alojamiento.dto';
+import { RegistrarCaracteristicasAlojamientoDto } from './dto/registrar-caracteristicas-alojamiento.dto';
 
 @Injectable()
 export class AlojamientosRepositoryService {
@@ -31,5 +32,16 @@ export class AlojamientosRepositoryService {
 				// Aquí puedes realizar otras operaciones con el manager
 			},
 		);
+	}
+
+	async registrarCaracteristicasAlojamiento(
+		registrarCaracteristicasAlojamientoDto: RegistrarCaracteristicasAlojamientoDto,
+	) {
+		const result = await this.entityManager.query(
+			'CALL SP_REGISTRAR_CARACTERISTICAS_ALOJAMIENTO(?)',
+			[],
+			// atributos de alojamientoDto
+		);
+		return result[0][0];
 	}
 }

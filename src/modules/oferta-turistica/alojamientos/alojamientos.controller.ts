@@ -1,5 +1,7 @@
 import {
+	Body,
 	Controller,
+	Get,
 	HttpException,
 	HttpStatus,
 	Post,
@@ -24,6 +26,7 @@ import { multerConfig } from '../utils/multer.config';
 import { validate, ValidationError } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 import { eliminarArchivos } from '../utils/eliminar-archivos';
+import { RegistrarCaracteristicasAlojamientoDto } from './dto/registrar-caracteristicas-alojamiento.dto';
 
 @ApiTags('Alojamientos')
 @ApiBearerAuth()
@@ -196,5 +199,82 @@ export class AlojamientosController {
 
 			return acc;
 		}, {});
+	}
+
+	@ApiOperation({ summary: 'REGISTRAR POLITICAS Y NORMAS' })
+	@ApiResponse({
+		status: 201,
+		description: 'Registro exitoso.',
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 201,
+				},
+			},
+		},
+	})
+	@ApiResponse({
+		status: 409,
+		description: 'Error al registrar políticas y normas.',
+		schema: {
+			type: 'object',
+			properties: {
+				statusCode: { type: 'number', example: 409 },
+				message: {
+					type: 'string',
+					example: 'Error al registrar políticas y normas.',
+				},
+			},
+		},
+	})
+	@Post('registrar-caracteristicas-alojamiento')
+	async registrarCaracteristicasAlojamiento(
+		@Body()
+		caracteristicasAlojamientoDto: RegistrarCaracteristicasAlojamientoDto,
+		@Req() req: Request,
+	) {
+		return await this.alojamientosService.registrarCaracteristicasAlojamiento(
+			req,
+			caracteristicasAlojamientoDto,
+		);
+	}
+
+	@ApiOperation({ summary: 'OBTENER DATOS REGISTRO ALOJAMIENTO' })
+	@ApiResponse({
+		status: 200,
+		description: 'Datos para el registro del alojamiento',
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 200,
+				},
+				datos_registro: {
+					$ref: getSchemaPath(RegistrarCaracteristicasAlojamientoDto),
+				},
+			},
+		},
+	})
+	@Get('datos-registro')
+	async obtenerCaracteristicas(
+		@Req() req: Request,
+		@Body()
+		registrarCaracteristicasAlojamientoDto: RegistrarCaracteristicasAlojamientoDto,
+	) {
+		/* return await this.alojamientosService.obtenerCaracteristicas(
+			req,
+			registrarCaracteristicasAlojamientoDto,
+		); */
 	}
 }

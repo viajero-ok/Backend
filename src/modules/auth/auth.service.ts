@@ -85,7 +85,7 @@ export class AuthService {
 	async googleStrategyLogin(profile: Profile) {
 		// verificar si el usuario ya existe
 		const userExists =
-			await this.authReposirotyService.buscarUsuarioPorMail(
+			await this.authReposirotyService.obtenerUsuarioPorMail(
 				profile.emails[0].value,
 			);
 

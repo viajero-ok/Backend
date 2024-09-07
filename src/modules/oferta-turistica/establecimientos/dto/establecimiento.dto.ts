@@ -60,17 +60,17 @@ export class EstablecimientoDto {
 	@ApiProperty({ description: 'Si la calle no tiene altura', example: true })
 	@IsNotEmpty()
 	@IsBoolean()
-	readonly sin_numero: boolean;
+	sin_numero: boolean;
 
 	@ApiProperty({
 		description: 'Número de la calle, se valida si sin_numero es false',
-		example: 123,
+		example: '123',
 	})
 	@IsOptional()
 	@ValidateIf((o) => !o.sin_numero)
 	@IsNotEmpty()
-	@IsInt()
-	readonly numero?: number;
+	@IsString()
+	readonly numero?: string;
 
 	@ApiProperty({ description: 'ID de la localidad', example: 1 })
 	@IsNotEmpty()

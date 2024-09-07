@@ -8,9 +8,11 @@ import {
 	Min,
 	Max,
 	IsOptional,
-	ValidateIf,
+	ArrayMinSize,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { ValidateCheckInOut } from '../../utils/check-in-out.validator';
+import { CaracteristicasAlojamientoDto } from './caracteristicas.dto';
 
 class CheckInDto {
 	@ApiProperty({
@@ -124,20 +126,10 @@ class CheckInOutDto {
 	readonly check_out: CheckOutDto;
 
 	@ApiProperty({
-		description: 'Indica si aplica todos los días',
-		example: false,
-	})
-	@IsNotEmpty()
-	@IsBoolean()
-	readonly aplica_todos_los_dias: boolean;
-
-	@ApiProperty({
-		description:
-			'Dias de la semana que aplica este check in/out, se valida si aplica_todos_los_dias es false',
+		description: 'Dias de la semana que aplica este check in/out',
 		type: DiasSemanaDto,
 		required: false,
 	})
-	@ValidateIf((o) => !o.aplica_todos_los_dias)
 	@ValidateNested()
 	@IsOptional()
 	@Type(() => DiasSemanaDto)
@@ -145,33 +137,29 @@ class CheckInOutDto {
 }
 
 export class PoliticasYNormasDto {
-	@ApiProperty({ type: [CheckInOutDto] })
-	@IsNotEmpty()
-	@IsArray()
-	@ValidateNested({ each: true })
-	@Type(() => CheckInOutDto)
-	readonly check_in_out: CheckInOutDto[];
-
-	@ApiProperty({ description: 'Indica si es pet friendly', example: true })
-	@IsNotEmpty()
-	@IsBoolean()
-	readonly pet_friendly: boolean;
-
-	@ApiProperty({ description: 'Indica si acepta niños', example: true })
-	@IsNotEmpty()
-	@IsBoolean()
-	readonly acepta_niños: boolean;
-
 	@ApiProperty({
-		description: 'Indica si se solicita garantía al ingresar',
+		description: 'Indica si aplica todos los días',
 		example: false,
 	})
 	@IsNotEmpty()
 	@IsBoolean()
-	readonly se_solicita_garantia: boolean;
+	readonly aplica_todos_los_dias: boolean;
 
-	@ApiProperty({ description: 'Indica si acepta visitas', example: true })
+	@ApiProperty({ type: [CheckInOutDto] })
 	@IsNotEmpty()
-	@IsBoolean()
-	readonly acepta_visitas: boolean;
+	@IsArray()
+	@ArrayMinSize(1)
+	@ValidateNested({ each: true })
+	@Type(() => CheckInOutDto)
+	@ValidateCheckInOut()
+	readonly check_in_out: CheckInOutDto[];
+
+	@ApiProperty({
+		description: 'Características de políticas y normas',
+		type: CaracteristicasAlojamientoDto,
+	})
+	@IsNotEmpty()
+	@ValidateNested()
+	@Type(() => CaracteristicasAlojamientoDto)
+	readonly caracteristicas_alojamiento: CaracteristicasAlojamientoDto;
 }

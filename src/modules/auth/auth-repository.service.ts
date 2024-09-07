@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, Repository } from 'typeorm';
-import { Usuario } from 'src/modules/usuarios/entities/usuario.entity';
+import { InjectEntityManager } from '@nestjs/typeorm';
+import { EntityManager } from 'typeorm';
 import { CuentaAuthDto } from './dto/cuenta-auth.dto';
 import { VerificarCuentaDto } from './dto/verificar-cuenta.dto';
 import { RegistrarTuristaDto } from './dto/registrar-turista.dto';
@@ -12,8 +11,6 @@ export class AuthRepositoryService {
 	constructor(
 		@InjectEntityManager()
 		private entityManager: EntityManager,
-		@InjectRepository(Usuario)
-		private usersRepository: Repository<Usuario>,
 	) {}
 
 	async obtenerUsuarioPorMail(MAIL: string) {
@@ -54,18 +51,6 @@ export class AuthRepositoryService {
 			],
 		);
 		return result[0][0];
-	}
-
-	async buscarUsuarioPorId(id: string) {
-		return this.usersRepository.findOne({
-			where: { id_usuario: id },
-		});
-	}
-
-	async buscarUsuarioPorMail(mail: string) {
-		return this.usersRepository.findOne({
-			where: { mail: mail },
-		});
 	}
 
 	async registrarTurista(registrarTuristaDto: RegistrarTuristaDto) {
