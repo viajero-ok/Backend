@@ -6,7 +6,8 @@ export const multerConfig = {
 	storage: diskStorage({
 		destination: './uploads',
 		filename: (req, file, cb) => {
-			const uniqueFilename = `${uuidv4()}${path.extname(file.originalname)}`;
+			const id_oferta = req.body.id_oferta || 'unknown';
+			const uniqueFilename = `alojamiento_${id_oferta}_${path.parse(file.originalname).name}_${uuidv4()}${path.extname(file.originalname)}`;
 			cb(null, uniqueFilename);
 		},
 	}),

@@ -11,7 +11,7 @@ export class OfertaTuristicaRepositoryService {
 
 	async obtenerOfertasPorPrestador(id_usuario: string) {
 		const result = await this.entityManager.query(
-			'CALL SP_OBT_OFERTAS_POR_PRESTADOR(?)',
+			'CALL SP_OBT_OFERTAS_TURISTICAS_X_USUARIO(?)',
 			[id_usuario],
 		);
 		return result[0];

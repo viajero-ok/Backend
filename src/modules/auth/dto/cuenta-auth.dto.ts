@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
 	IsEmail,
+	IsEmpty,
 	IsNotEmpty,
-	IsOptional,
 	IsString,
 	Matches,
 	MinLength,
@@ -35,6 +35,6 @@ export class CuentaAuthDto {
 	})
 	readonly contraseña: string;
 
-	@IsOptional()
+	@IsEmpty()
 	codigo_verificacion: string;
 }

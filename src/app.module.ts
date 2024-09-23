@@ -10,7 +10,6 @@ import { GlobalJwtGuard } from './common/guards/jwt/global-jwt.guard';
 import { EmailModule } from './modules/email/email.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { EventMailModule } from './common/events/event-mail/event-mail.module';
-import { CargarUbicacionesModule } from './modules/utils/cargar-ubicaciones/cargar-ubicaciones.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { PassportModule } from '@nestjs/passport';
@@ -53,7 +52,6 @@ import { GlobalModule } from './common/services/global.module';
 		UsuariosModule,
 		EmailModule,
 		EventMailModule,
-		CargarUbicacionesModule,
 		PassportModule.register({ session: true }),
 		OfertaTuristicaModule,
 		UbicacionesModule,

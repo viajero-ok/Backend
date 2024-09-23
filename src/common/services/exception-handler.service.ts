@@ -2,22 +2,19 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class ExceptionHandlingService {
-	handleError(
-		result: any,
-		mensaje: string,
-		statusCode: HttpStatus,
-		descripcion?: string,
-	): void {
+	handleError(result: any, mensaje: string, statusCode: HttpStatus): void {
 		if (result.resultado === 'error') {
-			const descriptionToUse = result.descripcion.includes('Error')
-				? result.descripcion
-				: descripcion;
+			let descriptionToUse;
+			if (result.descripcion.includes('Error: ')) {
+				descriptionToUse = result.descripcion.replace('Error: ', '');
+			} else {
+				descriptionToUse = mensaje;
+			}
 
 			throw new HttpException(
 				{
-					statusCode: HttpStatus.CONFLICT,
-					message: mensaje,
-					description: descriptionToUse,
+					message: descriptionToUse,
+					statusCode,
 				},
 				statusCode,
 			);

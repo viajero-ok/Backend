@@ -17,7 +17,7 @@ export class AuthService {
 	constructor(
 		private readonly jwtService: JwtService,
 		private readonly eventEmitter: EventEmitter2,
-		private readonly authReposirotyService: AuthRepositoryService,
+		private readonly authRepositoryService: AuthRepositoryService,
 		@Inject(CACHE_MANAGER) private cacheManager: Cache,
 	) {}
 
@@ -38,7 +38,7 @@ export class AuthService {
 
 		//Llamar al procedimiento
 		const result =
-			await this.authReposirotyService.registrarCuenta(userModified);
+			await this.authRepositoryService.registrarCuenta(userModified);
 
 		//comprobar si se registro correctamente
 		if (result.resultado === 'error') {
@@ -63,7 +63,7 @@ export class AuthService {
 	async verificarCuenta(verificarCuentaDto: VerificarCuentaDto) {
 		//Llamar al procedimiento
 		const result =
-			await this.authReposirotyService.verificarCuenta(
+			await this.authRepositoryService.verificarCuenta(
 				verificarCuentaDto,
 			);
 
@@ -85,7 +85,7 @@ export class AuthService {
 	async googleStrategyLogin(profile: Profile) {
 		// verificar si el usuario ya existe
 		const userExists =
-			await this.authReposirotyService.obtenerUsuarioPorMail(
+			await this.authRepositoryService.obtenerUsuarioPorMail(
 				profile.emails[0].value,
 			);
 
@@ -94,7 +94,7 @@ export class AuthService {
 		//Si el usuario no existe, se registra
 		if (!userExists) {
 			usuarioRegistrado =
-				await this.authReposirotyService.registrarCuenta({
+				await this.authRepositoryService.registrarCuenta({
 					mail: profile.emails[0].value,
 					contraseña: null,
 					codigo_verificacion: null,
@@ -125,7 +125,7 @@ export class AuthService {
 		const user = req.user;
 		// verificar si el usuario ya existe
 		const userExists =
-			await this.authReposirotyService.obtenerUsuarioPorMail(user.mail);
+			await this.authRepositoryService.obtenerUsuarioPorMail(user.mail);
 
 		if (userExists.descripcion === 'Error al obtener usuario. ') {
 			throw new HttpException(
@@ -136,7 +136,7 @@ export class AuthService {
 
 		//Verificar si el usuario tiene perfiles
 		const perfilesUsuario =
-			await this.authReposirotyService.obtenerPerfilesUsuario(
+			await this.authRepositoryService.obtenerPerfilesUsuario(
 				userExists.id_usuario,
 			);
 		const tiene_perfil = perfilesUsuario.length > 0;
@@ -165,7 +165,7 @@ export class AuthService {
 	async login(loginAuthDto: LoginAuthDto): Promise<DataLoginDto> {
 		//Llamar al procedimiento
 		const userExists =
-			await this.authReposirotyService.obtenerUsuarioPorMail(
+			await this.authRepositoryService.obtenerUsuarioPorMail(
 				loginAuthDto.mail,
 			);
 
@@ -206,7 +206,7 @@ export class AuthService {
 
 		//Verificar si el usuario tiene perfiles
 		const perfilesUsuario =
-			await this.authReposirotyService.obtenerPerfilesUsuario(
+			await this.authRepositoryService.obtenerPerfilesUsuario(
 				userExists.id_usuario,
 			);
 		const tiene_perfil = perfilesUsuario.length > 0;
@@ -238,7 +238,7 @@ export class AuthService {
 		}
 		//Llamar al procedimiento
 		const registro =
-			await this.authReposirotyService.registrarTurista(
+			await this.authRepositoryService.registrarTurista(
 				registrarTuristaDto,
 			);
 
@@ -251,7 +251,7 @@ export class AuthService {
 		}
 
 		const result =
-			await this.authReposirotyService.obtenerInfoUsuarioPorPerfil(
+			await this.authRepositoryService.obtenerInfoUsuarioPorPerfil(
 				registrarTuristaDto.id_usuario,
 				1,
 			);
@@ -275,7 +275,7 @@ export class AuthService {
 			registrarPrestadorDto.id_usuario = req.user.id_usuario;
 		}
 		//Llamar al procedimiento
-		const registro = await this.authReposirotyService.registrarPrestador(
+		const registro = await this.authRepositoryService.registrarPrestador(
 			registrarPrestadorDto,
 		);
 
@@ -288,7 +288,7 @@ export class AuthService {
 		}
 
 		const result =
-			await this.authReposirotyService.obtenerInfoUsuarioPorPerfil(
+			await this.authRepositoryService.obtenerInfoUsuarioPorPerfil(
 				registrarPrestadorDto.id_usuario,
 				2,
 			);
@@ -311,7 +311,7 @@ export class AuthService {
 		if (!result) {
 			//llamar al procedimiento
 			result =
-				await this.authReposirotyService.obtenerDatosRegistro(perfil);
+				await this.authRepositoryService.obtenerDatosRegistro(perfil);
 			await this.cacheManager.set(cacheKey, result);
 		}
 
@@ -327,14 +327,14 @@ export class AuthService {
 		}
 		//Verificar si el usuario tiene perfiles
 		const perfilesUsuario =
-			await this.authReposirotyService.obtenerPerfilesUsuario(
+			await this.authRepositoryService.obtenerPerfilesUsuario(
 				user.id_usuario,
 			);
 
 		const datos_usuario_perfil: { [key: string]: any } = {};
 		for (const perfil of perfilesUsuario) {
 			const datos_perfil =
-				await this.authReposirotyService.obtenerInfoUsuarioPorPerfil(
+				await this.authRepositoryService.obtenerInfoUsuarioPorPerfil(
 					user.id_usuario,
 					perfil.id_perfil,
 				);

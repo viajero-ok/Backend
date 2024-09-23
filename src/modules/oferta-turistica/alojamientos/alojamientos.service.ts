@@ -1,10 +1,14 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { AlojamientosRepositoryService } from './alojamientos-repository.service';
-import { AlojamientoDto } from './dto/alojamiento.dto';
-import * as path from 'path';
-import { eliminarArchivos } from '../utils/eliminar-archivos';
+import { AlojamientoDto } from './dto/alojamiento/alojamiento.dto';
+import { eliminarArchivo } from '../utils/eliminar-archivo';
 import { ExceptionHandlingService } from 'src/common/services/exception-handler.service';
-import { RegistrarCaracteristicasAlojamientoDto } from './dto/registrar-caracteristicas-alojamiento.dto';
+import { ImagenProcesadaDto } from './dto/imagen-procesada.dto';
+import { AlojamientoVacioDto } from './dto/alojamiento/alojamiento-vacio.dto';
+import { HabitacionDto } from './dto/habitacion/habitacion.dto';
+import { HabitacionVaciaDto } from './dto/habitacion/habitacion-vacia.dto';
+import { TarifaDto } from './dto/tarifa/tarifa.dto';
+import { DetalleAlojamientoDto } from './dto/detalle-alojamiento.dto';
 
 @Injectable()
 export class AlojamientosService {
@@ -13,110 +17,239 @@ export class AlojamientosService {
 		private readonly exceptionHandlingService: ExceptionHandlingService,
 	) {}
 
-	async registrarAlojamiento(
+	async registrarImagenAlojamiento(
 		req,
-		alojamientoDto: AlojamientoDto,
-		files: { [fieldname: string]: Express.Multer.File[] },
+		file: Express.Multer.File,
+		id_oferta: string,
 	) {
-		const rutasImagenesSubidas: string[] = [];
 		try {
-			const habitacionesConImagenes = this.procesarImagenes(
-				alojamientoDto,
-				files,
-				rutasImagenesSubidas,
-			);
+			const imagenProcesada = new ImagenProcesadaDto();
+			imagenProcesada.nombre_original = file.originalname;
+			imagenProcesada.nombre_unico = file.filename;
+			imagenProcesada.ruta = file.path;
+			imagenProcesada.mime_type = file.mimetype;
+			imagenProcesada.tamaño = file.size;
 
-			const alojamientoConImagenes: AlojamientoDto = {
-				...alojamientoDto,
-				habitaciones: {
-					habitaciones: habitacionesConImagenes,
-				},
-			};
-
-			/* const result =
-				await this.alojamientosRepositoryService.registrarAlojamiento(
+			const result =
+				await this.alojamientosRepositoryService.registrarImagenAlojamiento(
+					id_oferta,
 					req.user.id_usuario,
-					alojamientoConImagenes,
+					imagenProcesada,
 				);
 
-			if (result.resultado === 'error') {
-				throw new HttpException(
-					'Error al registrar alojamiento.',
-					HttpStatus.CONFLICT,
-				);
-			} */
-			return { resultado: 'ok', statusCode: 201 };
-		} catch (error) {
-			eliminarArchivos(rutasImagenesSubidas);
-			throw error;
-		} finally {
-			// Almacenar todas las rutas de imágenes
-			const todasLasImagenes: string[] = [];
-			Object.values(files)
-				.flat()
-				.forEach((file) => {
-					const filePath = `uploads/${file.filename}`;
-					todasLasImagenes.push(filePath);
-				});
-			// Identificar y eliminar las imágenes que no se usaron
-			const imagenesNoUsadas = todasLasImagenes.filter(
-				(imagen) => !rutasImagenesSubidas.includes(imagen),
+			this.exceptionHandlingService.handleError(
+				result,
+				'Error al registrar imagen del alojamiento',
+				HttpStatus.CONFLICT,
 			);
-			if (imagenesNoUsadas.length > 0) {
-				await eliminarArchivos(imagenesNoUsadas);
-			}
+
+			return {
+				resultado: 'ok',
+				statusCode: 201,
+				id_imagen: result.id_imagen,
+			};
+		} catch (error) {
+			await eliminarArchivo(file.path);
+			throw error;
 		}
 	}
 
-	private procesarImagenes(
-		alojamientoDto: AlojamientoDto,
-		files: { [fieldname: string]: Express.Multer.File[] },
-		rutasImagenesSubidas: string[],
-	) {
-		return alojamientoDto.habitaciones.habitaciones.map(
-			(habitacion, index) => {
-				const campoImagen = `habitacion${index + 1}`;
-				const imagenes = files[campoImagen] || [];
-				const imagenesProcesadas = imagenes.map((file) => {
-					const uniqueFilename = `${path.basename(file.filename, path.extname(file.filename))}${path.extname(file.originalname)}`;
-					const filePath = `uploads/${uniqueFilename}`;
-
-					// Agrega la ruta al arreglo para ser eliminada en caso de error
-					rutasImagenesSubidas.push(filePath);
-
-					return {
-						nombre_original: file.originalname,
-						nombre_unico: uniqueFilename,
-						ruta: filePath,
-						mime_type: file.mimetype,
-						tamaño: file.size,
-					};
-				});
-
-				return {
-					...habitacion,
-					contenido_multimedia: {
-						...habitacion.contenido_multimedia,
-						imagenes: imagenesProcesadas,
-					},
-				};
-			},
-		);
-	}
-
-	async registrarCaracteristicasAlojamiento(
-		req,
-		registrarCaracteristicasAlojamientoDto: RegistrarCaracteristicasAlojamientoDto,
-	) {
+	async eliminarImagenAlojamiento(req, id_imagen: string) {
 		const result =
-			await this.alojamientosRepositoryService.registrarCaracteristicasAlojamiento(
-				registrarCaracteristicasAlojamientoDto,
+			await this.alojamientosRepositoryService.eliminarImagenAlojamiento(
+				req.user.id_usuario,
+				id_imagen,
 			);
+
 		this.exceptionHandlingService.handleError(
 			result,
-			'Error al registrar políticas y normas.',
+			'Error al eliminar imagen del alojamiento',
 			HttpStatus.CONFLICT,
 		);
-		return { resultado: 'ok', statusCode: 201 };
+
+		await eliminarArchivo(result.ruta_archivo);
+
+		return { resultado: 'ok', statusCode: 200 };
+	}
+
+	async registrarAlojamiento(req, alojamientoDto: AlojamientoDto) {
+		try {
+			const resultados =
+				await this.alojamientosRepositoryService.registrarAlojamiento(
+					req.user.id_usuario,
+					alojamientoDto,
+				);
+			// Verificar resultados individuales
+			this.exceptionHandlingService.handleError(
+				resultados.alojamiento,
+				'Error al registrar alojamiento',
+				HttpStatus.CONFLICT,
+			);
+			this.exceptionHandlingService.handleError(
+				resultados.caracteristicas,
+				'Error al registrar características del alojamiento',
+				HttpStatus.CONFLICT,
+			);
+			this.exceptionHandlingService.handleError(
+				resultados.metodos_pago,
+				'Error al registrar métodos de pago del alojamiento',
+				HttpStatus.CONFLICT,
+			);
+
+			resultados.observaciones.forEach((observacion, index) => {
+				this.exceptionHandlingService.handleError(
+					observacion,
+					`Error al registrar observación ${index + 1}`,
+					HttpStatus.CONFLICT,
+				);
+			});
+
+			resultados.horarios.forEach((horario, index) => {
+				this.exceptionHandlingService.handleError(
+					horario,
+					`Error al registrar horario ${index + 1}`,
+					HttpStatus.CONFLICT,
+				);
+			});
+
+			return {
+				resultado: 'ok',
+				statusCode: 201,
+				id_oferta: resultados.alojamiento.id_oferta,
+			};
+		} catch (error) {
+			throw error;
+		}
+	}
+
+	async obtenerDatosRegistro() {
+		return await this.alojamientosRepositoryService.obtenerDatosRegistro();
+	}
+
+	async registrarAlojamientoVacio(
+		req,
+		alojamientoVacioDto: AlojamientoVacioDto,
+	) {
+		const result =
+			await this.alojamientosRepositoryService.registrarAlojamientoVacio(
+				req.user.id_usuario,
+				alojamientoVacioDto,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al registrar alojamiento vacío',
+			HttpStatus.CONFLICT,
+		);
+
+		return {
+			resultado: 'ok',
+			statusCode: 201,
+			id_oferta: result.id_oferta,
+		};
+	}
+
+	async registrarHabitacion(req, habitacionDto: HabitacionDto) {
+		const resultados =
+			await this.alojamientosRepositoryService.registrarHabitacion(
+				req.user.id_usuario,
+				habitacionDto,
+			);
+		console.log(resultados);
+
+		// Verificar resultados individuales
+		this.exceptionHandlingService.handleError(
+			resultados.tipoDetalle,
+			'Error al registrar tipo de detalle',
+			HttpStatus.CONFLICT,
+		);
+		this.exceptionHandlingService.handleError(
+			resultados.caracteristicas,
+			'Error al registrar características',
+			HttpStatus.CONFLICT,
+		);
+		resultados.plazas.forEach((plaza, index) => {
+			this.exceptionHandlingService.handleError(
+				plaza,
+				`Error al registrar plaza ${index + 1}`,
+				HttpStatus.CONFLICT,
+			);
+		});
+		resultados.observaciones.forEach((observacion, index) => {
+			this.exceptionHandlingService.handleError(
+				observacion,
+				`Error al registrar observación ${index + 1}`,
+				HttpStatus.CONFLICT,
+			);
+		});
+
+		return {
+			resultado: 'ok',
+			statusCode: 201,
+		};
+	}
+
+	async registrarHabitacionVacia(
+		req,
+		habitacionVaciaDto: HabitacionVaciaDto,
+	) {
+		const result =
+			await this.alojamientosRepositoryService.registrarHabitacionVacia(
+				req.user.id_usuario,
+				habitacionVaciaDto,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al registrar habitación vacía',
+			HttpStatus.CONFLICT,
+		);
+
+		return {
+			resultado: 'ok',
+			statusCode: 201,
+			id_tipo_detalle: result.id_tipo_detalle,
+		};
+	}
+
+	async registrarTarifa(req, tarifaDto: TarifaDto) {
+		const result = await this.alojamientosRepositoryService.registrarTarifa(
+			req.user.id_usuario,
+			tarifaDto,
+		);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al registrar tarifa',
+			HttpStatus.CONFLICT,
+		);
+
+		return {
+			resultado: 'ok',
+			statusCode: 201,
+			id_tarifa: result.id_tarifa,
+		};
+	}
+
+	async finalizarRegistroAlojamiento(
+		req,
+		detalleAlojamientoDto: DetalleAlojamientoDto,
+	) {
+		const result =
+			await this.alojamientosRepositoryService.finalizarRegistroAlojamiento(
+				req.user.id_usuario,
+				detalleAlojamientoDto,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al finalizar el registro del alojamiento',
+			HttpStatus.CONFLICT,
+		);
+
+		return {
+			resultado: 'ok',
+			statusCode: 201,
+		};
 	}
 }

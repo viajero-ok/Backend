@@ -2,12 +2,12 @@ import {
 	Body,
 	Controller,
 	Get,
-	HttpException,
-	HttpStatus,
 	Post,
 	Req,
-	UploadedFiles,
+	UploadedFile,
 	UseInterceptors,
+	Delete,
+	Param,
 } from '@nestjs/common';
 import { AlojamientosService } from './alojamientos.service';
 import {
@@ -17,16 +17,16 @@ import {
 	ApiOperation,
 	ApiResponse,
 	ApiTags,
-	getSchemaPath,
 } from '@nestjs/swagger';
-import { AlojamientoDto } from './dto/alojamiento.dto';
+import { AlojamientoDto } from './dto/alojamiento/alojamiento.dto';
 import { Request } from 'express';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { multerConfig } from '../utils/multer.config';
-import { validate, ValidationError } from 'class-validator';
-import { plainToInstance } from 'class-transformer';
-import { eliminarArchivos } from '../utils/eliminar-archivos';
-import { RegistrarCaracteristicasAlojamientoDto } from './dto/registrar-caracteristicas-alojamiento.dto';
+import { AlojamientoVacioDto } from './dto/alojamiento/alojamiento-vacio.dto';
+import { HabitacionDto } from './dto/habitacion/habitacion.dto';
+import { HabitacionVaciaDto } from './dto/habitacion/habitacion-vacia.dto';
+import { TarifaDto } from './dto/tarifa/tarifa.dto';
+import { DetalleAlojamientoDto } from './dto/detalle-alojamiento.dto';
 
 @ApiTags('Alojamientos')
 @ApiBearerAuth()
@@ -34,10 +34,32 @@ import { RegistrarCaracteristicasAlojamientoDto } from './dto/registrar-caracter
 export class AlojamientosController {
 	constructor(private readonly alojamientosService: AlojamientosService) {}
 
-	@ApiOperation({ summary: 'REGISTRAR ALOJAMIENTO' })
+	@ApiOperation({ summary: 'OBTENER DATOS REGISTRO ALOJAMIENTO' })
+	@ApiResponse({
+		status: 200,
+		description: 'Datos para el registro del alojamiento',
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 200,
+				},
+			},
+		},
+	})
+	@Get('datos-registro')
+	async obtenerDatosRegistro() {
+		return await this.alojamientosService.obtenerDatosRegistro();
+	}
+
+	@ApiOperation({ summary: 'REGISTRAR ALOJAMIENTO VACIO' })
 	@ApiResponse({
 		status: 201,
-		description: 'Registro exitoso.',
 		schema: {
 			type: 'object',
 			properties: {
@@ -48,6 +70,42 @@ export class AlojamientosController {
 				statusCode: {
 					type: 'number',
 					example: 201,
+				},
+				id_oferta: {
+					type: 'string',
+					example: '123e4567-e89b-12d3-a456-426614174000',
+				},
+			},
+		},
+	})
+	@Post('registrar-alojamiento-vacio')
+	async registrarAlojamientoVacio(
+		@Req() req: Request,
+		@Body() alojamientoVacioDto: AlojamientoVacioDto,
+	) {
+		return await this.alojamientosService.registrarAlojamientoVacio(
+			req,
+			alojamientoVacioDto,
+		);
+	}
+
+	@ApiOperation({ summary: 'ABM ALOJAMIENTO SIN IMAGENES' })
+	@ApiResponse({
+		status: 201,
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 201,
+				},
+				id_oferta: {
+					type: 'string',
+					example: '123e4567-e89b-12d3-a456-426614174000',
 				},
 			},
 		},
@@ -67,144 +125,76 @@ export class AlojamientosController {
 		},
 	})
 	@ApiResponse({
-		status: 400,
-		description: 'No se ha enviado información del alojamiento.',
+		status: 409,
+		description: 'Error al registrar características.',
 		schema: {
 			type: 'object',
 			properties: {
-				statusCode: { type: 'number', example: 400 },
+				statusCode: { type: 'number', example: 409 },
 				message: {
 					type: 'string',
-					example: 'No se ha enviado información del alojamiento.',
+					example: 'Error al registrar características.',
 				},
 			},
 		},
 	})
 	@ApiResponse({
-		status: 400,
-		description: 'Solicitud inválida o datos de validación incorrectos.',
+		status: 409,
+		description: 'Error al registrar métodos de pago.',
 		schema: {
 			type: 'object',
 			properties: {
-				statusCode: { type: 'number', example: 400 },
+				statusCode: { type: 'number', example: 409 },
 				message: {
-					type: 'object',
-					example: {
-						'habitaciones.habitaciones[0].nombre': [
-							'El nombre de la habitación es requerido',
-						],
-						'habitaciones.habitaciones[0].capacidad': [
-							'La capacidad debe ser un número',
-						],
-					},
+					type: 'string',
+					example: 'Error al registrar métodos de pago.',
 				},
-				error: { type: 'string', example: 'Validation failed' },
 			},
 		},
 	})
-	@ApiBody({
-		description: 'Información del alojamiento y archivos de habitaciones',
+	@ApiResponse({
+		status: 409,
+		description: 'Error al registrar observación.',
 		schema: {
 			type: 'object',
 			properties: {
-				...Array.from({ length: 5 }, (_, i) => ({
-					[`habitacion${i + 1}`]: {
-						type: 'array',
-						items: {
-							type: 'string',
-							format: 'binary',
-						},
-						description: `Archivos para la habitación ${i + 1}`,
-					},
-				})).reduce((acc, curr) => ({ ...acc, ...curr }), {}),
-				alojamiento: {
-					$ref: getSchemaPath(AlojamientoDto),
+				statusCode: { type: 'number', example: 409 },
+				message: {
+					type: 'string',
+					example: 'Error al registrar observación.',
 				},
 			},
 		},
 	})
-	@ApiConsumes('multipart/form-data')
+	@ApiResponse({
+		status: 409,
+		description: 'Error al registrar horario.',
+		schema: {
+			type: 'object',
+			properties: {
+				statusCode: { type: 'number', example: 409 },
+				message: {
+					type: 'string',
+					example: 'Error al registrar horario.',
+				},
+			},
+		},
+	})
 	@Post('registrar-alojamiento')
-	@UseInterceptors(
-		FileFieldsInterceptor(
-			Array.from({ length: 100 }, (_, i) => ({
-				name: `habitacion${i + 1}`,
-				maxCount: 10,
-			})),
-			multerConfig,
-		),
-	)
 	async registrarAlojamiento(
 		@Req() req: Request,
-		@UploadedFiles() files: { [fieldname: string]: Express.Multer.File[] },
+		@Body()
+		alojamientoDto: AlojamientoDto,
 	) {
-		try {
-			if (!req.body.alojamiento) {
-				throw new HttpException(
-					'No se ha enviado información del alojamiento.',
-					HttpStatus.BAD_REQUEST,
-				);
-			}
-			const alojamientoJson = JSON.parse(req.body.alojamiento);
-
-			// Crear una instancia de AlojamientoDto utilizando plainToInstance
-			const alojamiento = plainToInstance(
-				AlojamientoDto,
-				alojamientoJson,
-			);
-
-			const errors = await validate(alojamiento);
-			if (errors.length > 0) {
-				const formattedErrors = this.formatErrors(errors);
-				throw new HttpException(
-					{
-						message: formattedErrors,
-						error: 'Validation failed',
-						statusCode: HttpStatus.BAD_REQUEST,
-					},
-					HttpStatus.BAD_REQUEST,
-				);
-			}
-
-			return await this.alojamientosService.registrarAlojamiento(
-				req,
-				alojamiento,
-				files,
-			);
-		} catch (error) {
-			await eliminarArchivos(
-				Object.values(files)
-					.flat()
-					.map((file) => file.path),
-			);
-			throw error;
-		}
-	}
-	formatErrors(errors: ValidationError[], parentPath = ''): any {
-		return errors.reduce((acc, error) => {
-			const propertyPath = parentPath
-				? `${parentPath}.${error.property}`
-				: error.property;
-
-			if (error.constraints) {
-				acc[propertyPath] = Object.values(error.constraints);
-			}
-
-			if (error.children && error.children.length > 0) {
-				Object.assign(
-					acc,
-					this.formatErrors(error.children, propertyPath),
-				);
-			}
-
-			return acc;
-		}, {});
+		return await this.alojamientosService.registrarAlojamiento(
+			req,
+			alojamientoDto,
+		);
 	}
 
-	@ApiOperation({ summary: 'REGISTRAR POLITICAS Y NORMAS' })
+	@ApiOperation({ summary: 'REGISTRAR IMAGEN ALOJAMIENTO' })
 	@ApiResponse({
 		status: 201,
-		description: 'Registro exitoso.',
 		schema: {
 			type: 'object',
 			properties: {
@@ -216,39 +206,47 @@ export class AlojamientosController {
 					type: 'number',
 					example: 201,
 				},
-			},
-		},
-	})
-	@ApiResponse({
-		status: 409,
-		description: 'Error al registrar políticas y normas.',
-		schema: {
-			type: 'object',
-			properties: {
-				statusCode: { type: 'number', example: 409 },
-				message: {
-					type: 'string',
-					example: 'Error al registrar políticas y normas.',
+				id_imagen: {
+					type: 'number',
+					example: 1,
 				},
 			},
 		},
 	})
-	@Post('registrar-caracteristicas-alojamiento')
-	async registrarCaracteristicasAlojamiento(
-		@Body()
-		caracteristicasAlojamientoDto: RegistrarCaracteristicasAlojamientoDto,
+	@ApiBody({
+		schema: {
+			type: 'object',
+			properties: {
+				imagen: {
+					type: 'string',
+					format: 'binary',
+					description: 'Archivo de imagen del alojamiento',
+				},
+				id_oferta: {
+					type: 'string',
+					description: 'ID de la oferta del alojamiento',
+				},
+			},
+		},
+	})
+	@ApiConsumes('multipart/form-data')
+	@Post('registrar-imagen-alojamiento')
+	@UseInterceptors(FileInterceptor('imagen', multerConfig))
+	async registrarImagenAlojamiento(
 		@Req() req: Request,
+		@UploadedFile() file: Express.Multer.File,
+		@Body('id_oferta') id_oferta: string,
 	) {
-		return await this.alojamientosService.registrarCaracteristicasAlojamiento(
+		return await this.alojamientosService.registrarImagenAlojamiento(
 			req,
-			caracteristicasAlojamientoDto,
+			file,
+			id_oferta,
 		);
 	}
 
-	@ApiOperation({ summary: 'OBTENER DATOS REGISTRO ALOJAMIENTO' })
+	@ApiOperation({ summary: 'ELIMINAR IMAGEN ALOJAMIENTO' })
 	@ApiResponse({
 		status: 200,
-		description: 'Datos para el registro del alojamiento',
 		schema: {
 			type: 'object',
 			properties: {
@@ -260,21 +258,135 @@ export class AlojamientosController {
 					type: 'number',
 					example: 200,
 				},
-				datos_registro: {
-					$ref: getSchemaPath(RegistrarCaracteristicasAlojamientoDto),
+			},
+		},
+	})
+	@Delete('eliminar-imagen-alojamiento/:id_imagen')
+	async eliminarImagenAlojamiento(
+		@Req() req: Request,
+		@Param('id_imagen') id_imagen: string,
+	) {
+		return await this.alojamientosService.eliminarImagenAlojamiento(
+			req,
+			id_imagen,
+		);
+	}
+
+	@ApiOperation({ summary: 'REGISTRAR HABITACION VACIA' })
+	@ApiResponse({
+		status: 201,
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 201,
+				},
+				id_tipo_detalle: {
+					type: 'string',
+					example: '123e4567-e89b-12d3-a456-426614174000',
 				},
 			},
 		},
 	})
-	@Get('datos-registro')
-	async obtenerCaracteristicas(
+	@Post('registrar-habitacion-vacia')
+	async registrarHabitacionVacia(
 		@Req() req: Request,
-		@Body()
-		registrarCaracteristicasAlojamientoDto: RegistrarCaracteristicasAlojamientoDto,
+		@Body() habitacionVaciaDto: HabitacionVaciaDto,
 	) {
-		/* return await this.alojamientosService.obtenerCaracteristicas(
+		return await this.alojamientosService.registrarHabitacionVacia(
 			req,
-			registrarCaracteristicasAlojamientoDto,
-		); */
+			habitacionVaciaDto,
+		);
+	}
+
+	@ApiOperation({ summary: 'ABM HABITACION' })
+	@ApiResponse({
+		status: 201,
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 201,
+				},
+				id_tipo_detalle: {
+					type: 'string',
+					example: '123e4567-e89b-12d3-a456-426614174000',
+				},
+			},
+		},
+	})
+	@Post('registrar-habitacion')
+	async registrarHabitacion(
+		@Req() req: Request,
+		@Body() habitacionDto: HabitacionDto,
+	) {
+		return await this.alojamientosService.registrarHabitacion(
+			req,
+			habitacionDto,
+		);
+	}
+
+	@ApiOperation({ summary: 'ABM TARIFA' })
+	@ApiResponse({
+		status: 201,
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 201,
+				},
+				id_tarifa: {
+					type: 'string',
+					example: '123e4567-e89b-12d3-a456-426614174000',
+				},
+			},
+		},
+	})
+	@Post('registrar-tarifa')
+	async registrarTarifa(@Req() req: Request, @Body() tarifaDto: TarifaDto) {
+		return await this.alojamientosService.registrarTarifa(req, tarifaDto);
+	}
+
+	@ApiOperation({ summary: 'FINALIZAR REGISTRO DE ALOJAMIENTO' })
+	@ApiResponse({
+		status: 200,
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 200,
+				},
+			},
+		},
+	})
+	@Post('finalizar-registro-alojamiento')
+	async finalizarRegistroAlojamiento(
+		@Req() req: Request,
+		@Body() detalleAlojamientoDto: DetalleAlojamientoDto,
+	) {
+		return await this.alojamientosService.finalizarRegistroAlojamiento(
+			req,
+			detalleAlojamientoDto,
+		);
 	}
 }

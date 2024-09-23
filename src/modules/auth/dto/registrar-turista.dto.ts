@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
 	IsDateString,
 	IsInt,
@@ -49,6 +49,7 @@ export class RegistrarTuristaDto {
 	readonly id_tipo_documento: number;
 
 	@ApiProperty({ example: '03515285324', description: 'Número de teléfono' })
+	@ApiPropertyOptional()
 	@IsOptional()
 	@IsString()
 	@Length(11, 11, {

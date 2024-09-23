@@ -2,8 +2,6 @@ import {
 	Body,
 	Controller,
 	Get,
-	HttpException,
-	HttpStatus,
 	Post,
 	Query,
 	Req,
@@ -177,90 +175,6 @@ export class AuthController {
 		return this.authService.login(loginAuthDto);
 	}
 
-	@ApiOperation({ summary: 'REGISTRAR TURISTA' })
-	@ApiResponse({
-		status: 201,
-		schema: {
-			type: 'object',
-			properties: {
-				resultado: {
-					type: 'string',
-					example: 'ok',
-				},
-				statusCode: {
-					type: 'number',
-					example: 201,
-				},
-			},
-		},
-	})
-	@ApiResponse({
-		status: 409,
-		schema: {
-			type: 'object',
-			properties: {
-				statusCode: {
-					type: 'number',
-					example: 409,
-				},
-				message: {
-					type: 'string',
-					example: 'Error al registrar turista.',
-				},
-			},
-		},
-	})
-	@ApiBearerAuth()
-	@Post('registrar/turista')
-	async registrarTurista(
-		@Body() registrarTuristaDto: RegistrarTuristaDto,
-		@Req() req: Request,
-	) {
-		return this.authService.registrarTurista(registrarTuristaDto, req);
-	}
-
-	@ApiOperation({ summary: 'REGISTRAR PRESTADOR' })
-	@ApiResponse({
-		status: 201,
-		schema: {
-			type: 'object',
-			properties: {
-				resultado: {
-					type: 'string',
-					example: 'ok',
-				},
-				statusCode: {
-					type: 'number',
-					example: 201,
-				},
-			},
-		},
-	})
-	@ApiResponse({
-		status: 409,
-		schema: {
-			type: 'object',
-			properties: {
-				statusCode: {
-					type: 'number',
-					example: 409,
-				},
-				message: {
-					type: 'string',
-					example: 'Error al registrar prestador.',
-				},
-			},
-		},
-	})
-	@ApiBearerAuth()
-	@Post('registrar/prestador')
-	async registrarPrestador(
-		@Body() registrarPrestadorDto: RegistrarPrestadorDto,
-		@Req() req: Request,
-	) {
-		return this.authService.registrarPrestador(registrarPrestadorDto, req);
-	}
-
 	@ApiOperation({ summary: 'OBTENER DATOS PARA REGISTRO SEGUN PERFIL' })
 	@ApiQuery({
 		name: 'perfil',
@@ -411,6 +325,90 @@ export class AuthController {
 		return this.authService.obtenerDatosRegistro(perfil);
 	}
 
+	@ApiOperation({ summary: 'REGISTRAR TURISTA' })
+	@ApiResponse({
+		status: 201,
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 201,
+				},
+			},
+		},
+	})
+	@ApiResponse({
+		status: 409,
+		schema: {
+			type: 'object',
+			properties: {
+				statusCode: {
+					type: 'number',
+					example: 409,
+				},
+				message: {
+					type: 'string',
+					example: 'Error al registrar turista.',
+				},
+			},
+		},
+	})
+	@ApiBearerAuth()
+	@Post('registrar/turista')
+	async registrarTurista(
+		@Body() registrarTuristaDto: RegistrarTuristaDto,
+		@Req() req: Request,
+	) {
+		return this.authService.registrarTurista(registrarTuristaDto, req);
+	}
+
+	@ApiOperation({ summary: 'REGISTRAR PRESTADOR' })
+	@ApiResponse({
+		status: 201,
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 201,
+				},
+			},
+		},
+	})
+	@ApiResponse({
+		status: 409,
+		schema: {
+			type: 'object',
+			properties: {
+				statusCode: {
+					type: 'number',
+					example: 409,
+				},
+				message: {
+					type: 'string',
+					example: 'Error al registrar prestador.',
+				},
+			},
+		},
+	})
+	@ApiBearerAuth()
+	@Post('registrar/prestador')
+	async registrarPrestador(
+		@Body() registrarPrestadorDto: RegistrarPrestadorDto,
+		@Req() req: Request,
+	) {
+		return this.authService.registrarPrestador(registrarPrestadorDto, req);
+	}
+
 	@ApiOperation({ summary: 'GOOGLE LOGIN' })
 	@ApiResponse({
 		status: 200,
@@ -461,40 +459,5 @@ export class AuthController {
 	@Get('datos-usuario')
 	async obtenerDatosUsuario(@Req() req: Request) {
 		return await this.authService.obtenerDatosUsuario(req.user);
-	}
-
-	@ApiOperation({ summary: 'OBTENER DATOS DEL USUARIO LOGUEADO' })
-	@ApiResponse({
-		status: 200,
-		schema: {
-			type: 'object',
-			properties: {
-				mensaje: {
-					type: 'string',
-					example: 'Perfil del usuario',
-				},
-				usuario: {
-					type: 'object',
-					properties: {
-						id_usuario: { type: 'string' },
-						mail: { type: 'string' },
-						nombre: { type: 'string' },
-						apellido: { type: 'string' },
-					},
-				},
-			},
-		},
-	})
-	@Public()
-	@Get('perfil')
-	perfilUsuario(@Req() req) {
-		if (req.isAuthenticated()) {
-			return { mensaje: 'Perfil del usuario', usuario: req.user };
-		} else {
-			throw new HttpException(
-				'Usuario no autenticado',
-				HttpStatus.CONFLICT,
-			);
-		}
 	}
 }

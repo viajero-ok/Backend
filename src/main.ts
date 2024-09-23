@@ -20,7 +20,6 @@ import { EventosModule } from './modules/oferta-turistica/eventos/eventos.module
 import { ActividadesModule } from './modules/oferta-turistica/actividades/actividades.module';
 import { EstablecimientosModule } from './modules/oferta-turistica/establecimientos/establecimientos.module';
 import { UbicacionesModule } from './modules/tipificados/ubicaciones/ubicaciones.module';
-import { AlojamientoDto } from './modules/oferta-turistica/alojamientos/dto/alojamiento.dto';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
@@ -80,8 +79,9 @@ async function bootstrap() {
 			ActividadesModule,
 			EstablecimientosModule,
 			UbicacionesModule,
+			AlojamientosModule,
 		],
-		extraModels: [AlojamientoDto],
+		extraModels: [],
 	};
 	const document = SwaggerModule.createDocument(app, config, options);
 

@@ -1,18 +1,15 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
 	IsNotEmpty,
 	IsBoolean,
 	IsNumber,
-	IsArray,
 	ValidateNested,
 	Min,
 	Max,
 	IsOptional,
-	ArrayMinSize,
+	ValidateIf,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { ValidateCheckInOut } from '../../utils/check-in-out.validator';
-import { CaracteristicasAlojamientoDto } from './caracteristicas.dto';
 
 class CheckInDto {
 	@ApiProperty({
@@ -70,12 +67,12 @@ class DiasSemanaDto {
 	@ApiProperty({ description: 'Indica si aplica los lunes', example: true })
 	@IsNotEmpty()
 	@IsBoolean()
-	readonly aplica_lunes: boolean;
+	aplica_lunes: boolean;
 
 	@ApiProperty({ description: 'Indica si aplica los martes', example: true })
 	@IsNotEmpty()
 	@IsBoolean()
-	readonly aplica_martes: boolean;
+	aplica_martes: boolean;
 
 	@ApiProperty({
 		description: 'Indica si aplica los miércoles',
@@ -83,17 +80,17 @@ class DiasSemanaDto {
 	})
 	@IsNotEmpty()
 	@IsBoolean()
-	readonly aplica_miercoles: boolean;
+	aplica_miercoles: boolean;
 
 	@ApiProperty({ description: 'Indica si aplica los jueves', example: true })
 	@IsNotEmpty()
 	@IsBoolean()
-	readonly aplica_jueves: boolean;
+	aplica_jueves: boolean;
 
 	@ApiProperty({ description: 'Indica si aplica los viernes', example: true })
 	@IsNotEmpty()
 	@IsBoolean()
-	readonly aplica_viernes: boolean;
+	aplica_viernes: boolean;
 
 	@ApiProperty({
 		description: 'Indica si aplica los sábados',
@@ -101,7 +98,7 @@ class DiasSemanaDto {
 	})
 	@IsNotEmpty()
 	@IsBoolean()
-	readonly aplica_sabado: boolean;
+	aplica_sabado: boolean;
 
 	@ApiProperty({
 		description: 'Indica si aplica los domingos',
@@ -109,34 +106,34 @@ class DiasSemanaDto {
 	})
 	@IsNotEmpty()
 	@IsBoolean()
-	readonly aplica_domingo: boolean;
+	aplica_domingo: boolean;
 }
 
-class CheckInOutDto {
+export class CheckInOutDto {
+	@ApiProperty({
+		description: 'ID del horario',
+		example: '123e4567-e89b-12d3-a456-426614174000',
+	})
+	@ApiPropertyOptional({
+		description: 'ID del horario',
+		example: '123e4567-e89b-12d3-a456-426614174000',
+	})
+	@IsOptional()
+	@IsNumber()
+	readonly id_horario?: number;
+
 	@ApiProperty({ type: CheckInDto })
 	@IsNotEmpty()
-	@ValidateNested()
+	@ValidateNested({ each: true })
 	@Type(() => CheckInDto)
 	readonly check_in: CheckInDto;
 
 	@ApiProperty({ type: CheckOutDto })
 	@IsNotEmpty()
-	@ValidateNested()
+	@ValidateNested({ each: true })
 	@Type(() => CheckOutDto)
 	readonly check_out: CheckOutDto;
 
-	@ApiProperty({
-		description: 'Dias de la semana que aplica este check in/out',
-		type: DiasSemanaDto,
-		required: false,
-	})
-	@ValidateNested()
-	@IsOptional()
-	@Type(() => DiasSemanaDto)
-	readonly dias_semana?: DiasSemanaDto;
-}
-
-export class PoliticasYNormasDto {
 	@ApiProperty({
 		description: 'Indica si aplica todos los días',
 		example: false,
@@ -145,21 +142,13 @@ export class PoliticasYNormasDto {
 	@IsBoolean()
 	readonly aplica_todos_los_dias: boolean;
 
-	@ApiProperty({ type: [CheckInOutDto] })
-	@IsNotEmpty()
-	@IsArray()
-	@ArrayMinSize(1)
-	@ValidateNested({ each: true })
-	@Type(() => CheckInOutDto)
-	@ValidateCheckInOut()
-	readonly check_in_out: CheckInOutDto[];
-
 	@ApiProperty({
-		description: 'Características de políticas y normas',
-		type: CaracteristicasAlojamientoDto,
+		description: 'Dias de la semana que aplica este check in/out',
+		type: DiasSemanaDto,
+		required: false,
 	})
-	@IsNotEmpty()
 	@ValidateNested()
-	@Type(() => CaracteristicasAlojamientoDto)
-	readonly caracteristicas_alojamiento: CaracteristicasAlojamientoDto;
+	@IsNotEmpty()
+	@Type(() => DiasSemanaDto)
+	readonly dias_semana: DiasSemanaDto;
 }
