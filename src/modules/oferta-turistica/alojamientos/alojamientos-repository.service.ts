@@ -307,9 +307,9 @@ export class AlojamientosRepositoryService {
 			tipos_camas: null,
 			caracteristicas_habitaciones: null,
 		};
-		/* resultados.tipos_camas = (
-			await this.entityManager.query('CALL SP_LISTAR_TIPOS_CAMAS()')
-		)[0]; */
+		resultados.tipos_camas = (
+			await this.entityManager.query('CALL SP_LISTAR_TIPOS_CAMA()')
+		)[0];
 		resultados.caracteristicas_habitaciones = (
 			await this.entityManager.query(
 				'CALL SP_LISTAR_CARACTERISTICAS_X_AMBITO(6)',
@@ -432,6 +432,7 @@ export class AlojamientosRepositoryService {
 		)[0];
 		return resultados;
 	}
+
 	async obtenerTarifas(id_tipo_oferta: string) {
 		const result = await this.entityManager.query(
 			'CALL SP_OBT_TARIFAS_X_OFERTA(?)',
