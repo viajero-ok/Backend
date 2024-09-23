@@ -37,24 +37,131 @@ export class AlojamientosController {
 	@ApiOperation({ summary: 'OBTENER DATOS REGISTRO ALOJAMIENTO' })
 	@ApiResponse({
 		status: 200,
-		description: 'Datos para el registro del alojamiento',
+		description: 'Datos para el registro de la habitación',
 		schema: {
 			type: 'object',
 			properties: {
-				resultado: {
-					type: 'string',
-					example: 'ok',
+				caracteristicas: {
+					type: 'object',
+					properties: {
+						caracteristicas_espacios_uso_comun: {
+							type: 'array',
+							items: {
+								type: 'object',
+								properties: {
+									id_caracteristica: {
+										type: 'number',
+										example: 1,
+									},
+									caracteristica: {
+										type: 'string',
+										example: 'Sala de estar',
+									},
+								},
+							},
+						},
+						caracteristicas_servicios: {
+							type: 'array',
+							items: {
+								type: 'object',
+								properties: {
+									id_caracteristica: {
+										type: 'number',
+										example: 8,
+									},
+									caracteristica: {
+										type: 'string',
+										example: 'Cochera',
+									},
+								},
+							},
+						},
+						caracteristicas_entretenimiento: {
+							type: 'array',
+							items: {
+								type: 'object',
+								properties: {
+									id_caracteristica: {
+										type: 'number',
+										example: 17,
+									},
+									caracteristica: {
+										type: 'string',
+										example: 'Pileta',
+									},
+								},
+							},
+						},
+						caracteristicas_normas: {
+							type: 'array',
+							items: {
+								type: 'object',
+								properties: {
+									id_caracteristica: {
+										type: 'number',
+										example: 23,
+									},
+									caracteristica: {
+										type: 'string',
+										example: 'Acepta niños',
+									},
+								},
+							},
+						},
+					},
 				},
-				statusCode: {
-					type: 'number',
-					example: 200,
+				politicas_cancelacion: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_politica_cancelacion: {
+								type: 'number',
+								example: 1,
+							},
+							politica_cancelacion: {
+								type: 'string',
+								example:
+									'Cancelación con devolución de pago anticipado',
+							},
+						},
+					},
+				},
+				tipos_pago_anticipado: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_tipo_pago_anticipado: {
+								type: 'number',
+								example: 1,
+							},
+							tipo_pago_anticipado: {
+								type: 'string',
+								example: 'Porcentaje de la estadía',
+							},
+						},
+					},
+				},
+				metodos_pago: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_metodo_pago: { type: 'number', example: 1 },
+							metodo_pago: {
+								type: 'string',
+								example: 'Transferencia',
+							},
+						},
+					},
 				},
 			},
 		},
 	})
-	@Get('datos-registro')
-	async obtenerDatosRegistro() {
-		return await this.alojamientosService.obtenerDatosRegistro();
+	@Get('datos-registro-alojamiento')
+	async obtenerDatosRegistroAlojamiento() {
+		return await this.alojamientosService.obtenerDatosRegistroAlojamiento();
 	}
 
 	@ApiOperation({ summary: 'REGISTRAR ALOJAMIENTO VACIO' })
@@ -272,6 +379,48 @@ export class AlojamientosController {
 		);
 	}
 
+	@ApiOperation({ summary: 'OBTENER DATOS REGISTRO HABITACION' })
+	@ApiResponse({
+		status: 200,
+		description:
+			'Datos de tipos de camas y características de habitaciones',
+		schema: {
+			type: 'object',
+			properties: {
+				tipos_camas: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_tipo_cama: { type: 'number', example: 1 },
+							tipo_cama: {
+								type: 'string',
+								example: 'Cama simple',
+							},
+						},
+					},
+				},
+				caracteristicas_habitaciones: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_caracteristica: { type: 'number', example: 28 },
+							caracteristica: {
+								type: 'string',
+								example: 'Apta personas con movilidad reducida',
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+	@Get('datos-registro-habitacion')
+	async obtenerDatosRegistroHabitacion() {
+		return await this.alojamientosService.obtenerDatosRegistroHabitacion();
+	}
+
 	@ApiOperation({ summary: 'REGISTRAR HABITACION VACIA' })
 	@ApiResponse({
 		status: 201,
@@ -334,6 +483,34 @@ export class AlojamientosController {
 			req,
 			habitacionDto,
 		);
+	}
+
+	@ApiOperation({ summary: 'OBTENER DATOS REGISTRO TARIFA' })
+	@ApiResponse({
+		status: 200,
+		description: 'Datos de tipos de pension',
+		schema: {
+			type: 'object',
+			properties: {
+				tipos_pension: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_tipo_pension: { type: 'number', example: 1 },
+							tipo_pension: {
+								type: 'string',
+								example: 'Completa',
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+	@Get('datos-registro-tarifa')
+	async obtenerDatosRegistroTarifa() {
+		return await this.alojamientosService.obtenerDatosRegistroTarifa();
 	}
 
 	@ApiOperation({ summary: 'ABM TARIFA' })

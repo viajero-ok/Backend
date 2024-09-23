@@ -122,8 +122,8 @@ export class AlojamientosService {
 		}
 	}
 
-	async obtenerDatosRegistro() {
-		return await this.alojamientosRepositoryService.obtenerDatosRegistro();
+	async obtenerDatosRegistroAlojamiento() {
+		return await this.alojamientosRepositoryService.obtenerDatosRegistroAlojamiento();
 	}
 
 	async registrarAlojamientoVacio(
@@ -147,6 +147,10 @@ export class AlojamientosService {
 			statusCode: 201,
 			id_oferta: result.id_oferta,
 		};
+	}
+
+	async obtenerDatosRegistroHabitacion() {
+		return await this.alojamientosRepositoryService.obtenerDatosRegistroHabitacion();
 	}
 
 	async registrarHabitacion(req, habitacionDto: HabitacionDto) {
@@ -210,6 +214,10 @@ export class AlojamientosService {
 			statusCode: 201,
 			id_tipo_detalle: result.id_tipo_detalle,
 		};
+	}
+
+	async obtenerDatosRegistroTarifa() {
+		return await this.alojamientosRepositoryService.obtenerDatosRegistroTarifa();
 	}
 
 	async registrarTarifa(req, tarifaDto: TarifaDto) {

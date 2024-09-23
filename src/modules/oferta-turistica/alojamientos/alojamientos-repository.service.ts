@@ -245,7 +245,7 @@ export class AlojamientosRepositoryService {
 		return result[0][0];
 	}
 
-	async obtenerDatosRegistro() {
+	async obtenerDatosRegistroAlojamiento() {
 		const caracteristicas = {
 			caracteristicas_espacios_uso_comun: null,
 			caracteristicas_servicios: null,
@@ -299,6 +299,22 @@ export class AlojamientosRepositoryService {
 			await this.entityManager.query('CALL SP_LISTAR_METODOS_PAGO()')
 		)[0];
 
+		return resultados;
+	}
+
+	async obtenerDatosRegistroHabitacion() {
+		const resultados = {
+			tipos_camas: null,
+			caracteristicas_habitaciones: null,
+		};
+		/* resultados.tipos_camas = (
+			await this.entityManager.query('CALL SP_LISTAR_TIPOS_CAMAS()')
+		)[0]; */
+		resultados.caracteristicas_habitaciones = (
+			await this.entityManager.query(
+				'CALL SP_LISTAR_CARACTERISTICAS_X_AMBITO(6)',
+			)
+		)[0];
 		return resultados;
 	}
 
@@ -407,12 +423,21 @@ export class AlojamientosRepositoryService {
 		return result[0][0];
 	}
 
+	async obtenerDatosRegistroTarifa() {
+		const resultados = {
+			tipos_pension: null,
+		};
+		resultados.tipos_pension = (
+			await this.entityManager.query('CALL SP_LISTAR_TIPOS_PENSION()')
+		)[0];
+		return resultados;
+	}
 	async obtenerTarifas(id_tipo_oferta: string) {
 		const result = await this.entityManager.query(
 			'CALL SP_OBT_TARIFAS_X_OFERTA(?)',
 			[id_tipo_oferta],
 		);
-		console.log(result[0]);
+		console.log(result);
 		return result[0];
 	}
 
@@ -431,7 +456,8 @@ export class AlojamientosRepositoryService {
 				tarifa.bl_eliminar ? 1 : 0,
 			],
 		);
-		return result[0][0];
+		console.log(result);
+		return result;
 	}
 
 	async finalizarRegistroAlojamiento(

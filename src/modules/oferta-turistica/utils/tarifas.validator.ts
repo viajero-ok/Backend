@@ -16,8 +16,13 @@ export class TarifasValidator implements ValidatorConstraintInterface {
 		private readonly alojamientosRepositoryService: AlojamientosRepositoryService,
 	) {}
 
-	async validate(value: any, args: ValidationArguments): Promise<boolean> {
-		const tarifaDto = args.object as TarifaDto;
+	async validate(
+		value: TarifaDto,
+		args: ValidationArguments,
+	): Promise<boolean> {
+		const tarifaDto = value;
+		console.log('TARIFAS');
+		console.log(value);
 		const errores = await this.validarTarifa(tarifaDto.tarifa);
 		args.constraints = errores;
 		return errores.length === 0;

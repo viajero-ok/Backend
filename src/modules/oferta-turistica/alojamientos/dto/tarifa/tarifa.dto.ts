@@ -6,10 +6,10 @@ import {
 	IsNumber,
 	IsDate,
 	IsNotEmpty,
-	Validate,
+	IsOptional,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { TarifasValidator } from 'src/modules/oferta-turistica/utils/tarifas.validator';
+import { ValidateTarifas } from 'src/modules/oferta-turistica/utils/tarifas.validator';
 
 export class TarifasDto {
 	@ApiProperty({
@@ -32,11 +32,11 @@ export class TarifasDto {
 
 	@ApiProperty({
 		description: 'ID de la tarifa',
-		example: 1,
+		example: '123e4567-e89b-12d3-a456-426614174002',
 	})
-	@IsNumber()
-	@IsNotEmpty()
-	id_tarifa: number;
+	@IsString()
+	@IsOptional()
+	id_tarifa: string;
 
 	@ApiProperty({
 		description: 'ID del tipo de pensión',
@@ -87,6 +87,6 @@ export class TarifaDto {
 		type: TarifasDto,
 	})
 	@IsNotEmpty()
-	//@Validate(TarifasValidator)
+	//@ValidateTarifas()
 	tarifa: TarifasDto;
 }
