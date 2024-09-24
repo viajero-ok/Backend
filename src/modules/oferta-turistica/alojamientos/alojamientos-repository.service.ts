@@ -473,6 +473,6 @@ export class AlojamientosRepositoryService {
 				id_usuario,
 			],
 		);
-		return result[0][0];
+		return result;
 	}
 }
