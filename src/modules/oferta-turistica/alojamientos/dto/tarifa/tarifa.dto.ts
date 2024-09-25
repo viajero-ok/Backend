@@ -9,7 +9,6 @@ import {
 	IsOptional,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { ValidateTarifas } from 'src/modules/oferta-turistica/utils/tarifas.validator';
 
 export class TarifasDto {
 	@ApiProperty({
@@ -79,14 +78,4 @@ export class TarifasDto {
 	@IsBoolean()
 	@IsNotEmpty()
 	bl_eliminar: boolean;
-}
-
-export class TarifaDto {
-	@ApiProperty({
-		description: 'Tarifas',
-		type: TarifasDto,
-	})
-	@IsNotEmpty()
-	//@ValidateTarifas()
-	tarifa: TarifasDto;
 }

@@ -6,9 +6,9 @@ import { ImagenProcesadaDto } from './dto/imagen-procesada.dto';
 import { AlojamientoVacioDto } from './dto/alojamiento/alojamiento-vacio.dto';
 import { HabitacionDto } from './dto/habitacion/habitacion.dto';
 import { HabitacionVaciaDto } from './dto/habitacion/habitacion-vacia.dto';
-import { TarifaDto } from './dto/tarifa/tarifa.dto';
 import { DetalleAlojamientoDto } from './dto/detalle-alojamiento.dto';
 import { TipoObservacion } from './enum/tipo-observacion.enum';
+import { TarifasDto } from './dto/tarifa/tarifa.dto';
 
 @Injectable()
 export class AlojamientosRepositoryService {
@@ -58,7 +58,7 @@ export class AlojamientosRepositoryService {
 						politicas_reserva.monto_pago_anticipado,
 						politicas_reserva.porcentaje_pago_anticipado,
 						politicas_reserva.minimo_dias_estadia,
-						alojamientoDto.bl_eliminar ? 1 : 0,
+						0,
 					],
 				);
 				resultados.alojamiento = resultado_alojamiento[0][0];
@@ -70,104 +70,114 @@ export class AlojamientosRepositoryService {
 						alojamientoDto.caracteristicas
 							.map((c) => c.id_caracteristica)
 							.join(','),
-						alojamientoDto.bl_eliminar ? 1 : 0,
+						0,
 					],
 				);
 				resultados.caracteristicas = resultado_caracteristicas[0][0];
 
 				//observaciones
-				const resultado_comodidades_y_servicios_oferta =
-					await manager.query(
-						`CALL SP_ABM_OBSERVACIONES_X_OFERTA(?, ?, ?, ?, ?)`,
-						[
-							alojamientoDto.id_oferta,
-							TipoObservacion.COMODIDADES_SERVICIOS_ESTABLECIMIENTO, // ID de tipo de observación
-							observaciones.texto_observacion_comodidades_y_servicios_oferta,
-							id_usuario,
-							alojamientoDto.bl_eliminar ? 1 : 0,
-						],
-					);
-				resultados.observaciones.push(
-					resultado_comodidades_y_servicios_oferta[0][0],
-				);
-
-				const resultado_canchas_deportes = await manager.query(
-					`CALL SP_ABM_OBSERVACIONES_X_OFERTA(?, ?, ?, ?, ?)`,
-					[
-						alojamientoDto.id_oferta,
-						TipoObservacion.TIPO_CANCHA_DEPORTIVA, // ID de tipo de observación
-						observaciones.texto_observacion_canchas_deportes,
-						id_usuario,
-						alojamientoDto.bl_eliminar ? 1 : 0,
-					],
-				);
-				resultados.observaciones.push(resultado_canchas_deportes[0][0]);
-
-				const resultado_normas = await manager.query(
-					`CALL SP_ABM_OBSERVACIONES_X_OFERTA(?, ?, ?, ?, ?)`,
-					[
-						alojamientoDto.id_oferta,
-						TipoObservacion.NORMAS, // ID de tipo de observación hardcodeado
-						observaciones.texto_observacion_normas,
-						id_usuario,
-						alojamientoDto.bl_eliminar ? 1 : 0,
-					],
-				);
-				resultados.observaciones.push(resultado_normas[0][0]);
-
-				const resultado_politica_garantia = await manager.query(
-					`CALL SP_ABM_OBSERVACIONES_X_OFERTA(?, ?, ?, ?, ?)`,
-					[
-						alojamientoDto.id_oferta,
-						TipoObservacion.POLITICA_GARANTIA, // ID de tipo de observación hardcodeado
-						observaciones.texto_observacion_politica_garantia,
-						id_usuario,
-						alojamientoDto.bl_eliminar ? 1 : 0,
-					],
-				);
-				resultados.observaciones.push(
-					resultado_politica_garantia[0][0],
-				);
-
-				//horarios checkin-checkout
-				if (!alojamientoDto.bl_eliminar) {
-					for (const horario of alojamientoDto.check_in_out) {
-						const {
-							check_in,
-							check_out,
-							dias_semana,
-							aplica_todos_los_dias,
-						} = horario;
-						if (aplica_todos_los_dias) {
-							dias_semana.aplica_lunes = true;
-							dias_semana.aplica_martes = true;
-							dias_semana.aplica_miercoles = true;
-							dias_semana.aplica_jueves = true;
-							dias_semana.aplica_viernes = true;
-							dias_semana.aplica_sabado = true;
-							dias_semana.aplica_domingo = true;
-						}
-						const resultado = await manager.query(
-							`CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+				if (
+					observaciones.texto_observacion_comodidades_y_servicios_oferta
+				) {
+					const resultado_comodidades_y_servicios_oferta =
+						await manager.query(
+							`CALL SP_ABM_OBSERVACIONES_X_OFERTA(?, ?, ?, ?, ?)`,
 							[
 								alojamientoDto.id_oferta,
-								check_in.hora_check_in,
-								check_in.minuto_check_in,
-								check_out.hora_check_out,
-								check_out.minuto_check_out,
-								dias_semana.aplica_lunes,
-								dias_semana.aplica_martes,
-								dias_semana.aplica_miercoles,
-								dias_semana.aplica_jueves,
-								dias_semana.aplica_viernes,
-								dias_semana.aplica_sabado,
-								dias_semana.aplica_domingo,
-								horario.id_horario ?? null,
+								TipoObservacion.COMODIDADES_SERVICIOS_ESTABLECIMIENTO, // ID de tipo de observación
+								observaciones.texto_observacion_comodidades_y_servicios_oferta,
+								id_usuario,
 								0,
 							],
 						);
-						resultados.horarios.push(resultado[0][0]);
+					resultados.observaciones.push(
+						resultado_comodidades_y_servicios_oferta[0][0],
+					);
+				}
+
+				if (observaciones.texto_observacion_canchas_deportes) {
+					const resultado_canchas_deportes = await manager.query(
+						`CALL SP_ABM_OBSERVACIONES_X_OFERTA(?, ?, ?, ?, ?)`,
+						[
+							alojamientoDto.id_oferta,
+							TipoObservacion.TIPO_CANCHA_DEPORTIVA, // ID de tipo de observación
+							observaciones.texto_observacion_canchas_deportes,
+							id_usuario,
+							0,
+						],
+					);
+					resultados.observaciones.push(
+						resultado_canchas_deportes[0][0],
+					);
+				}
+
+				if (observaciones.texto_observacion_normas) {
+					const resultado_normas = await manager.query(
+						`CALL SP_ABM_OBSERVACIONES_X_OFERTA(?, ?, ?, ?, ?)`,
+						[
+							alojamientoDto.id_oferta,
+							TipoObservacion.NORMAS, // ID de tipo de observación hardcodeado
+							observaciones.texto_observacion_normas,
+							id_usuario,
+							0,
+						],
+					);
+					resultados.observaciones.push(resultado_normas[0][0]);
+				}
+
+				if (observaciones.texto_observacion_politica_garantia) {
+					const resultado_politica_garantia = await manager.query(
+						`CALL SP_ABM_OBSERVACIONES_X_OFERTA(?, ?, ?, ?, ?)`,
+						[
+							alojamientoDto.id_oferta,
+							TipoObservacion.POLITICA_GARANTIA, // ID de tipo de observación hardcodeado
+							observaciones.texto_observacion_politica_garantia,
+							id_usuario,
+							0,
+						],
+					);
+					resultados.observaciones.push(
+						resultado_politica_garantia[0][0],
+					);
+				}
+
+				//horarios checkin-checkout
+				for (const horario of alojamientoDto.check_in_out) {
+					const {
+						check_in,
+						check_out,
+						dias_semana,
+						aplica_todos_los_dias,
+					} = horario;
+					if (aplica_todos_los_dias) {
+						dias_semana.aplica_lunes = true;
+						dias_semana.aplica_martes = true;
+						dias_semana.aplica_miercoles = true;
+						dias_semana.aplica_jueves = true;
+						dias_semana.aplica_viernes = true;
+						dias_semana.aplica_sabado = true;
+						dias_semana.aplica_domingo = true;
 					}
+					const resultado = await manager.query(
+						`CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+						[
+							alojamientoDto.id_oferta,
+							check_in.hora_check_in,
+							check_in.minuto_check_in,
+							check_out.hora_check_out,
+							check_out.minuto_check_out,
+							dias_semana.aplica_lunes,
+							dias_semana.aplica_martes,
+							dias_semana.aplica_miercoles,
+							dias_semana.aplica_jueves,
+							dias_semana.aplica_viernes,
+							dias_semana.aplica_sabado,
+							dias_semana.aplica_domingo,
+							horario.id_horario ?? null,
+							0,
+						],
+					);
+					resultados.horarios.push(resultado[0][0]);
 				}
 
 				//metodos de pago
@@ -177,7 +187,7 @@ export class AlojamientosRepositoryService {
 						alojamientoDto.id_oferta,
 						alojamientoDto.metodos_de_pago.join(','),
 						id_usuario,
-						alojamientoDto.bl_eliminar ? 1 : 0,
+						0,
 					],
 				);
 				resultados.metodos_pago = resultado_metodos_pago[0][0];
@@ -210,6 +220,31 @@ export class AlojamientosRepositoryService {
 				null,
 				null,
 				0,
+			],
+		);
+		return result[0][0];
+	}
+
+	async eliminarAlojamiento(id_usuario: string, id_oferta: string) {
+		const result = await this.entityManager.query(
+			'CALL SP_ABM_ALOJAMIENTO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			[
+				id_oferta,
+				null,
+				null,
+				null,
+				null,
+				null,
+				id_usuario,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				1,
 			],
 		);
 		return result[0][0];
@@ -389,7 +424,8 @@ export class AlojamientosRepositoryService {
 						[
 							id_oferta,
 							TipoObservacion.COMODIDADES_DETALLE_OFERTA, // ID de tipo de observación
-							observaciones.texto_observacion_comodidades_y_servicios_habitacion,
+							observaciones.texto_observacion_comodidades_y_servicios_habitacion ??
+								'',
 							id_usuario,
 							bl_eliminar ? 1 : 0,
 						],
@@ -433,17 +469,15 @@ export class AlojamientosRepositoryService {
 		return resultados;
 	}
 
-	async obtenerTarifas(id_tipo_oferta: string) {
+	async obtenerTarifas(id_tipo_detalle: string) {
 		const result = await this.entityManager.query(
-			'CALL SP_OBT_TARIFAS_X_OFERTA(?)',
-			[id_tipo_oferta],
+			'CALL SP_OBT_TARIFA_X_TIPO_DETALLE(?)',
+			[id_tipo_detalle],
 		);
-		console.log(result);
 		return result[0];
 	}
 
-	async registrarTarifa(id_usuario: string, tarifaDto: TarifaDto) {
-		const { tarifa } = tarifaDto;
+	async registrarTarifa(id_usuario: string, tarifa: TarifasDto) {
 		const result = await this.entityManager.query(
 			'CALL SP_ABM_TARIFA_X_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?)',
 			[

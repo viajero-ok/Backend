@@ -25,7 +25,7 @@ import { multerConfig } from '../utils/multer.config';
 import { AlojamientoVacioDto } from './dto/alojamiento/alojamiento-vacio.dto';
 import { HabitacionDto } from './dto/habitacion/habitacion.dto';
 import { HabitacionVaciaDto } from './dto/habitacion/habitacion-vacia.dto';
-import { TarifaDto } from './dto/tarifa/tarifa.dto';
+import { TarifasDto } from './dto/tarifa/tarifa.dto';
 import { DetalleAlojamientoDto } from './dto/detalle-alojamiento.dto';
 
 @ApiTags('Alojamientos')
@@ -299,6 +299,17 @@ export class AlojamientosController {
 		);
 	}
 
+	@Delete('eliminar-alojamiento/:id_oferta')
+	async eliminarAlojamiento(
+		@Req() req: Request,
+		@Param('id_oferta') id_oferta: string,
+	) {
+		return await this.alojamientosService.eliminarAlojamiento(
+			req,
+			id_oferta,
+		);
+	}
+
 	@ApiOperation({ summary: 'REGISTRAR IMAGEN ALOJAMIENTO' })
 	@ApiResponse({
 		status: 201,
@@ -535,7 +546,7 @@ export class AlojamientosController {
 		},
 	})
 	@Post('registrar-tarifa')
-	async registrarTarifa(@Req() req: Request, @Body() tarifaDto: TarifaDto) {
+	async registrarTarifa(@Req() req: Request, @Body() tarifaDto: TarifasDto) {
 		return await this.alojamientosService.registrarTarifa(req, tarifaDto);
 	}
 

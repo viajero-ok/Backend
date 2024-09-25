@@ -7,14 +7,16 @@ import { ImagenProcesadaDto } from './dto/imagen-procesada.dto';
 import { AlojamientoVacioDto } from './dto/alojamiento/alojamiento-vacio.dto';
 import { HabitacionDto } from './dto/habitacion/habitacion.dto';
 import { HabitacionVaciaDto } from './dto/habitacion/habitacion-vacia.dto';
-import { TarifaDto } from './dto/tarifa/tarifa.dto';
 import { DetalleAlojamientoDto } from './dto/detalle-alojamiento.dto';
+import { TarifasValidator } from '../utils/tarifas.validator';
+import { TarifasDto } from './dto/tarifa/tarifa.dto';
 
 @Injectable()
 export class AlojamientosService {
 	constructor(
 		private readonly alojamientosRepositoryService: AlojamientosRepositoryService,
 		private readonly exceptionHandlingService: ExceptionHandlingService,
+		private readonly tarifasValidator: TarifasValidator,
 	) {}
 
 	async registrarImagenAlojamiento(
@@ -149,6 +151,25 @@ export class AlojamientosService {
 		};
 	}
 
+	async eliminarAlojamiento(req, id_oferta: string) {
+		const result =
+			await this.alojamientosRepositoryService.eliminarAlojamiento(
+				req.user.id_usuario,
+				id_oferta,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al eliminar alojamiento',
+			HttpStatus.CONFLICT,
+		);
+
+		return {
+			resultado: 'ok',
+			statusCode: 200,
+		};
+	}
+
 	async obtenerDatosRegistroHabitacion() {
 		return await this.alojamientosRepositoryService.obtenerDatosRegistroHabitacion();
 	}
@@ -159,7 +180,6 @@ export class AlojamientosService {
 				req.user.id_usuario,
 				habitacionDto,
 			);
-		console.log(resultados);
 
 		// Verificar resultados individuales
 		this.exceptionHandlingService.handleError(
@@ -220,8 +240,23 @@ export class AlojamientosService {
 		return await this.alojamientosRepositoryService.obtenerDatosRegistroTarifa();
 	}
 
-	async registrarTarifa(req, tarifaDto: TarifaDto) {
-		const result = await this.alojamientosRepositoryService.registrarTarifa(
+	async registrarTarifa(req, tarifaDto: TarifasDto) {
+		const tarifasExistentes =
+			await this.alojamientosRepositoryService.obtenerTarifas(
+				tarifaDto.id_tipo_detalle,
+			);
+		console.log(tarifasExistentes);
+
+		const errores = await this.tarifasValidator.validarTarifa(
+			tarifaDto,
+			tarifasExistentes,
+		);
+		console.log(errores);
+		if (errores.length > 0) {
+			throw new Error(errores.join(', '));
+		}
+
+		/* const result = await this.alojamientosRepositoryService.registrarTarifa(
 			req.user.id_usuario,
 			tarifaDto,
 		);
@@ -230,12 +265,12 @@ export class AlojamientosService {
 			result,
 			'Error al registrar tarifa',
 			HttpStatus.CONFLICT,
-		);
+		); */
 
 		return {
 			resultado: 'ok',
 			statusCode: 201,
-			id_tarifa: result.id_tarifa,
+			//id_tarifa: result.id_tarifa,
 		};
 	}
 

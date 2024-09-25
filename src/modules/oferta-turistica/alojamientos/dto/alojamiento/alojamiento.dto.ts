@@ -7,8 +7,6 @@ import {
 	ArrayMinSize,
 	ValidateNested,
 	IsUUID,
-	IsOptional,
-	IsBoolean,
 	IsNumber,
 } from 'class-validator';
 import { CaracteristicaDto } from '../caracteristicas.dto';
@@ -78,12 +76,4 @@ export class AlojamientoDto {
 	@ValidateCheckInOut()
 	@Type(() => CheckInOutDto)
 	readonly check_in_out: CheckInOutDto[];
-
-	@ApiProperty({
-		type: Boolean,
-		description: 'Indica si se va a eliminar o no',
-	})
-	@IsOptional()
-	@IsBoolean()
-	readonly bl_eliminar: boolean;
 }
