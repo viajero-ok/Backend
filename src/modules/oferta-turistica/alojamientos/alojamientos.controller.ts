@@ -8,6 +8,7 @@ import {
 	UseInterceptors,
 	Delete,
 	Param,
+	Patch,
 } from '@nestjs/common';
 import { AlojamientosService } from './alojamientos.service';
 import {
@@ -287,7 +288,7 @@ export class AlojamientosController {
 			},
 		},
 	})
-	@Post('registrar-alojamiento')
+	@Patch('registrar-alojamiento')
 	async registrarAlojamiento(
 		@Req() req: Request,
 		@Body()

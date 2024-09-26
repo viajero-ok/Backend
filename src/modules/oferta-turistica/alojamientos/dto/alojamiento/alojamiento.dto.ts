@@ -8,6 +8,7 @@ import {
 	ValidateNested,
 	IsUUID,
 	IsNumber,
+	IsOptional,
 } from 'class-validator';
 import { CaracteristicaDto } from '../caracteristicas.dto';
 import { PoliticasReservaYDatosBasicosDto } from './politicas-reserva-y-datos-basicos.dto';
@@ -29,12 +30,10 @@ export class AlojamientoDto {
 		type: [CaracteristicaDto],
 		description: 'Características del alojamiento',
 	})
-	@IsNotEmpty()
+	@IsOptional()
 	@IsArray()
-	@ArrayMinSize(1)
-	@ValidateNested({ each: true })
-	@Type(() => CaracteristicaDto)
-	readonly caracteristicas: CaracteristicaDto[];
+	@IsNumber({}, { each: true })
+	readonly caracteristicas: number[];
 
 	@ApiProperty({
 		description: 'IDs de los métodos de pago aceptados',

@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
 	IsUUID,
 	IsBoolean,
@@ -30,6 +30,10 @@ export class TarifasDto {
 	id_tipo_detalle: string;
 
 	@ApiProperty({
+		description: 'ID de la tarifa',
+		example: '123e4567-e89b-12d3-a456-426614174002',
+	})
+	@ApiPropertyOptional({
 		description: 'ID de la tarifa',
 		example: '123e4567-e89b-12d3-a456-426614174002',
 	})

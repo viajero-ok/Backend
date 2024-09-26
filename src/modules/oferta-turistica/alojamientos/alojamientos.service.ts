@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AlojamientosRepositoryService } from './alojamientos-repository.service';
 import { AlojamientoDto } from './dto/alojamiento/alojamiento.dto';
 import { eliminarArchivo } from '../utils/eliminar-archivo';
@@ -245,32 +245,38 @@ export class AlojamientosService {
 			await this.alojamientosRepositoryService.obtenerTarifas(
 				tarifaDto.id_tipo_detalle,
 			);
-		console.log(tarifasExistentes);
 
 		const errores = await this.tarifasValidator.validarTarifa(
 			tarifaDto,
 			tarifasExistentes,
 		);
-		console.log(errores);
+
 		if (errores.length > 0) {
-			throw new Error(errores.join(', '));
+			throw new HttpException(
+				{
+					message: errores,
+					statusCode: HttpStatus.CONFLICT,
+				},
+				HttpStatus.CONFLICT,
+			);
 		}
 
-		/* const result = await this.alojamientosRepositoryService.registrarTarifa(
+		const result = await this.alojamientosRepositoryService.registrarTarifa(
 			req.user.id_usuario,
 			tarifaDto,
 		);
+		console.log(result);
 
 		this.exceptionHandlingService.handleError(
 			result,
 			'Error al registrar tarifa',
 			HttpStatus.CONFLICT,
-		); */
+		);
 
 		return {
 			resultado: 'ok',
 			statusCode: 201,
-			//id_tarifa: result.id_tarifa,
+			id_tarifa: result.id_tarifa,
 		};
 	}
 

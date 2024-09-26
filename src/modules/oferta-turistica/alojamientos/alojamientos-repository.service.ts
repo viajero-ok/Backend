@@ -67,9 +67,7 @@ export class AlojamientosRepositoryService {
 					`CALL SP_ABM_CARACTERISTICAS_OFERTA(?, ?, ?)`,
 					[
 						alojamientoDto.id_oferta,
-						alojamientoDto.caracteristicas
-							.map((c) => c.id_caracteristica)
-							.join(','),
+						alojamientoDto.caracteristicas.join(','),
 						0,
 					],
 				);
@@ -491,8 +489,7 @@ export class AlojamientosRepositoryService {
 				tarifa.bl_eliminar ? 1 : 0,
 			],
 		);
-		console.log(result);
-		return result;
+		return result[0][0];
 	}
 
 	async finalizarRegistroAlojamiento(
@@ -507,6 +504,6 @@ export class AlojamientosRepositoryService {
 				id_usuario,
 			],
 		);
-		return result;
+		return result[0][0];
 	}
 }
