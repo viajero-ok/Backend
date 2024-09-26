@@ -27,8 +27,9 @@ export class AlojamientoDto {
 	id_oferta: string;
 
 	@ApiProperty({
-		type: [CaracteristicaDto],
+		type: [Number],
 		description: 'Características del alojamiento',
+		example: [1, 2, 3],
 	})
 	@IsOptional()
 	@IsArray()
