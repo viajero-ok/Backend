@@ -207,12 +207,12 @@ export class OfertaTuristicaController {
 	@UseInterceptors(FileInterceptor('imagen', multerOfertaConfig))
 	async registrarImagenOfertaTuristica(
 		@Req() req: Request,
-		@UploadedFile() file: Express.Multer.File,
+		@UploadedFile() imagen: Express.Multer.File,
 		@Body('id_oferta') id_oferta: string,
 	) {
 		return await this.ofertaTuristicaService.registrarImagenOfertaTuristica(
 			req,
-			file,
+			imagen,
 			id_oferta,
 		);
 	}
