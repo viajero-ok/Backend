@@ -4,7 +4,6 @@ import { AlojamientoDto } from './dto/alojamiento/alojamiento.dto';
 import { eliminarArchivo } from '../utils/eliminar-archivo';
 import { ExceptionHandlingService } from 'src/common/services/exception-handler.service';
 import { ImagenProcesadaDto } from './dto/imagen-procesada.dto';
-import { AlojamientoVacioDto } from './dto/alojamiento/alojamiento-vacio.dto';
 import { HabitacionDto } from './dto/habitacion/habitacion.dto';
 import { HabitacionVaciaDto } from './dto/habitacion/habitacion-vacia.dto';
 import { DetalleAlojamientoDto } from './dto/detalle-alojamiento.dto';
@@ -19,10 +18,10 @@ export class AlojamientosService {
 		private readonly tarifasValidator: TarifasValidator,
 	) {}
 
-	async registrarImagenAlojamiento(
+	async registrarImagenHabitacion(
 		req,
 		file: Express.Multer.File,
-		id_oferta: string,
+		id_tipo_detalle: string,
 	) {
 		try {
 			const imagenProcesada = new ImagenProcesadaDto();
@@ -33,15 +32,15 @@ export class AlojamientosService {
 			imagenProcesada.tamaño = file.size;
 
 			const result =
-				await this.alojamientosRepositoryService.registrarImagenAlojamiento(
-					id_oferta,
+				await this.alojamientosRepositoryService.registrarImagenHabitacion(
+					id_tipo_detalle,
 					req.user.id_usuario,
 					imagenProcesada,
 				);
 
 			this.exceptionHandlingService.handleError(
 				result,
-				'Error al registrar imagen del alojamiento',
+				'Error al registrar imagen de la habitación',
 				HttpStatus.CONFLICT,
 			);
 
@@ -56,16 +55,16 @@ export class AlojamientosService {
 		}
 	}
 
-	async eliminarImagenAlojamiento(req, id_imagen: string) {
+	async eliminarImagenHabitacion(req, id_imagen: string) {
 		const result =
-			await this.alojamientosRepositoryService.eliminarImagenAlojamiento(
+			await this.alojamientosRepositoryService.eliminarImagenHabitacion(
 				req.user.id_usuario,
 				id_imagen,
 			);
 
 		this.exceptionHandlingService.handleError(
 			result,
-			'Error al eliminar imagen del alojamiento',
+			'Error al eliminar imagen de la habitación',
 			HttpStatus.CONFLICT,
 		);
 
@@ -74,10 +73,10 @@ export class AlojamientosService {
 		return { resultado: 'ok', statusCode: 200 };
 	}
 
-	async registrarAlojamiento(req, alojamientoDto: AlojamientoDto) {
+	async actualizarAlojamiento(req, alojamientoDto: AlojamientoDto) {
 		try {
 			const resultados =
-				await this.alojamientosRepositoryService.registrarAlojamiento(
+				await this.alojamientosRepositoryService.actualizarAlojamiento(
 					req.user.id_usuario,
 					alojamientoDto,
 				);
@@ -128,29 +127,6 @@ export class AlojamientosService {
 		return await this.alojamientosRepositoryService.obtenerDatosRegistroAlojamiento();
 	}
 
-	async registrarAlojamientoVacio(
-		req,
-		alojamientoVacioDto: AlojamientoVacioDto,
-	) {
-		const result =
-			await this.alojamientosRepositoryService.registrarAlojamientoVacio(
-				req.user.id_usuario,
-				alojamientoVacioDto,
-			);
-
-		this.exceptionHandlingService.handleError(
-			result,
-			'Error al registrar alojamiento vacío',
-			HttpStatus.CONFLICT,
-		);
-
-		return {
-			resultado: 'ok',
-			statusCode: 201,
-			id_oferta: result.id_oferta,
-		};
-	}
-
 	async eliminarAlojamiento(req, id_oferta: string) {
 		const result =
 			await this.alojamientosRepositoryService.eliminarAlojamiento(
@@ -174,9 +150,9 @@ export class AlojamientosService {
 		return await this.alojamientosRepositoryService.obtenerDatosRegistroHabitacion();
 	}
 
-	async registrarHabitacion(req, habitacionDto: HabitacionDto) {
+	async actualizarHabitacion(req, habitacionDto: HabitacionDto) {
 		const resultados =
-			await this.alojamientosRepositoryService.registrarHabitacion(
+			await this.alojamientosRepositoryService.actualizarHabitacion(
 				req.user.id_usuario,
 				habitacionDto,
 			);
@@ -213,12 +189,9 @@ export class AlojamientosService {
 		};
 	}
 
-	async registrarHabitacionVacia(
-		req,
-		habitacionVaciaDto: HabitacionVaciaDto,
-	) {
+	async registrarHabitacion(req, habitacionVaciaDto: HabitacionVaciaDto) {
 		const result =
-			await this.alojamientosRepositoryService.registrarHabitacionVacia(
+			await this.alojamientosRepositoryService.registrarHabitacion(
 				req.user.id_usuario,
 				habitacionVaciaDto,
 			);

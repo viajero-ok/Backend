@@ -3,7 +3,6 @@ import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 import { AlojamientoDto } from './dto/alojamiento/alojamiento.dto';
 import { ImagenProcesadaDto } from './dto/imagen-procesada.dto';
-import { AlojamientoVacioDto } from './dto/alojamiento/alojamiento-vacio.dto';
 import { HabitacionDto } from './dto/habitacion/habitacion.dto';
 import { HabitacionVaciaDto } from './dto/habitacion/habitacion-vacia.dto';
 import { DetalleAlojamientoDto } from './dto/detalle-alojamiento.dto';
@@ -17,7 +16,7 @@ export class AlojamientosRepositoryService {
 		private entityManager: EntityManager,
 	) {}
 
-	async registrarAlojamiento(
+	async actualizarAlojamiento(
 		id_usuario: string,
 		alojamientoDto: AlojamientoDto,
 	) {
@@ -44,17 +43,21 @@ export class AlojamientosRepositoryService {
 					`CALL SP_ABM_ALOJAMIENTO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 					[
 						alojamientoDto.id_oferta,
-						datos_basicos.id_tipo_oferta,
-						datos_basicos.id_sub_tipo_oferta,
+						1,
+						1,
 						datos_basicos.id_establecimiento,
 						datos_basicos.nombre_alojamiento,
 						datos_basicos.descripcion_alojamiento,
 						id_usuario,
 						politicas_reserva.id_politica_cancelacion,
 						politicas_reserva.plazo_dias_cancelacion,
-						politicas_reserva.solicita_garantia,
-						politicas_reserva.monto_garantia,
-						politicas_reserva.id_tipo_pago_anticipado,
+						politicas_reserva.monto_garantia ? true : false,
+						politicas_reserva.monto_garantia ?? null,
+						politicas_reserva.monto_pago_anticipado
+							? 2
+							: politicas_reserva.porcentaje_pago_anticipado
+								? 1
+								: 3,
 						politicas_reserva.monto_pago_anticipado,
 						politicas_reserva.porcentaje_pago_anticipado,
 						politicas_reserva.minimo_dias_estadia,
@@ -63,15 +66,18 @@ export class AlojamientosRepositoryService {
 				);
 				resultados.alojamiento = resultado_alojamiento[0][0];
 
-				const resultado_caracteristicas = await manager.query(
-					`CALL SP_ABM_CARACTERISTICAS_OFERTA(?, ?, ?)`,
-					[
-						alojamientoDto.id_oferta,
-						alojamientoDto.caracteristicas.join(','),
-						0,
-					],
-				);
-				resultados.caracteristicas = resultado_caracteristicas[0][0];
+				if (alojamientoDto.caracteristicas) {
+					const resultado_caracteristicas = await manager.query(
+						`CALL SP_ABM_CARACTERISTICAS_OFERTA(?, ?, ?)`,
+						[
+							alojamientoDto.id_oferta,
+							alojamientoDto.caracteristicas.join(','),
+							0,
+						],
+					);
+					resultados.caracteristicas =
+						resultado_caracteristicas[0][0];
+				}
 
 				//observaciones
 				if (
@@ -157,7 +163,7 @@ export class AlojamientosRepositoryService {
 						dias_semana.aplica_domingo = true;
 					}
 					const resultado = await manager.query(
-						`CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+						`CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 						[
 							alojamientoDto.id_oferta,
 							check_in.hora_check_in,
@@ -172,6 +178,8 @@ export class AlojamientosRepositoryService {
 							dias_semana.aplica_sabado,
 							dias_semana.aplica_domingo,
 							horario.id_horario ?? null,
+							null,
+							null,
 							0,
 						],
 					);
@@ -193,34 +201,6 @@ export class AlojamientosRepositoryService {
 				return resultados;
 			},
 		);
-	}
-
-	async registrarAlojamientoVacio(
-		id_usuario: string,
-		alojamientoVacioDto: AlojamientoVacioDto,
-	) {
-		const result = await this.entityManager.query(
-			'CALL SP_ABM_ALOJAMIENTO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-			[
-				null,
-				alojamientoVacioDto.id_tipo_oferta,
-				alojamientoVacioDto.id_sub_tipo_oferta,
-				null,
-				null,
-				null,
-				id_usuario,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				0,
-			],
-		);
-		return result[0][0];
 	}
 
 	async eliminarAlojamiento(id_usuario: string, id_oferta: string) {
@@ -248,8 +228,8 @@ export class AlojamientosRepositoryService {
 		return result[0][0];
 	}
 
-	async registrarImagenAlojamiento(
-		id_oferta: string,
+	async registrarImagenHabitacion(
+		id_tipo_detalle: string,
 		id_usuario: string,
 		imagen: ImagenProcesadaDto,
 	) {
@@ -260,7 +240,7 @@ export class AlojamientosRepositoryService {
 				imagen.nombre_unico,
 				imagen.ruta,
 				imagen.mime_type,
-				id_oferta,
+				id_tipo_detalle,
 				id_usuario,
 				imagen.tamaño,
 				null,
@@ -270,7 +250,7 @@ export class AlojamientosRepositoryService {
 		return result[0][0];
 	}
 
-	async eliminarImagenAlojamiento(id_usuario: string, id_imagen: string) {
+	async eliminarImagenHabitacion(id_usuario: string, id_imagen: string) {
 		const result = await this.entityManager.query(
 			'CALL SP_ABM_IMAGEN_ALOJAMIENTO(?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[null, null, null, null, null, id_usuario, null, id_imagen, 1],
@@ -351,7 +331,7 @@ export class AlojamientosRepositoryService {
 		return resultados;
 	}
 
-	async registrarHabitacion(
+	async actualizarHabitacion(
 		id_usuario: string,
 		habitacionDto: HabitacionDto,
 	) {
@@ -407,9 +387,7 @@ export class AlojamientosRepositoryService {
 					`CALL SP_ABM_CARACTERISTICAS_X_TIPO_DETALLE(?, ?, ?, ?)`,
 					[
 						id_tipo_detalle,
-						caracteristicas
-							.map((c) => c.id_caracteristica)
-							.join(','),
+						caracteristicas.join(','),
 						id_usuario,
 						bl_eliminar ? 1 : 0,
 					],
@@ -437,7 +415,7 @@ export class AlojamientosRepositoryService {
 		);
 	}
 
-	async registrarHabitacionVacia(
+	async registrarHabitacion(
 		id_usuario: string,
 		habitacionVaciaDto: HabitacionVaciaDto,
 	) {

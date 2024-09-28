@@ -1,9 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-	ArrayMinSize,
 	IsArray,
 	IsBoolean,
 	IsNotEmpty,
+	IsNumber,
+	IsOptional,
 	IsString,
 	IsUUID,
 	ValidateNested,
@@ -12,7 +13,6 @@ import { Type } from 'class-transformer';
 import { TipologiaDto } from './tipologia.dto';
 import { BañosDto } from './baños.dto';
 import { PlazasDto } from './plazas.dto';
-import { CaracteristicaDto } from '../caracteristicas.dto';
 import { ObservacionesHabitacionDto } from './observaciones-habitacion.dto';
 
 export class HabitacionDto {
@@ -50,15 +50,14 @@ export class HabitacionDto {
 	readonly baño: BañosDto;
 
 	@ApiProperty({
-		type: [CaracteristicaDto],
-		description: 'Características del alojamiento',
+		type: [Number],
+		description: 'Características de la habitación',
+		example: [1, 2, 3],
 	})
-	@IsNotEmpty()
+	@IsOptional()
 	@IsArray()
-	@ArrayMinSize(1)
-	@ValidateNested({ each: true })
-	@Type(() => CaracteristicaDto)
-	readonly caracteristicas: CaracteristicaDto[];
+	@IsNumber({}, { each: true })
+	readonly caracteristicas: number[];
 
 	@ApiProperty({
 		type: ObservacionesHabitacionDto,

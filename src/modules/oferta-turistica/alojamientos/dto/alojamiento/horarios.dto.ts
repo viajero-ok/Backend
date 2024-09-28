@@ -7,7 +7,6 @@ import {
 	Min,
 	Max,
 	IsOptional,
-	ValidateIf,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -110,10 +109,6 @@ class DiasSemanaDto {
 }
 
 export class CheckInOutDto {
-	@ApiProperty({
-		description: 'ID del horario',
-		example: '123e4567-e89b-12d3-a456-426614174000',
-	})
 	@ApiPropertyOptional({
 		description: 'ID del horario',
 		example: '123e4567-e89b-12d3-a456-426614174000',
@@ -124,13 +119,13 @@ export class CheckInOutDto {
 
 	@ApiProperty({ type: CheckInDto })
 	@IsNotEmpty()
-	@ValidateNested({ each: true })
+	@ValidateNested()
 	@Type(() => CheckInDto)
 	readonly check_in: CheckInDto;
 
 	@ApiProperty({ type: CheckOutDto })
 	@IsNotEmpty()
-	@ValidateNested({ each: true })
+	@ValidateNested()
 	@Type(() => CheckOutDto)
 	readonly check_out: CheckOutDto;
 

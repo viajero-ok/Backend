@@ -92,7 +92,7 @@ export class AuthService {
 		let usuarioRegistrado;
 
 		//Si el usuario no existe, se registra
-		if (!userExists) {
+		if (userExists.descripcion === 'Error al obtener usuario. ') {
 			usuarioRegistrado =
 				await this.authRepositoryService.registrarCuenta({
 					mail: profile.emails[0].value,

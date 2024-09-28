@@ -1,16 +1,15 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
 	IsNotEmpty,
 	IsString,
 	IsArray,
-	ArrayMinSize,
 	ValidateNested,
 	IsUUID,
 	IsNumber,
 	IsOptional,
+	ArrayMinSize,
 } from 'class-validator';
-import { CaracteristicaDto } from '../caracteristicas.dto';
 import { PoliticasReservaYDatosBasicosDto } from './politicas-reserva-y-datos-basicos.dto';
 import { CheckInOutDto } from './horarios.dto';
 import { ValidateCheckInOut } from '../../../utils/check-in-out.validator';
@@ -26,7 +25,7 @@ export class AlojamientoDto {
 	@IsUUID()
 	id_oferta: string;
 
-	@ApiProperty({
+	@ApiPropertyOptional({
 		type: [Number],
 		description: 'Características del alojamiento',
 		example: [1, 2, 3],
@@ -34,7 +33,7 @@ export class AlojamientoDto {
 	@IsOptional()
 	@IsArray()
 	@IsNumber({}, { each: true })
-	readonly caracteristicas: number[];
+	readonly caracteristicas?: number[];
 
 	@ApiProperty({
 		description: 'IDs de los métodos de pago aceptados',
@@ -43,18 +42,17 @@ export class AlojamientoDto {
 	})
 	@IsNotEmpty()
 	@IsArray()
-	@ArrayMinSize(1)
 	@IsNumber({}, { each: true })
 	readonly metodos_de_pago: number[];
 
-	@ApiProperty({
+	@ApiPropertyOptional({
 		type: ObservacionesAlojamientoDto,
 		description: 'Observaciones del alojamiento',
 	})
-	@IsNotEmpty()
+	@IsOptional()
 	@ValidateNested()
 	@Type(() => ObservacionesAlojamientoDto)
-	readonly observaciones: ObservacionesAlojamientoDto;
+	readonly observaciones?: ObservacionesAlojamientoDto;
 
 	@ApiProperty({
 		type: PoliticasReservaYDatosBasicosDto,
@@ -70,8 +68,8 @@ export class AlojamientoDto {
 		description: 'Horarios de check-in y check-out',
 	})
 	@IsNotEmpty()
-	@IsArray()
 	@ArrayMinSize(1)
+	@IsArray()
 	@ValidateNested({ each: true })
 	@ValidateCheckInOut()
 	@Type(() => CheckInOutDto)

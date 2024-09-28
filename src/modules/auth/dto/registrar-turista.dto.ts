@@ -48,8 +48,10 @@ export class RegistrarTuristaDto {
 	@IsInt()
 	readonly id_tipo_documento: number;
 
-	@ApiProperty({ example: '03515285324', description: 'Número de teléfono' })
-	@ApiPropertyOptional()
+	@ApiPropertyOptional({
+		example: '03515285324',
+		description: 'Número de teléfono',
+	})
 	@IsOptional()
 	@IsString()
 	@Length(11, 11, {

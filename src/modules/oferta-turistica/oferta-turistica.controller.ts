@@ -1,12 +1,27 @@
-import { Controller, Get, Req } from '@nestjs/common';
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Post,
+	Req,
+	UploadedFile,
+	UseInterceptors,
+} from '@nestjs/common';
 import { OfertaTuristicaService } from './oferta-turistica.service';
 import {
 	ApiBearerAuth,
+	ApiBody,
+	ApiConsumes,
 	ApiOperation,
 	ApiResponse,
 	ApiTags,
 } from '@nestjs/swagger';
 import { Request } from 'express';
+import { OfertaTuristicaDto } from './dto/oferta-turistica.dto';
+import { multerConfig } from './utils/multer-oferta.config';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Ofertas Turísticas')
 @ApiBearerAuth()
@@ -86,5 +101,147 @@ export class OfertaTuristicaController {
 	@Get('tipos-subtipos')
 	async obtenerTiposSubtipos() {
 		return await this.ofertaTuristicaService.obtenerTiposSubtipos();
+	}
+
+	@ApiOperation({ summary: 'REGISTRAR OFERTA TURÍSTICA' })
+	@ApiResponse({
+		status: 200,
+		description: 'Oferta turística registrada correctamente',
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 200,
+				},
+				id_oferta: {
+					type: 'string',
+					example: '64d54123648f4a3b38a4b746',
+				},
+			},
+		},
+	})
+	@Post('registrar-oferta-turistica')
+	async registrarOfertaTuristica(
+		@Req() req: Request,
+		@Body() ofertaTuristicaDto: OfertaTuristicaDto,
+	) {
+		return await this.ofertaTuristicaService.registrarOfertaTuristica(
+			req,
+			ofertaTuristicaDto,
+		);
+	}
+
+	@ApiOperation({ summary: 'ELIMINAR OFERTA TURÍSTICA' })
+	@ApiResponse({
+		status: 200,
+		description: 'Oferta turística eliminada correctamente',
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 200,
+				},
+			},
+		},
+	})
+	@Delete('eliminar-oferta-turistica/:id_oferta')
+	async eliminarOfertaTuristica(
+		@Req() req: Request,
+		@Param('id_oferta') id_oferta: string,
+	) {
+		return await this.ofertaTuristicaService.eliminarOfertaTuristica(
+			req,
+			id_oferta,
+		);
+	}
+
+	@ApiOperation({ summary: 'REGISTRAR IMAGEN OFERTA TURÍSTICA' })
+	@ApiResponse({
+		status: 201,
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 201,
+				},
+				id_imagen: {
+					type: 'number',
+					example: 1,
+				},
+			},
+		},
+	})
+	@ApiBody({
+		schema: {
+			type: 'object',
+			properties: {
+				imagen: {
+					type: 'string',
+					format: 'binary',
+					description: 'Archivo de imagen del alojamiento',
+				},
+				id_oferta: {
+					type: 'string',
+					description: 'ID de la oferta del alojamiento',
+				},
+			},
+		},
+	})
+	@ApiConsumes('multipart/form-data')
+	@Post('registrar-imagen-oferta-turistica')
+	@UseInterceptors(FileInterceptor('imagen', multerConfig))
+	async registrarImagenOfertaTuristica(
+		@Req() req: Request,
+		@UploadedFile() file: Express.Multer.File,
+		@Body('id_oferta') id_oferta: string,
+	) {
+		return await this.ofertaTuristicaService.registrarImagenOfertaTuristica(
+			req,
+			file,
+			id_oferta,
+		);
+	}
+
+	@ApiOperation({ summary: 'ELIMINAR IMAGEN OFERTA TURÍSTICA' })
+	@ApiResponse({
+		status: 200,
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 200,
+				},
+			},
+		},
+	})
+	@Delete('eliminar-imagen-oferta-turistica/:id_imagen')
+	async eliminarImagenOfertaTuristica(
+		@Req() req: Request,
+		@Param('id_imagen') id_imagen: string,
+	) {
+		return await this.ofertaTuristicaService.eliminarImagenOfertaTuristica(
+			req,
+			id_imagen,
+		);
 	}
 }
