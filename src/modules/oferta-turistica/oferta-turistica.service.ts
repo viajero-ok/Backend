@@ -71,6 +71,7 @@ export class OfertaTuristicaService {
 		id_oferta: string,
 	) {
 		try {
+			console.log(file);
 			const imagenProcesada = new ImagenProcesadaDto();
 			imagenProcesada.nombre_original = file.originalname;
 			imagenProcesada.nombre_unico = file.filename;

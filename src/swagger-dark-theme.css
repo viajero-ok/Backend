@@ -1,0 +1,27 @@
+body {
+	background-color: #121212;
+	color: #ffffff;
+}
+
+.swagger-ui .topbar,
+.swagger-ui .topbar .download-url-wrapper {
+	background-color: #1e1e1e;
+}
+
+.swagger-ui .information-container,
+.swagger-ui .opblock,
+.swagger-ui .response-col_description {
+	background-color: #1e1e1e;
+	border-color: #333;
+}
+
+.swagger-ui .btn {
+	background-color: #333;
+	color: #fff;
+	border-color: #555;
+}
+
+.swagger-ui .opblock-summary {
+	background-color: #333;
+	color: #fff;
+}

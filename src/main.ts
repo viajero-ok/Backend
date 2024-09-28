@@ -102,7 +102,9 @@ async function bootstrap() {
 		},
 	};
 
-	SwaggerModule.setup('api/docs', app, document);
+	SwaggerModule.setup('api/docs', app, document, {
+		customCssUrl: '/@swagger-dark-theme.css',
+	});
 
 	//Iniciar la aplicación
 	const PORT = process.env.PORT || 3000;

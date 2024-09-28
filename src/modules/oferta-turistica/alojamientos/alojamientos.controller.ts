@@ -22,11 +22,11 @@ import {
 import { AlojamientoDto } from './dto/alojamiento/alojamiento.dto';
 import { Request } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { multerConfig } from '../utils/multer-oferta.config';
 import { HabitacionDto } from './dto/habitacion/habitacion.dto';
 import { HabitacionVaciaDto } from './dto/habitacion/habitacion-vacia.dto';
 import { TarifasDto } from './dto/tarifa/tarifa.dto';
 import { DetalleAlojamientoDto } from './dto/detalle-alojamiento.dto';
+import { multerHabitacionConfig } from '../utils/multer-habitacion.config';
 
 @ApiTags('Alojamientos')
 @ApiBearerAuth()
@@ -376,7 +376,7 @@ export class AlojamientosController {
 	})
 	@ApiConsumes('multipart/form-data')
 	@Post('registrar-imagen-habitacion')
-	@UseInterceptors(FileInterceptor('imagen', multerConfig))
+	@UseInterceptors(FileInterceptor('imagen', multerHabitacionConfig))
 	async registrarImagenHabitacion(
 		@Req() req: Request,
 		@UploadedFile() file: Express.Multer.File,

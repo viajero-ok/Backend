@@ -20,7 +20,7 @@ import {
 } from '@nestjs/swagger';
 import { Request } from 'express';
 import { OfertaTuristicaDto } from './dto/oferta-turistica.dto';
-import { multerConfig } from './utils/multer-oferta.config';
+import { multerOfertaConfig } from './utils/multer-oferta.config';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Ofertas Turísticas')
@@ -204,7 +204,7 @@ export class OfertaTuristicaController {
 	})
 	@ApiConsumes('multipart/form-data')
 	@Post('registrar-imagen-oferta-turistica')
-	@UseInterceptors(FileInterceptor('imagen', multerConfig))
+	@UseInterceptors(FileInterceptor('imagen', multerOfertaConfig))
 	async registrarImagenOfertaTuristica(
 		@Req() req: Request,
 		@UploadedFile() file: Express.Multer.File,
