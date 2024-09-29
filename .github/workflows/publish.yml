@@ -25,7 +25,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }} # Se debe crear un token de GitHub con permisos de lectura y escritura en paquetes https://docs.github.com/en/actions/security-guides/automatic-token-authentication
+          password: ${{ secrets.GITHUB_TOKEN }} # Se debe crear un token de GitHub con permisos de lectura y escritura en paquetes https://docs.github.com/en/actions/security-guides/automatic-token-authentication 
 
       - name: Set lower case repository name
         run: echo "REPOSITORIO_LC=${REPOSITORIO,,}" >> ${GITHUB_ENV}
