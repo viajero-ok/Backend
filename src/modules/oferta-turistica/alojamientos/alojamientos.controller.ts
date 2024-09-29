@@ -481,6 +481,18 @@ export class AlojamientosController {
 		);
 	}
 
+	@ApiOperation({ summary: 'ELIMINAR HABITACION' })
+	@Delete('eliminar-habitacion/:id_tipo_detalle')
+	async eliminarHabitacion(
+		@Req() req: Request,
+		@Param('id_tipo_detalle') id_tipo_detalle: string,
+	) {
+		return await this.alojamientosService.eliminarHabitacion(
+			req,
+			id_tipo_detalle,
+		);
+	}
+
 	@ApiOperation({ summary: 'OBTENER DATOS REGISTRO TARIFA' })
 	@ApiResponse({
 		status: 200,

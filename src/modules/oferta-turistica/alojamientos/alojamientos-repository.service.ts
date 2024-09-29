@@ -435,6 +435,14 @@ export class AlojamientosRepositoryService {
 		return result[0][0];
 	}
 
+	async eliminarHabitacion(id_usuario: string, id_tipo_detalle: string) {
+		const result = await this.entityManager.query(
+			'CALL SP_ABM_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?)',
+			[id_tipo_detalle, null, null, null, null, null, id_usuario, 0],
+		);
+		return result[0][0];
+	}
+
 	async obtenerDatosRegistroTarifa() {
 		const resultados = {
 			tipos_pension: null,

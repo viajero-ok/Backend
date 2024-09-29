@@ -209,6 +209,25 @@ export class AlojamientosService {
 		};
 	}
 
+	async eliminarHabitacion(req, id_tipo_detalle: string) {
+		const result =
+			await this.alojamientosRepositoryService.eliminarHabitacion(
+				req.user.id_usuario,
+				id_tipo_detalle,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al eliminar habitación',
+			HttpStatus.CONFLICT,
+		);
+
+		return {
+			resultado: 'ok',
+			statusCode: 200,
+		};
+	}
+
 	async obtenerDatosRegistroTarifa() {
 		return await this.alojamientosRepositoryService.obtenerDatosRegistroTarifa();
 	}
