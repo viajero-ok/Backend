@@ -41,31 +41,6 @@ export class OfertaTuristicaRepositoryService {
 		return result[0][0];
 	}
 
-	async eliminarOfertaTuristica(id_usuario: string, id_oferta: string) {
-		const result = await this.entityManager.query(
-			'CALL SP_ABM_ALOJAMIENTO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-			[
-				id_oferta,
-				null,
-				null,
-				null,
-				null,
-				null,
-				id_usuario,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				1,
-			],
-		);
-		return result[0][0];
-	}
-
 	async registrarImagenOfertaTuristica(
 		id_oferta: string,
 		id_usuario: string,

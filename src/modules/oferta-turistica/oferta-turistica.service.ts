@@ -46,25 +46,6 @@ export class OfertaTuristicaService {
 		};
 	}
 
-	async eliminarOfertaTuristica(req, id_oferta: string) {
-		const result =
-			await this.ofertaTuristicaRepositoryService.eliminarOfertaTuristica(
-				req.user.id_usuario,
-				id_oferta,
-			);
-
-		this.exceptionHandlingService.handleError(
-			result,
-			'Error al eliminar oferta turística',
-			HttpStatus.CONFLICT,
-		);
-
-		return {
-			resultado: 'ok',
-			statusCode: 200,
-		};
-	}
-
 	async registrarImagenOfertaTuristica(
 		req,
 		file: Express.Multer.File,

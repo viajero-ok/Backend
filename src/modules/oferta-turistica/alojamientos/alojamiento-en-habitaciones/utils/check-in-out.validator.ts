@@ -5,7 +5,7 @@ import {
 	ValidatorConstraint,
 	ValidatorConstraintInterface,
 } from 'class-validator';
-import { CheckInOutDto } from '../alojamientos/dto/alojamiento/horarios.dto';
+import { CheckInOutDto } from '../pestaña-alojamiento/dto/horarios.dto';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

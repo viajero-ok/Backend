@@ -1,7 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
 	IsUUID,
-	IsBoolean,
 	IsString,
 	IsNumber,
 	IsDate,
@@ -70,12 +69,4 @@ export class TarifasDto {
 	@IsDate()
 	@Type(() => Date)
 	fecha_hasta: Date;
-
-	@ApiProperty({
-		description: 'Indica si se debe eliminar',
-		example: false,
-	})
-	@IsBoolean()
-	@IsNotEmpty()
-	bl_eliminar: boolean;
 }

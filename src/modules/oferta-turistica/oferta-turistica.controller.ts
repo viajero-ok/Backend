@@ -136,35 +136,6 @@ export class OfertaTuristicaController {
 		);
 	}
 
-	@ApiOperation({ summary: 'ELIMINAR OFERTA TURÍSTICA' })
-	@ApiResponse({
-		status: 200,
-		description: 'Oferta turística eliminada correctamente',
-		schema: {
-			type: 'object',
-			properties: {
-				resultado: {
-					type: 'string',
-					example: 'ok',
-				},
-				statusCode: {
-					type: 'number',
-					example: 200,
-				},
-			},
-		},
-	})
-	@Delete('eliminar-oferta-turistica/:id_oferta')
-	async eliminarOfertaTuristica(
-		@Req() req: Request,
-		@Param('id_oferta') id_oferta: string,
-	) {
-		return await this.ofertaTuristicaService.eliminarOfertaTuristica(
-			req,
-			id_oferta,
-		);
-	}
-
 	@ApiOperation({ summary: 'REGISTRAR IMAGEN OFERTA TURÍSTICA' })
 	@ApiResponse({
 		status: 201,

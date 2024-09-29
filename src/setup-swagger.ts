@@ -36,13 +36,6 @@ export const setupSwagger = (app: INestApplication) => {
 		.addBearerAuth()
 		.setTitle('Documentación Viajero API')
 		.setVersion('1.0')
-		.addTag('Auth')
-		.addTag('Ofertas Turísticas')
-		.addTag('Establecimientos')
-		.addTag('Alojamientos')
-		.addTag('Eventos')
-		.addTag('Actividades')
-		.addTag('Ubicaciones')
 		.build();
 	const options: SwaggerDocumentOptions = {
 		include: [
@@ -76,5 +69,9 @@ export const setupSwagger = (app: INestApplication) => {
 		},
 	};
 
-	SwaggerModule.setup('api/docs', app, document);
+	SwaggerModule.setup('api/docs', app, document, {
+		swaggerOptions: {
+			docExpansion: 'none',
+		},
+	});
 };

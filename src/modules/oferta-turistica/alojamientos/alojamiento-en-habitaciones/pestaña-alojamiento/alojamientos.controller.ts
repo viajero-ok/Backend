@@ -4,8 +4,6 @@ import {
 	Get,
 	Post,
 	Req,
-	UploadedFile,
-	UseInterceptors,
 	Delete,
 	Param,
 	Patch,
@@ -13,22 +11,15 @@ import {
 import { AlojamientosService } from './alojamientos.service';
 import {
 	ApiBearerAuth,
-	ApiBody,
-	ApiConsumes,
 	ApiOperation,
 	ApiResponse,
 	ApiTags,
 } from '@nestjs/swagger';
-import { AlojamientoDto } from './dto/alojamiento/alojamiento.dto';
+import { AlojamientoDto } from './dto/alojamiento.dto';
 import { Request } from 'express';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { HabitacionDto } from './dto/habitacion/habitacion.dto';
-import { HabitacionVaciaDto } from './dto/habitacion/habitacion-vacia.dto';
-import { TarifasDto } from './dto/tarifa/tarifa.dto';
-import { DetalleAlojamientoDto } from './dto/detalle-alojamiento.dto';
-import { multerHabitacionConfig } from '../utils/multer-habitacion.config';
+import { DetalleAlojamientoDto } from '../dto/detalle-alojamiento.dto';
 
-@ApiTags('Alojamientos')
+@ApiTags('Alojamientos/Alojamiento')
 @ApiBearerAuth()
 @Controller('alojamientos')
 export class AlojamientosController {
@@ -293,258 +284,6 @@ export class AlojamientosController {
 			req,
 			id_oferta,
 		);
-	}
-
-	@ApiOperation({ summary: 'OBTENER DATOS REGISTRO HABITACION' })
-	@ApiResponse({
-		status: 200,
-		description:
-			'Datos de tipos de camas y características de habitaciones',
-		schema: {
-			type: 'object',
-			properties: {
-				tipos_camas: {
-					type: 'array',
-					items: {
-						type: 'object',
-						properties: {
-							id_tipo_cama: { type: 'number', example: 1 },
-							tipo_cama: {
-								type: 'string',
-								example: 'Cama simple',
-							},
-						},
-					},
-				},
-				caracteristicas_habitaciones: {
-					type: 'array',
-					items: {
-						type: 'object',
-						properties: {
-							id_caracteristica: { type: 'number', example: 28 },
-							caracteristica: {
-								type: 'string',
-								example: 'Apta personas con movilidad reducida',
-							},
-						},
-					},
-				},
-			},
-		},
-	})
-	@Get('datos-registro-habitacion')
-	async obtenerDatosRegistroHabitacion() {
-		return await this.alojamientosService.obtenerDatosRegistroHabitacion();
-	}
-
-	@ApiOperation({ summary: 'REGISTRAR IMAGEN HABITACIÓN' })
-	@ApiResponse({
-		status: 201,
-		schema: {
-			type: 'object',
-			properties: {
-				resultado: {
-					type: 'string',
-					example: 'ok',
-				},
-				statusCode: {
-					type: 'number',
-					example: 201,
-				},
-				id_imagen: {
-					type: 'number',
-					example: 1,
-				},
-			},
-		},
-	})
-	@ApiBody({
-		schema: {
-			type: 'object',
-			properties: {
-				imagen: {
-					type: 'string',
-					format: 'binary',
-					description: 'Archivo de imagen del alojamiento',
-				},
-				id_tipo_detalle: {
-					type: 'string',
-					description: 'ID de la habitación del alojamiento',
-				},
-			},
-		},
-	})
-	@ApiConsumes('multipart/form-data')
-	@Post('registrar-imagen-habitacion')
-	@UseInterceptors(FileInterceptor('imagen', multerHabitacionConfig))
-	async registrarImagenHabitacion(
-		@Req() req: Request,
-		@UploadedFile() file: Express.Multer.File,
-		@Body('id_tipo_detalle') id_tipo_detalle: string,
-	) {
-		return await this.alojamientosService.registrarImagenHabitacion(
-			req,
-			file,
-			id_tipo_detalle,
-		);
-	}
-
-	@ApiOperation({ summary: 'ELIMINAR IMAGEN HABITACIÓN' })
-	@ApiResponse({
-		status: 200,
-		schema: {
-			type: 'object',
-			properties: {
-				resultado: {
-					type: 'string',
-					example: 'ok',
-				},
-				statusCode: {
-					type: 'number',
-					example: 200,
-				},
-			},
-		},
-	})
-	@Delete('eliminar-imagen-habitacion/:id_imagen')
-	async eliminarImagenHabitacion(
-		@Req() req: Request,
-		@Param('id_imagen') id_imagen: string,
-	) {
-		return await this.alojamientosService.eliminarImagenHabitacion(
-			req,
-			id_imagen,
-		);
-	}
-
-	@ApiOperation({ summary: 'REGISTRAR HABITACION' })
-	@ApiResponse({
-		status: 201,
-		schema: {
-			type: 'object',
-			properties: {
-				resultado: {
-					type: 'string',
-					example: 'ok',
-				},
-				statusCode: {
-					type: 'number',
-					example: 201,
-				},
-				id_tipo_detalle: {
-					type: 'string',
-					example: '123e4567-e89b-12d3-a456-426614174000',
-				},
-			},
-		},
-	})
-	@Post('registrar-habitacion')
-	async registrarHabitacion(
-		@Req() req: Request,
-		@Body() habitacionVaciaDto: HabitacionVaciaDto,
-	) {
-		return await this.alojamientosService.registrarHabitacion(
-			req,
-			habitacionVaciaDto,
-		);
-	}
-
-	@ApiOperation({ summary: 'ACTUALIZAR HABITACION' })
-	@ApiResponse({
-		status: 201,
-		schema: {
-			type: 'object',
-			properties: {
-				resultado: {
-					type: 'string',
-					example: 'ok',
-				},
-				statusCode: {
-					type: 'number',
-					example: 201,
-				},
-				id_tipo_detalle: {
-					type: 'string',
-					example: '123e4567-e89b-12d3-a456-426614174000',
-				},
-			},
-		},
-	})
-	@Patch('actualizar-habitacion')
-	async actualizarHabitacion(
-		@Req() req: Request,
-		@Body() habitacionDto: HabitacionDto,
-	) {
-		return await this.alojamientosService.actualizarHabitacion(
-			req,
-			habitacionDto,
-		);
-	}
-
-	@ApiOperation({ summary: 'ELIMINAR HABITACION' })
-	@Delete('eliminar-habitacion/:id_tipo_detalle')
-	async eliminarHabitacion(
-		@Req() req: Request,
-		@Param('id_tipo_detalle') id_tipo_detalle: string,
-	) {
-		return await this.alojamientosService.eliminarHabitacion(
-			req,
-			id_tipo_detalle,
-		);
-	}
-
-	@ApiOperation({ summary: 'OBTENER DATOS REGISTRO TARIFA' })
-	@ApiResponse({
-		status: 200,
-		description: 'Datos de tipos de pension',
-		schema: {
-			type: 'object',
-			properties: {
-				tipos_pension: {
-					type: 'array',
-					items: {
-						type: 'object',
-						properties: {
-							id_tipo_pension: { type: 'number', example: 1 },
-							tipo_pension: {
-								type: 'string',
-								example: 'Completa',
-							},
-						},
-					},
-				},
-			},
-		},
-	})
-	@Get('datos-registro-tarifa')
-	async obtenerDatosRegistroTarifa() {
-		return await this.alojamientosService.obtenerDatosRegistroTarifa();
-	}
-
-	@ApiOperation({ summary: 'ABM TARIFA' })
-	@ApiResponse({
-		status: 201,
-		schema: {
-			type: 'object',
-			properties: {
-				resultado: {
-					type: 'string',
-					example: 'ok',
-				},
-				statusCode: {
-					type: 'number',
-					example: 201,
-				},
-				id_tarifa: {
-					type: 'string',
-					example: '123e4567-e89b-12d3-a456-426614174000',
-				},
-			},
-		},
-	})
-	@Post('registrar-tarifa')
-	async registrarTarifa(@Req() req: Request, @Body() tarifaDto: TarifasDto) {
-		return await this.alojamientosService.registrarTarifa(req, tarifaDto);
 	}
 
 	@ApiOperation({ summary: 'FINALIZAR REGISTRO DE ALOJAMIENTO' })

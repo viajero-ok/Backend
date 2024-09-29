@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
 	IsArray,
-	IsBoolean,
 	IsNotEmpty,
 	IsNumber,
 	IsOptional,
@@ -67,12 +66,4 @@ export class HabitacionDto {
 	@ValidateNested()
 	@Type(() => ObservacionesHabitacionDto)
 	readonly observaciones: ObservacionesHabitacionDto;
-
-	@ApiProperty({
-		description: 'Bandera para eliminar la habitación',
-		example: false,
-	})
-	@IsNotEmpty()
-	@IsBoolean()
-	readonly bl_eliminar: boolean;
 }

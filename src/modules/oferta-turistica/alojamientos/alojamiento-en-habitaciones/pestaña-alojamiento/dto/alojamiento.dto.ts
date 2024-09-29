@@ -12,7 +12,7 @@ import {
 } from 'class-validator';
 import { PoliticasReservaYDatosBasicosDto } from './politicas-reserva-y-datos-basicos.dto';
 import { CheckInOutDto } from './horarios.dto';
-import { ValidateCheckInOut } from '../../../utils/check-in-out.validator';
+import { ValidateCheckInOut } from '../../utils/check-in-out.validator';
 import { ObservacionesAlojamientoDto } from './observaciones-alojamiento.dto';
 
 export class AlojamientoDto {

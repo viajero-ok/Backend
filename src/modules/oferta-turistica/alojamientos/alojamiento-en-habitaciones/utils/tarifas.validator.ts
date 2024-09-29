@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { TarifasDto } from '../alojamientos/dto/tarifa/tarifa.dto';
+import { TarifasDto } from '../pestaña-tarfifas/dto/tarifa.dto';
 
 @Injectable()
 export class TarifasValidator {
