@@ -4,7 +4,6 @@ import { EntityManager } from 'typeorm';
 import { TipoObservacion } from '../../enum/tipo-observacion.enum';
 import { ImagenProcesadaDto } from '../dto/imagen-procesada.dto';
 import { HabitacionDto } from './dto/habitacion.dto';
-import { HabitacionVaciaDto } from './dto/habitacion-vacia.dto';
 
 @Injectable()
 export class HabitacionesRepositoryService {
@@ -107,22 +106,10 @@ export class HabitacionesRepositoryService {
 		);
 	}
 
-	async registrarHabitacion(
-		id_usuario: string,
-		habitacionVaciaDto: HabitacionVaciaDto,
-	) {
+	async registrarHabitacion(id_usuario: string) {
 		const result = await this.entityManager.query(
 			'CALL SP_ABM_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?)',
-			[
-				null,
-				habitacionVaciaDto.nombre_tipologia,
-				habitacionVaciaDto.cantidad,
-				null,
-				null,
-				null,
-				id_usuario,
-				0,
-			],
+			[null, null, null, null, null, null, id_usuario, 0],
 		);
 		return result[0][0];
 	}
@@ -141,7 +128,7 @@ export class HabitacionesRepositoryService {
 		imagen: ImagenProcesadaDto,
 	) {
 		const result = await this.entityManager.query(
-			'CALL SP_ABM_IMAGEN_ALOJAMIENTO(?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			'CALL SP_ABM_IMAGEN_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
 				imagen.nombre_original,
 				imagen.nombre_unico,
@@ -159,7 +146,7 @@ export class HabitacionesRepositoryService {
 
 	async eliminarImagenHabitacion(id_usuario: string, id_imagen: string) {
 		const result = await this.entityManager.query(
-			'CALL SP_ABM_IMAGEN_ALOJAMIENTO(?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			'CALL SP_ABM_IMAGEN_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[null, null, null, null, null, id_usuario, null, id_imagen, 1],
 		);
 		return result[0][0];

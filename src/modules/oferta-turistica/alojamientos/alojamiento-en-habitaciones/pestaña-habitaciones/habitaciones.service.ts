@@ -4,7 +4,6 @@ import { ImagenProcesadaDto } from '../dto/imagen-procesada.dto';
 import { eliminarArchivo } from 'src/modules/oferta-turistica/utils/eliminar-archivo';
 import { HabitacionesRepositoryService } from './habitaciones-repository.service';
 import { HabitacionDto } from './dto/habitacion.dto';
-import { HabitacionVaciaDto } from './dto/habitacion-vacia.dto';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
@@ -115,12 +114,12 @@ export class HabitacionesService {
 		};
 	}
 
-	async registrarHabitacion(req, habitacionVaciaDto: HabitacionVaciaDto) {
+	async registrarHabitacion(req) {
 		const result =
 			await this.habitacionesRepositoryService.registrarHabitacion(
 				req.user.id_usuario,
-				habitacionVaciaDto,
 			);
+		console.log(result);
 
 		this.exceptionHandlingService.handleError(
 			result,

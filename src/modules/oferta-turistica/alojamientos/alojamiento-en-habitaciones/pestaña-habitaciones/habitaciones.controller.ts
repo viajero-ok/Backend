@@ -20,7 +20,6 @@ import {
 } from '@nestjs/swagger';
 import { multerHabitacionConfig } from '../utils/multer-habitacion.config';
 import { HabitacionesService } from './habitaciones.service';
-import { HabitacionVaciaDto } from './dto/habitacion-vacia.dto';
 import { HabitacionDto } from './dto/habitacion.dto';
 
 @ApiTags('Alojamientos/Habitaciones')
@@ -92,14 +91,8 @@ export class HabitacionesController {
 		},
 	})
 	@Post('registrar-habitacion')
-	async registrarHabitacion(
-		@Req() req: Request,
-		@Body() habitacionVaciaDto: HabitacionVaciaDto,
-	) {
-		return await this.habitacionesService.registrarHabitacion(
-			req,
-			habitacionVaciaDto,
-		);
+	async registrarHabitacion(@Req() req: Request) {
+		return await this.habitacionesService.registrarHabitacion(req);
 	}
 
 	@ApiOperation({ summary: 'ACTUALIZAR HABITACION' })
