@@ -5,6 +5,7 @@ import { ExceptionHandlingService } from 'src/common/services/exception-handler.
 import { DetalleAlojamientoDto } from '../dto/detalle-alojamiento.dto';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import { HorarioVacioDto } from './dto/horario-vacio.dto';
 
 @Injectable()
 export class AlojamientosService {
@@ -95,9 +96,9 @@ export class AlojamientosService {
 		};
 	}
 
-	async obtenerDatosRegistrados(req, id_oferta: string) {
+	async obtenerDatosRegistradosAlojamiento(req, id_oferta: string) {
 		const result =
-			await this.alojamientosRepositoryService.obtenerDatosRegistrados(
+			await this.alojamientosRepositoryService.obtenerDatosRegistradosAlojamiento(
 				id_oferta,
 			);
 
@@ -142,10 +143,10 @@ export class AlojamientosService {
 		return imagenes.filter((imagen) => imagen !== null);
 	}
 
-	async registrarHorario(req, id_oferta: string) {
+	async registrarHorario(req, horarioVacioDto: HorarioVacioDto) {
 		const result =
 			await this.alojamientosRepositoryService.registrarHorario(
-				id_oferta,
+				horarioVacioDto,
 			);
 
 		this.exceptionHandlingService.handleError(

@@ -153,25 +153,23 @@ export class HabitacionesService {
 		};
 	}
 
-	async obtenerDatosRegistrados(req, id_oferta: string) {
+	async obtenerDatosRegistradosHabitacion(req, id_oferta: string) {
 		const result =
-			await this.habitacionesRepositoryService.obtenerDatosRegistrados(
-				req.user.id_usuario,
+			await this.habitacionesRepositoryService.obtenerDatosRegistradosHabitacion(
 				id_oferta,
 			);
 
-		/* let imagenes: { nombre: string; datos: string }[] = [];
-		for (const tipoDetalle of result.tipo_detalle) {
+		for (const tipoDetalle of result) {
 			const datosImagenes =
 				await this.habitacionesRepositoryService.obtenerImagenes(
-					tipoDetalle,
+					tipoDetalle.id_tipo_detalle,
 				);
-			imagenes.push(await this.obtenerImagenesOferta(datosImagenes));
-		} */
+			tipoDetalle.imagenes =
+				await this.obtenerImagenesOferta(datosImagenes);
+		}
 
 		return {
 			datos: result,
-			/* imagenes, */
 		};
 	}
 

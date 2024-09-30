@@ -62,4 +62,20 @@ export class TarifasService {
 			id_tarifa,
 		);
 	}
+
+	async obtenerDatosRegistradosTarifa(req, id_oferta: string) {
+		const result =
+			await this.tarifasRepositoryService.obtenerDatosRegistradosTarifa(
+				id_oferta,
+			);
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al obtener datos registrados de tarifa',
+			HttpStatus.CONFLICT,
+		);
+
+		return {
+			datos: result,
+		};
+	}
 }

@@ -238,25 +238,15 @@ export class HabitacionesController {
 				datos: {
 					type: 'object',
 				},
-				imagenes: {
-					type: 'array',
-					items: {
-						type: 'object',
-						properties: {
-							nombre: { type: 'string' },
-							datos: { type: 'string' },
-						},
-					},
-				},
 			},
 		},
 	})
-	@Get('obtener-datos-registrados/:id_oferta')
-	async obtenerDatosRegistrados(
+	@Get('obtener-datos-registrados-habitacion/:id_oferta')
+	async obtenerDatosRegistradosHabitacion(
 		@Req() req: Request,
 		@Param('id_oferta') id_oferta: string,
 	) {
-		return await this.habitacionesService.obtenerDatosRegistrados(
+		return await this.habitacionesService.obtenerDatosRegistradosHabitacion(
 			req,
 			id_oferta,
 		);

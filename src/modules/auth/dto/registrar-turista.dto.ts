@@ -91,6 +91,9 @@ export class RegistrarTuristaDto {
 
 	@ApiProperty({ example: '2001-05-30', description: 'Fecha de nacimiento' })
 	@IsNotEmpty()
-	@IsDateString()
+	@IsDateString(
+		{},
+		{ message: 'La fecha de nacimiento debe ser una fecha válida' },
+	)
 	readonly fecha_nacimiento: string;
 }

@@ -18,6 +18,7 @@ import {
 import { AlojamientoDto } from './dto/alojamiento.dto';
 import { Request } from 'express';
 import { DetalleAlojamientoDto } from '../dto/detalle-alojamiento.dto';
+import { HorarioVacioDto } from './dto/horario-vacio.dto';
 
 @ApiTags('Alojamientos/Alojamiento')
 @ApiBearerAuth()
@@ -310,9 +311,12 @@ export class AlojamientosController {
 	@Post('registrar-horario')
 	async registrarHorario(
 		@Req() req: Request,
-		@Body('id_oferta') id_oferta: string,
+		@Body() horarioVacioDto: HorarioVacioDto,
 	) {
-		return await this.alojamientosService.registrarHorario(req, id_oferta);
+		return await this.alojamientosService.registrarHorario(
+			req,
+			horarioVacioDto,
+		);
 	}
 
 	@ApiOperation({ summary: 'ELIMINAR HORARIO' })
@@ -347,12 +351,12 @@ export class AlojamientosController {
 			type: 'object',
 		},
 	})
-	@Get('obtener-datos-registrados/:id_oferta')
-	async obtenerDatosRegistrados(
+	@Get('obtener-datos-registrados-alojamiento/:id_oferta')
+	async obtenerDatosRegistradosAlojamiento(
 		@Req() req: Request,
 		@Param('id_oferta') id_oferta: string,
 	) {
-		return await this.alojamientosService.obtenerDatosRegistrados(
+		return await this.alojamientosService.obtenerDatosRegistradosAlojamiento(
 			req,
 			id_oferta,
 		);

@@ -4,6 +4,7 @@ import { EntityManager } from 'typeorm';
 import { AlojamientoDto } from './dto/alojamiento.dto';
 import { DetalleAlojamientoDto } from '../dto/detalle-alojamiento.dto';
 import { TipoObservacion } from '../../enum/tipo-observacion.enum';
+import { HorarioVacioDto } from './dto/horario-vacio.dto';
 
 @Injectable()
 export class AlojamientosRepositoryService {
@@ -281,7 +282,7 @@ export class AlojamientosRepositoryService {
 		return resultados;
 	}
 
-	async obtenerDatosRegistrados(id_oferta: string) {
+	async obtenerDatosRegistradosAlojamiento(id_oferta: string) {
 		const result = await this.entityManager.query(
 			'CALL SP_OBT_INFO_ALOJAMIENTO(?)',
 			[id_oferta],
@@ -302,12 +303,11 @@ export class AlojamientosRepositoryService {
 		return result[0];
 	}
 
-	async registrarHorario(id_oferta: string) {
-		console.log(id_oferta);
+	async registrarHorario(horarioVacioDto: HorarioVacioDto) {
 		const result = await this.entityManager.query(
 			'CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
-				id_oferta,
+				horarioVacioDto.id_oferta,
 				null,
 				null,
 				null,

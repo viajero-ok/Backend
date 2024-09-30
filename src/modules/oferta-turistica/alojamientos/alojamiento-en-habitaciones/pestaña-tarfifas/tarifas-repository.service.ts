@@ -52,4 +52,12 @@ export class TarifasRepositoryService {
 		);
 		return result[0][0];
 	}
+
+	async obtenerDatosRegistradosTarifa(id_oferta: string) {
+		const result = await this.entityManager.query(
+			'CALL SP_OBT_TARIFAS_X_OFERTA(?)',
+			[id_oferta],
+		);
+		return result[0];
+	}
 }

@@ -102,4 +102,30 @@ export class TarifasController {
 	) {
 		return await this.tarifasService.eliminarTarifa(req, id_tarifa);
 	}
+
+	@ApiOperation({ summary: 'OBTENER DATOS REGISTRADOS' })
+	@ApiResponse({
+		status: 200,
+		schema: {
+			type: 'object',
+			properties: {
+				datos: {
+					type: 'array',
+					items: {
+						type: 'object',
+					},
+				},
+			},
+		},
+	})
+	@Get('obtener-datos-registrados-tarifa/:id_oferta')
+	async obtenerDatosRegistradosTarifa(
+		@Req() req: Request,
+		@Param('id_oferta') id_oferta: string,
+	) {
+		return await this.tarifasService.obtenerDatosRegistradosTarifa(
+			req,
+			id_oferta,
+		);
+	}
 }

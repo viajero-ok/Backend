@@ -160,10 +160,10 @@ export class HabitacionesRepositoryService {
 		return result[0];
 	}
 
-	async obtenerDatosRegistrados(id_usuario: string, id_oferta: string) {
+	async obtenerDatosRegistradosHabitacion(id_oferta: string) {
 		const result = await this.entityManager.query(
-			'CALL SP_LISTAR_DATOS_REGISTRADOS_X_OFERTA(?, ?)',
-			[id_usuario, id_oferta],
+			'CALL SP_OBT_DATOS_HABITACIONES_X_OFERTA(?)',
+			[id_oferta],
 		);
 		return result[0];
 	}
