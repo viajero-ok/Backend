@@ -15,11 +15,20 @@ export class AlojamientosService {
 
 	async actualizarAlojamiento(req, alojamientoDto: AlojamientoDto) {
 		try {
+			console.log(alojamientoDto);
 			const resultados =
 				await this.alojamientosRepositoryService.actualizarAlojamiento(
 					req.user.id_usuario,
 					alojamientoDto,
 				);
+			console.log('RESULTADOS');
+			console.log(resultados);
+			console.log('RESULTADOS PARCIALES');
+			console.log(resultados.alojamiento);
+			console.log(resultados.caracteristicas);
+			console.log(resultados.metodos_pago);
+			console.log(resultados.observaciones);
+			console.log(resultados.horarios);
 			// Verificar resultados individuales
 			this.exceptionHandlingService.handleError(
 				resultados.alojamiento,
