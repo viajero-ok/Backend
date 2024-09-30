@@ -281,6 +281,27 @@ export class AlojamientosRepositoryService {
 		return resultados;
 	}
 
+	async obtenerDatosRegistrados(id_oferta: string) {
+		const result = await this.entityManager.query(
+			'CALL SP_OBT_INFO_ALOJAMIENTO(?)',
+			[id_oferta],
+		);
+		return {
+			datos_basicos: result[0][0],
+			metodos_pago: result[1],
+			caracteristicas: result[2],
+			observaciones: result[3],
+		};
+	}
+
+	async obtenerImagenes(id_oferta: string) {
+		const result = await this.entityManager.query(
+			'CALL SP_OBT_IMAGENES_X_OFERTA(?)',
+			[id_oferta],
+		);
+		return result[0];
+	}
+
 	async finalizarRegistroAlojamiento(
 		id_usuario: string,
 		detalleAlojamientoDto: DetalleAlojamientoDto,

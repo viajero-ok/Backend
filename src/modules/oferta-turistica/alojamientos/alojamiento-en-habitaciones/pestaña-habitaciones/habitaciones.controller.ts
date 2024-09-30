@@ -135,6 +135,16 @@ export class HabitacionesController {
 	}
 
 	@ApiOperation({ summary: 'ELIMINAR HABITACION' })
+	@ApiResponse({
+		status: 200,
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: { type: 'string', example: 'ok' },
+				statusCode: { type: 'number', example: 200 },
+			},
+		},
+	})
 	@Delete('eliminar-habitacion/:id_tipo_detalle')
 	async eliminarHabitacion(
 		@Req() req: Request,
@@ -188,12 +198,12 @@ export class HabitacionesController {
 	@UseInterceptors(FileInterceptor('imagen', multerHabitacionConfig))
 	async registrarImagenHabitacion(
 		@Req() req: Request,
-		@UploadedFile() file: Express.Multer.File,
+		@UploadedFile() imagen: Express.Multer.File,
 		@Body('id_tipo_detalle') id_tipo_detalle: string,
 	) {
 		return await this.habitacionesService.registrarImagenHabitacion(
 			req,
-			file,
+			imagen,
 			id_tipo_detalle,
 		);
 	}
@@ -223,6 +233,39 @@ export class HabitacionesController {
 		return await this.habitacionesService.eliminarImagenHabitacion(
 			req,
 			id_imagen,
+		);
+	}
+
+	@ApiOperation({ summary: 'OBTENER DATOS REGISTRADOS' })
+	@ApiResponse({
+		status: 200,
+		schema: {
+			type: 'object',
+			properties: {
+				datos: {
+					type: 'object',
+				},
+				imagenes: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							nombre: { type: 'string' },
+							datos: { type: 'string' },
+						},
+					},
+				},
+			},
+		},
+	})
+	@Get('obtener-datos-registrados/:id_oferta')
+	async obtenerDatosRegistrados(
+		@Req() req: Request,
+		@Param('id_oferta') id_oferta: string,
+	) {
+		return await this.habitacionesService.obtenerDatosRegistrados(
+			req,
+			id_oferta,
 		);
 	}
 }

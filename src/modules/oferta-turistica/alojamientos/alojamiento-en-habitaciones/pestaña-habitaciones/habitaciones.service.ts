@@ -5,6 +5,8 @@ import { eliminarArchivo } from 'src/modules/oferta-turistica/utils/eliminar-arc
 import { HabitacionesRepositoryService } from './habitaciones-repository.service';
 import { HabitacionDto } from './dto/habitacion.dto';
 import { HabitacionVaciaDto } from './dto/habitacion-vacia.dto';
+import * as fs from 'fs/promises';
+import * as path from 'path';
 
 @Injectable()
 export class HabitacionesService {
@@ -32,6 +34,8 @@ export class HabitacionesService {
 					req.user.id_usuario,
 					imagenProcesada,
 				);
+			console.log('result');
+			console.log(result);
 
 			this.exceptionHandlingService.handleError(
 				result,
@@ -148,5 +152,57 @@ export class HabitacionesService {
 			resultado: 'ok',
 			statusCode: 200,
 		};
+	}
+
+	async obtenerDatosRegistrados(req, id_oferta: string) {
+		const result =
+			await this.habitacionesRepositoryService.obtenerDatosRegistrados(
+				req.user.id_usuario,
+				id_oferta,
+			);
+
+		/* let imagenes: { nombre: string; datos: string }[] = [];
+		for (const tipoDetalle of result.tipo_detalle) {
+			const datosImagenes =
+				await this.habitacionesRepositoryService.obtenerImagenes(
+					tipoDetalle,
+				);
+			imagenes.push(await this.obtenerImagenesOferta(datosImagenes));
+		} */
+
+		return {
+			datos: result,
+			/* imagenes, */
+		};
+	}
+
+	async obtenerImagenesOferta(datosImagenes: any[]): Promise<
+		{
+			id_tipo_detalle: string;
+			nombre: string;
+			datos: string;
+		}[]
+	> {
+		const directorio = path.join(process.cwd(), 'uploads');
+		const archivos = await fs.readdir(directorio);
+
+		const imagenesPromesas = archivos.map(async (archivo) => {
+			const rutaCompleta = path.join(directorio, archivo);
+			const imagenCorrespondiente = datosImagenes.find(
+				(img) => img.nombre_unico === archivo,
+			);
+			if (imagenCorrespondiente) {
+				const datos = await fs.readFile(rutaCompleta);
+				return {
+					id_tipo_detalle: imagenCorrespondiente.id_tipo_detalle,
+					nombre: imagenCorrespondiente.nombre_original,
+					datos: datos.toString('base64'),
+				};
+			}
+			return null;
+		});
+
+		const imagenes = await Promise.all(imagenesPromesas);
+		return imagenes.filter((imagen) => imagen !== null);
 	}
 }

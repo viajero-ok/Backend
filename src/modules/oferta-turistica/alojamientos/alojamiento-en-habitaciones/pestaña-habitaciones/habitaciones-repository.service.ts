@@ -164,4 +164,20 @@ export class HabitacionesRepositoryService {
 		);
 		return result[0][0];
 	}
+
+	async obtenerImagenes(id_tipo_detalle: string) {
+		const result = await this.entityManager.query(
+			'CALL SP_OBT_IMAGENES_X_TIPO_DETALLE(?)',
+			[id_tipo_detalle],
+		);
+		return result[0];
+	}
+
+	async obtenerDatosRegistrados(id_usuario: string, id_oferta: string) {
+		const result = await this.entityManager.query(
+			'CALL SP_LISTAR_DATOS_REGISTRADOS_X_OFERTA(?, ?)',
+			[id_usuario, id_oferta],
+		);
+		return result[0];
+	}
 }

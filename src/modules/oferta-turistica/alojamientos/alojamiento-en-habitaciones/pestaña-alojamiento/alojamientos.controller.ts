@@ -286,6 +286,24 @@ export class AlojamientosController {
 		);
 	}
 
+	@ApiOperation({ summary: 'OBTENER DATOS REGISTRADOS' })
+	@ApiResponse({
+		status: 200,
+		schema: {
+			type: 'object',
+		},
+	})
+	@Get('obtener-datos-registrados/:id_oferta')
+	async obtenerDatosRegistrados(
+		@Req() req: Request,
+		@Param('id_oferta') id_oferta: string,
+	) {
+		return await this.alojamientosService.obtenerDatosRegistrados(
+			req,
+			id_oferta,
+		);
+	}
+
 	@ApiOperation({ summary: 'FINALIZAR REGISTRO DE ALOJAMIENTO' })
 	@ApiResponse({
 		status: 200,

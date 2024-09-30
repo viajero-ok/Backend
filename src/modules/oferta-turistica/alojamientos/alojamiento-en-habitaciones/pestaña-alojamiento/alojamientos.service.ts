@@ -3,6 +3,8 @@ import { AlojamientosRepositoryService } from './alojamientos-repository.service
 import { AlojamientoDto } from './dto/alojamiento.dto';
 import { ExceptionHandlingService } from 'src/common/services/exception-handler.service';
 import { DetalleAlojamientoDto } from '../dto/detalle-alojamiento.dto';
+import * as fs from 'fs/promises';
+import * as path from 'path';
 
 @Injectable()
 export class AlojamientosService {
@@ -82,6 +84,53 @@ export class AlojamientosService {
 			resultado: 'ok',
 			statusCode: 200,
 		};
+	}
+
+	async obtenerDatosRegistrados(req, id_oferta: string) {
+		const result =
+			await this.alojamientosRepositoryService.obtenerDatosRegistrados(
+				id_oferta,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al obtener datos registrados',
+			HttpStatus.CONFLICT,
+		);
+
+		const datosImagenes =
+			await this.alojamientosRepositoryService.obtenerImagenes(id_oferta);
+		const imagenes = await this.obtenerImagenesOferta(datosImagenes);
+
+		return {
+			datos: result,
+			imagenes,
+		};
+	}
+
+	async obtenerImagenesOferta(
+		datosImagenes: any[],
+	): Promise<{ nombre: string; datos: string }[]> {
+		const directorio = path.join(process.cwd(), 'uploads');
+		const archivos = await fs.readdir(directorio);
+
+		const imagenesPromesas = archivos.map(async (archivo) => {
+			const rutaCompleta = path.join(directorio, archivo);
+			const imagenCorrespondiente = datosImagenes.find(
+				(img) => img.nombre_unico === archivo,
+			);
+			if (imagenCorrespondiente) {
+				const datos = await fs.readFile(rutaCompleta);
+				return {
+					nombre: imagenCorrespondiente.nombre_original,
+					datos: datos.toString('base64'),
+				};
+			}
+			return null;
+		});
+
+		const imagenes = await Promise.all(imagenesPromesas);
+		return imagenes.filter((imagen) => imagen !== null);
 	}
 
 	async finalizarRegistroAlojamiento(
