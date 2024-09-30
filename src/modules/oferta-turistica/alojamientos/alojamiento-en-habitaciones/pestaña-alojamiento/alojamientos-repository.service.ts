@@ -173,7 +173,7 @@ export class AlojamientosRepositoryService {
 							dias_semana.aplica_viernes,
 							dias_semana.aplica_sabado,
 							dias_semana.aplica_domingo,
-							horario.id_horario ?? null,
+							horario.id_horario,
 							null,
 							null,
 							0,
@@ -300,6 +300,58 @@ export class AlojamientosRepositoryService {
 			[id_oferta],
 		);
 		return result[0];
+	}
+
+	async registrarHorario(id_oferta: string) {
+		console.log(id_oferta);
+		const result = await this.entityManager.query(
+			'CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			[
+				id_oferta,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				0,
+			],
+		);
+		console.log(result);
+		return result[0][0];
+	}
+
+	async eliminarHorario(id_horario: string) {
+		const result = await this.entityManager.query(
+			'CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			[
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				id_horario,
+				null,
+				null,
+				1,
+			],
+		);
+		return result[0][0];
 	}
 
 	async finalizarRegistroAlojamiento(

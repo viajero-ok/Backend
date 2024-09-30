@@ -286,6 +286,60 @@ export class AlojamientosController {
 		);
 	}
 
+	@ApiOperation({ summary: 'REGISTRAR HORARIO' })
+	@ApiResponse({
+		status: 200,
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 200,
+				},
+				id_horario: {
+					type: 'string',
+					example: '123e4567-e89b-12d3-a456-426614174000',
+				},
+			},
+		},
+	})
+	@Post('registrar-horario')
+	async registrarHorario(
+		@Req() req: Request,
+		@Body('id_oferta') id_oferta: string,
+	) {
+		return await this.alojamientosService.registrarHorario(req, id_oferta);
+	}
+
+	@ApiOperation({ summary: 'ELIMINAR HORARIO' })
+	@ApiResponse({
+		status: 200,
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 200,
+				},
+			},
+		},
+	})
+	@Delete('eliminar-horario/:id_horario')
+	async eliminarHorario(
+		@Req() req: Request,
+		@Param('id_horario') id_horario: string,
+	) {
+		return await this.alojamientosService.eliminarHorario(req, id_horario);
+	}
+
 	@ApiOperation({ summary: 'OBTENER DATOS REGISTRADOS' })
 	@ApiResponse({
 		status: 200,

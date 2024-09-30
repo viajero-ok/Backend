@@ -109,13 +109,13 @@ class DiasSemanaDto {
 }
 
 export class CheckInOutDto {
-	@ApiPropertyOptional({
+	@ApiProperty({
 		description: 'ID del horario',
 		example: 1,
 	})
-	@IsOptional()
+	@IsNotEmpty()
 	@IsNumber()
-	readonly id_horario?: number;
+	readonly id_horario: number;
 
 	@ApiProperty({ type: CheckInDto })
 	@IsNotEmpty()

@@ -142,6 +142,43 @@ export class AlojamientosService {
 		return imagenes.filter((imagen) => imagen !== null);
 	}
 
+	async registrarHorario(req, id_oferta: string) {
+		const result =
+			await this.alojamientosRepositoryService.registrarHorario(
+				id_oferta,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al registrar horario',
+			HttpStatus.CONFLICT,
+		);
+
+		return {
+			resultado: 'ok',
+			statusCode: 201,
+			id_horario: result.id_horario,
+		};
+	}
+
+	async eliminarHorario(req, id_horario: string) {
+		const result =
+			await this.alojamientosRepositoryService.eliminarHorario(
+				id_horario,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al eliminar horario',
+			HttpStatus.CONFLICT,
+		);
+
+		return {
+			resultado: 'ok',
+			statusCode: 200,
+		};
+	}
+
 	async finalizarRegistroAlojamiento(
 		req,
 		detalleAlojamientoDto: DetalleAlojamientoDto,
