@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 
 export class OfertaTuristicaDto {
 	@ApiProperty({
@@ -14,7 +14,7 @@ export class OfertaTuristicaDto {
 		description: 'ID del subtipo de oferta',
 		example: 2,
 	})
-	@IsNotEmpty()
+	@IsOptional()
 	@IsNumber()
-	readonly id_sub_tipo_oferta: number;
+	readonly id_sub_tipo_oferta?: number;
 }

@@ -4,6 +4,7 @@ import {
 	IsEmail,
 	IsInt,
 	IsNotEmpty,
+	IsNumber,
 	IsOptional,
 	IsString,
 	Length,
@@ -11,6 +12,14 @@ import {
 } from 'class-validator';
 
 export class EstablecimientoDto {
+	@ApiProperty({
+		description: 'ID del establecimiento',
+		example: 1,
+	})
+	@IsOptional()
+	@IsNumber()
+	readonly id_establecimiento?: number;
+
 	@ApiProperty({
 		description: 'Nombre del establecimiento',
 		example: 'Hotel Del Valle',

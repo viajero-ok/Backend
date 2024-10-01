@@ -26,6 +26,44 @@ export class EstablecimientosService {
 		return {
 			resultado: 'ok',
 			statusCode: 201,
+			id_establecimiento: result.id_establecimiento,
+		};
+	}
+
+	async actualizarEstablecimiento(
+		req,
+		establecimientoDto: EstablecimientoDto,
+	) {
+		const result =
+			await this.establecimientosRepositoryService.actualizarEstablecimiento(
+				req.user.id_usuario,
+				establecimientoDto,
+			);
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al actualizar establecimiento',
+			HttpStatus.CONFLICT,
+		);
+		return {
+			resultado: 'ok',
+			statusCode: 200,
+		};
+	}
+
+	async eliminarEstablecimiento(req, id_establecimiento: string) {
+		const result =
+			await this.establecimientosRepositoryService.eliminarEstablecimiento(
+				req.user.id_usuario,
+				id_establecimiento,
+			);
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al eliminar establecimiento',
+			HttpStatus.CONFLICT,
+		);
+		return {
+			resultado: 'ok',
+			statusCode: 200,
 		};
 	}
 

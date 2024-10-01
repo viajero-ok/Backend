@@ -15,8 +15,9 @@ export class EstablecimientosRepositoryService {
 		establecimientoDto: EstablecimientoDto,
 	) {
 		const result = await this.entityManager.query(
-			'CALL SP_ABM_ESTABLECIMIENTOS(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			'CALL SP_ABM_ESTABLECIMIENTOS(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
+				null,
 				establecimientoDto.nombre,
 				establecimientoDto.descripcion,
 				establecimientoDto.numero_habilitacion,
@@ -31,9 +32,65 @@ export class EstablecimientosRepositoryService {
 				establecimientoDto.sin_numero,
 				establecimientoDto.latitud,
 				establecimientoDto.longitud,
+				0,
 			],
 		);
-		console.log(result);
+		return result[0][0];
+	}
+
+	async actualizarEstablecimiento(
+		id_usuario: string,
+		establecimientoDto: EstablecimientoDto,
+	) {
+		const result = await this.entityManager.query(
+			'CALL SP_ABM_ESTABLECIMIENTOS(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			[
+				establecimientoDto.id_establecimiento,
+				establecimientoDto.nombre,
+				establecimientoDto.descripcion,
+				establecimientoDto.numero_habilitacion,
+				establecimientoDto.telefono,
+				establecimientoDto.mail,
+				id_usuario,
+				establecimientoDto.calle,
+				establecimientoDto.numero,
+				establecimientoDto.id_localidad,
+				establecimientoDto.id_departamento,
+				establecimientoDto.id_provincia,
+				establecimientoDto.sin_numero,
+				establecimientoDto.latitud,
+				establecimientoDto.longitud,
+				0,
+			],
+		);
+		return result[0][0];
+	}
+
+	async eliminarEstablecimiento(
+		id_usuario: string,
+		id_establecimiento: string,
+	) {
+		const result = await this.entityManager.query(
+			'CALL SP_ABM_ESTABLECIMIENTOS(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			[
+				id_establecimiento,
+				null,
+				null,
+				null,
+				null,
+				null,
+				id_usuario,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				1,
+			],
+		);
 		return result[0][0];
 	}
 

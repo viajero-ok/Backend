@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Req } from '@nestjs/common';
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Patch,
+	Post,
+	Req,
+} from '@nestjs/common';
 import { EstablecimientosService } from './establecimientos.service';
 import {
 	ApiBearerAuth,
@@ -59,6 +68,62 @@ export class EstablecimientosController {
 		return await this.establecimientosService.registrarEstablecimiento(
 			req,
 			establecimientoDto,
+		);
+	}
+
+	@ApiOperation({ summary: 'ACTUALIZAR ESTABLECIMIENTO' })
+	@ApiResponse({
+		status: 200,
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 200,
+				},
+			},
+		},
+	})
+	@Patch('actualizar-establecimiento')
+	async actualizarEstablecimiento(
+		@Req() req: Request,
+		@Body() establecimientoDto: EstablecimientoDto,
+	) {
+		return await this.establecimientosService.actualizarEstablecimiento(
+			req,
+			establecimientoDto,
+		);
+	}
+
+	@ApiOperation({ summary: 'ELIMINAR ESTABLECIMIENTO' })
+	@ApiResponse({
+		status: 200,
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 200,
+				},
+			},
+		},
+	})
+	@Delete('eliminar-establecimiento/:id_establecimiento')
+	async eliminarEstablecimiento(
+		@Req() req: Request,
+		@Param('id_establecimiento') id_establecimiento: string,
+	) {
+		return await this.establecimientosService.eliminarEstablecimiento(
+			req,
+			id_establecimiento,
 		);
 	}
 

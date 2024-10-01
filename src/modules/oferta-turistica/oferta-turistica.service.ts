@@ -32,6 +32,7 @@ export class OfertaTuristicaService {
 				req.user.id_usuario,
 				ofertaTuristicaDto,
 			);
+		console.log(result);
 
 		this.exceptionHandlingService.handleError(
 			result,
