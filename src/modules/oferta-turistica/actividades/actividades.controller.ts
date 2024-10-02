@@ -8,6 +8,7 @@ import {
 } from '@nestjs/swagger';
 import { GuiaDto } from './dto/guia.dto';
 import { EliminarGuiaDto } from './dto/eliminar-guia.dto';
+import { ActividadDto } from './dto/actividad.dto';
 
 @ApiTags('Actividades')
 @ApiBearerAuth()
@@ -158,5 +159,34 @@ export class ActividadesController {
 		@Body() eliminarGuiaDto: EliminarGuiaDto,
 	) {
 		return await this.actividadesService.eliminarGuia(req, eliminarGuiaDto);
+	}
+
+	@ApiOperation({ summary: 'REGISTRAR ACTIVIDAD' })
+	@ApiResponse({
+		status: 201,
+		description: 'Actividad registrada',
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 201,
+				},
+			},
+		},
+	})
+	@Post('registrar-actividad')
+	async registrarActividad(
+		@Req() req: Request,
+		@Body() actividadDto: ActividadDto,
+	) {
+		/* return await this.actividadesService.registrarActividad(
+			req,
+			actividadDto,
+		); */
 	}
 }

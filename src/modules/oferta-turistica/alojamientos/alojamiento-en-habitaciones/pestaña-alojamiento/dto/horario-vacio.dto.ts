@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class HorarioVacioDto {
 	@ApiProperty({
 		description: 'ID del horario',
-		example: 1,
+		example: '123e4567-e89b-12d3-a456-426614174000',
 	})
 	@IsNotEmpty()
-	@IsNumber()
-	readonly id_oferta: number;
+	@IsString()
+	readonly id_oferta: string;
 }
