@@ -6,6 +6,7 @@ import {
 	IsDate,
 	IsNotEmpty,
 	IsOptional,
+	Min,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -33,6 +34,7 @@ export class TarifasDto {
 	})
 	@IsNumber()
 	@IsNotEmpty()
+	@Min(1)
 	id_tipo_pension: number;
 
 	@ApiProperty({

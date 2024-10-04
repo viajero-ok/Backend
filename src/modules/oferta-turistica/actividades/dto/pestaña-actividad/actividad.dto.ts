@@ -5,6 +5,7 @@ import {
 	IsNotEmpty,
 	IsNumber,
 	IsString,
+	Min,
 	ValidateNested,
 } from 'class-validator';
 import { PoliticasReservaDto } from './politicas-reserva.dto';
@@ -24,6 +25,7 @@ export class ActividadDto {
 	})
 	@IsNotEmpty()
 	@IsNumber()
+	@Min(1)
 	readonly id_sub_tipo_oferta: number;
 
 	@ApiProperty({
@@ -32,6 +34,7 @@ export class ActividadDto {
 	})
 	@IsNotEmpty()
 	@IsNumber()
+	@Min(1)
 	readonly id_sub_categoria: number;
 
 	@ApiProperty({
@@ -107,5 +110,6 @@ export class ActividadDto {
 	@IsNotEmpty()
 	@IsArray()
 	@IsNumber({}, { each: true })
+	@Min(1, { each: true })
 	readonly metodos_de_pago: number[];
 }

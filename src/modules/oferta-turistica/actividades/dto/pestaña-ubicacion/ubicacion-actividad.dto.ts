@@ -5,6 +5,7 @@ import {
 	IsNotEmpty,
 	IsOptional,
 	IsString,
+	Min,
 	ValidateIf,
 } from 'class-validator';
 
@@ -43,16 +44,19 @@ export class UbicacionActividadDto {
 	@ApiProperty({ description: 'ID de la localidad', example: 1 })
 	@IsNotEmpty()
 	@IsInt()
+	@Min(1)
 	readonly id_localidad: number;
 
 	@ApiProperty({ description: 'ID del departamento', example: 1 })
 	@IsNotEmpty()
 	@IsInt()
+	@Min(1)
 	readonly id_departamento: number;
 
 	@ApiProperty({ description: 'ID de la provincia', example: 1 })
 	@IsNotEmpty()
 	@IsInt()
+	@Min(1)
 	readonly id_provincia: number;
 
 	@ApiProperty({

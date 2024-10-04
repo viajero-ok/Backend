@@ -114,6 +114,7 @@ export class CheckInOutDto {
 	})
 	@IsNotEmpty()
 	@IsNumber()
+	@Min(1)
 	readonly id_horario: number;
 
 	@ApiProperty({ type: CheckInDto })

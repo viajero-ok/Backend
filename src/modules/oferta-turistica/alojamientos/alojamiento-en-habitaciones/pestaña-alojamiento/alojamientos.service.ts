@@ -120,7 +120,7 @@ export class AlojamientosService {
 
 	async obtenerImagenesOferta(
 		datosImagenes: any[],
-	): Promise<{ nombre: string; datos: string }[]> {
+	): Promise<{ id_imagen: number; nombre: string; datos: string }[]> {
 		const directorio = path.join(process.cwd(), 'uploads');
 		const archivos = await fs.readdir(directorio);
 
@@ -132,6 +132,7 @@ export class AlojamientosService {
 			if (imagenCorrespondiente) {
 				const datos = await fs.readFile(rutaCompleta);
 				return {
+					id_imagen: imagenCorrespondiente.id_imagen,
 					nombre: imagenCorrespondiente.nombre_original,
 					datos: datos.toString('base64'),
 				};

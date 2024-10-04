@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumber, Min } from 'class-validator';
 
 export class PlazasDto {
 	@ApiProperty({
@@ -8,6 +8,7 @@ export class PlazasDto {
 	})
 	@IsNotEmpty()
 	@IsNumber()
+	@Min(1)
 	id_tipo_cama: number;
 
 	@ApiProperty({

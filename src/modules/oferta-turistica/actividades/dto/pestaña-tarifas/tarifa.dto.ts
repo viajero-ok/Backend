@@ -35,6 +35,7 @@ export class TarifasDto {
 	})
 	@IsNumber()
 	@IsNotEmpty()
+	@Min(1)
 	id_tipo_entrada: number;
 
 	@ApiProperty({

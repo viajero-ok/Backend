@@ -9,6 +9,7 @@ import {
 	IsNumber,
 	IsOptional,
 	ArrayMinSize,
+	Min,
 } from 'class-validator';
 import { PoliticasReservaYDatosBasicosDto } from './politicas-reserva-y-datos-basicos.dto';
 import { CheckInOutDto } from './horarios.dto';
@@ -33,6 +34,7 @@ export class AlojamientoDto {
 	@IsOptional()
 	@IsArray()
 	@IsNumber({}, { each: true })
+	@Min(1, { each: true })
 	readonly caracteristicas?: number[];
 
 	@ApiProperty({
@@ -43,6 +45,7 @@ export class AlojamientoDto {
 	@IsNotEmpty()
 	@IsArray()
 	@IsNumber({}, { each: true })
+	@Min(1, { each: true })
 	readonly metodos_de_pago: number[];
 
 	@ApiPropertyOptional({

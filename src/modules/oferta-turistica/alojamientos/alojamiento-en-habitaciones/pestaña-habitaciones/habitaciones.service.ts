@@ -81,7 +81,7 @@ export class HabitacionesService {
 				req.user.id_usuario,
 				habitacionDto,
 			);
-
+		console.log(habitacionDto);
 		// Verificar resultados individuales
 		this.exceptionHandlingService.handleError(
 			resultados.tipoDetalle,
@@ -173,13 +173,9 @@ export class HabitacionesService {
 		};
 	}
 
-	async obtenerImagenesOferta(datosImagenes: any[]): Promise<
-		{
-			id_tipo_detalle: string;
-			nombre: string;
-			datos: string;
-		}[]
-	> {
+	async obtenerImagenesOferta(
+		datosImagenes: any[],
+	): Promise<{ id_imagen: number; nombre: string; datos: string }[]> {
 		const directorio = path.join(process.cwd(), 'uploads');
 		const archivos = await fs.readdir(directorio);
 
@@ -191,7 +187,7 @@ export class HabitacionesService {
 			if (imagenCorrespondiente) {
 				const datos = await fs.readFile(rutaCompleta);
 				return {
-					id_tipo_detalle: imagenCorrespondiente.id_tipo_detalle,
+					id_imagen: imagenCorrespondiente.id_imagen_x_tipo_detalle,
 					nombre: imagenCorrespondiente.nombre_original,
 					datos: datos.toString('base64'),
 				};

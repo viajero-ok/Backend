@@ -8,6 +8,7 @@ import {
 	IsOptional,
 	IsString,
 	Length,
+	Min,
 	ValidateIf,
 } from 'class-validator';
 
@@ -18,6 +19,7 @@ export class EstablecimientoDto {
 	})
 	@IsOptional()
 	@IsNumber()
+	@Min(1)
 	readonly id_establecimiento?: number;
 
 	@ApiProperty({
@@ -84,16 +86,19 @@ export class EstablecimientoDto {
 	@ApiProperty({ description: 'ID de la localidad', example: 1 })
 	@IsNotEmpty()
 	@IsInt()
+	@Min(1)
 	readonly id_localidad: number;
 
 	@ApiProperty({ description: 'ID del departamento', example: 1 })
 	@IsNotEmpty()
 	@IsInt()
+	@Min(1)
 	readonly id_departamento: number;
 
 	@ApiProperty({ description: 'ID de la provincia', example: 1 })
 	@IsNotEmpty()
 	@IsInt()
+	@Min(1)
 	readonly id_provincia: number;
 
 	@ApiProperty({

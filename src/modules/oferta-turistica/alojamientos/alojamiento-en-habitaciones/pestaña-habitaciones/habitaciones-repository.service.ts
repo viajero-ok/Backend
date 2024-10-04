@@ -101,6 +101,7 @@ export class HabitacionesRepositoryService {
 					resultado_comodidades_y_servicios_habitacion[0][0],
 				);
 
+				console.log(resultados);
 				return resultados;
 			},
 		);

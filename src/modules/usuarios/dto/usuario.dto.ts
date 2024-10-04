@@ -5,6 +5,7 @@ import {
 	Length,
 	IsNumber,
 	IsDateString,
+	Min,
 } from 'class-validator';
 
 export class UsuarioDto {
@@ -31,6 +32,7 @@ export class UsuarioDto {
 	@ApiProperty()
 	@IsNotEmpty()
 	@IsNumber()
+	@Min(1)
 	readonly id_tipo_documento: number;
 
 	@ApiProperty()

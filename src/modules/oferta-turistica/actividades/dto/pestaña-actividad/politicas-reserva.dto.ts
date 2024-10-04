@@ -8,6 +8,7 @@ export class PoliticasReservaDto {
 	})
 	@IsNotEmpty()
 	@IsNumber()
+	@Min(1)
 	id_politica_cancelacion: number;
 
 	@ApiProperty({ description: 'Plazo en días para cancelación', example: 3 })
