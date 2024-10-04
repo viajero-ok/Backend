@@ -6,19 +6,12 @@ import {
 	IsDate,
 	IsNotEmpty,
 	IsOptional,
+	Min,
+	Max,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class TarifasDto {
-	@ApiProperty({
-		description: 'ID de la oferta',
-		example: '123e4567-e89b-12d3-a456-426614174002',
-	})
-	@IsUUID()
-	@IsNotEmpty()
-	@IsString()
-	id_tipo_oferta: string;
-
 	@ApiProperty({
 		description: 'ID del tipo de detalle',
 		example: '123e4567-e89b-12d3-a456-426614174002',
@@ -26,7 +19,7 @@ export class TarifasDto {
 	@IsUUID()
 	@IsNotEmpty()
 	@IsString()
-	id_tipo_detalle: string;
+	id_oferta: string;
 
 	@ApiPropertyOptional({
 		description: 'ID de la tarifa',
@@ -42,7 +35,7 @@ export class TarifasDto {
 	})
 	@IsNumber()
 	@IsNotEmpty()
-	id_tipo_pension: number;
+	id_tipo_entrada: number;
 
 	@ApiProperty({
 		description: 'Monto de la tarifa',
@@ -69,4 +62,24 @@ export class TarifasDto {
 	@IsDate()
 	@Type(() => Date)
 	fecha_hasta: Date;
+
+	@ApiProperty({
+		description: 'Edad desde la que aplica la tarifa',
+		example: 10,
+	})
+	@IsNumber()
+	@IsNotEmpty()
+	@Min(1)
+	@Max(100)
+	edad_desde: number;
+
+	@ApiProperty({
+		description: 'Edad hasta la que aplica la tarifa',
+		example: 60,
+	})
+	@IsNumber()
+	@IsNotEmpty()
+	@Min(1)
+	@Max(100)
+	edad_hasta: number;
 }

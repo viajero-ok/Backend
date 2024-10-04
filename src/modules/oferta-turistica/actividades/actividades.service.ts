@@ -210,7 +210,7 @@ export class ActividadesService {
 	async registrarTarifa(req, tarifaDto: TarifasDto) {
 		const tarifasExistentes =
 			await this.actividadesRepositoryService.obtenerTarifas(
-				tarifaDto.id_tipo_detalle,
+				tarifaDto.id_oferta,
 			);
 
 		const errores = await this.tarifasValidator.validarTarifa(

@@ -11,15 +11,6 @@ import { Type } from 'class-transformer';
 
 export class TarifasDto {
 	@ApiProperty({
-		description: 'ID de la oferta',
-		example: '123e4567-e89b-12d3-a456-426614174002',
-	})
-	@IsUUID()
-	@IsNotEmpty()
-	@IsString()
-	id_tipo_oferta: string;
-
-	@ApiProperty({
 		description: 'ID del tipo de detalle',
 		example: '123e4567-e89b-12d3-a456-426614174002',
 	})

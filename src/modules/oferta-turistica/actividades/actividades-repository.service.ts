@@ -249,13 +249,15 @@ export class ActividadesRepositoryService {
 			'CALL SP_ABM_TARIFA_X_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
 				tarifa.id_tarifa,
-				tarifa.id_tipo_detalle,
-				tarifa.id_tipo_pension,
+				tarifa.id_oferta,
+				tarifa.id_tipo_entrada,
 				tarifa.monto_tarifa,
 				tarifa.fecha_desde,
 				tarifa.fecha_hasta,
 				id_usuario,
 				0,
+				tarifa.edad_desde,
+				tarifa.edad_hasta,
 			],
 		);
 		return result[0][0];
@@ -266,15 +268,15 @@ export class ActividadesRepositoryService {
 			'CALL SP_ABM_TARIFA_X_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
 				id_tarifa,
+				null,
+				null,
+				null,
+				null,
+				null,
 				id_usuario,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
 				1,
+				null,
+				null,
 			],
 		);
 		return result[0][0];
