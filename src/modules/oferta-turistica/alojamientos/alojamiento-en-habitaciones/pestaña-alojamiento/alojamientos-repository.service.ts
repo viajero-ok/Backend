@@ -201,10 +201,9 @@ export class AlojamientosRepositoryService {
 
 	async eliminarAlojamiento(id_usuario: string, id_oferta: string) {
 		const result = await this.entityManager.query(
-			'CALL SP_ABM_ALOJAMIENTO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			'CALL SP_ABM_ALOJAMIENTO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
 				id_oferta,
-				null,
 				null,
 				null,
 				null,
