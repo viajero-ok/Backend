@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
-import { TipoObservacion } from '../../enum/tipo-observacion.enum';
+import { TipoObservacion } from '../../../enum/tipo-observacion.enum';
 import { ImagenProcesadaDto } from '../dto/imagen-procesada.dto';
 import { HabitacionDto } from './dto/habitacion.dto';
 

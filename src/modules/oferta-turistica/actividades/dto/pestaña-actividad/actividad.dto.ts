@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+	IsArray,
 	IsBoolean,
 	IsNotEmpty,
 	IsNumber,
@@ -18,14 +19,6 @@ export class ActividadDto {
 	readonly id_oferta: string;
 
 	@ApiProperty({
-		description: 'ID del tipo de oferta',
-		example: 1,
-	})
-	@IsNotEmpty()
-	@IsNumber()
-	readonly id_tipo_oferta: number;
-
-	@ApiProperty({
 		description: 'ID del sub tipo de oferta',
 		example: 1,
 	})
@@ -34,12 +27,12 @@ export class ActividadDto {
 	readonly id_sub_tipo_oferta: number;
 
 	@ApiProperty({
-		description: 'ID del establecimiento',
-		example: '123e4567-e89b-12d3-a456-426614174000',
+		description: 'ID de la sub categoría',
+		example: 1,
 	})
 	@IsNotEmpty()
-	@IsString()
-	readonly id_establecimiento: string;
+	@IsNumber()
+	readonly id_sub_categoria: number;
 
 	@ApiProperty({
 		description: 'Nombre de la actividad',
@@ -65,12 +58,6 @@ export class ActividadDto {
 	@IsString()
 	readonly requisitos_actividad: string;
 
-	@ApiProperty({ type: PoliticasReservaDto })
-	@IsNotEmpty()
-	@ValidateNested()
-	@Type(() => PoliticasReservaDto)
-	readonly politicas_reserva: PoliticasReservaDto;
-
 	@ApiProperty({
 		description: 'ID de la dificultad',
 		example: 1,
@@ -80,7 +67,7 @@ export class ActividadDto {
 	readonly id_dificultad: number;
 
 	@ApiProperty({
-		description: 'Duración de la actividad',
+		description: 'Duración en horas de la actividad',
 		example: 2.5,
 	})
 	@IsNotEmpty()
@@ -88,7 +75,7 @@ export class ActividadDto {
 	readonly duracion_actividad: number;
 
 	@ApiProperty({
-		description: 'Distancia de la actividad',
+		description: 'Distancia en kilómetros de la actividad',
 		example: 10,
 	})
 	@IsNotEmpty()
@@ -96,10 +83,29 @@ export class ActividadDto {
 	readonly distancia_actividad: number;
 
 	@ApiProperty({
-		description: 'Bandera con guía',
+		description: 'Bandera de si tiene guía',
 		example: true,
 	})
 	@IsNotEmpty()
 	@IsBoolean()
 	readonly bl_con_guia: boolean;
+
+	@ApiProperty({
+		type: PoliticasReservaDto,
+		description: 'Políticas de reserva',
+	})
+	@IsNotEmpty()
+	@ValidateNested()
+	@Type(() => PoliticasReservaDto)
+	readonly politicas_reserva: PoliticasReservaDto;
+
+	@ApiProperty({
+		description: 'IDs de los métodos de pago aceptados',
+		type: [Number],
+		example: [1, 2, 3],
+	})
+	@IsNotEmpty()
+	@IsArray()
+	@IsNumber({}, { each: true })
+	readonly metodos_de_pago: number[];
 }

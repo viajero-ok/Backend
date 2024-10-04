@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-class CheckInDto {
+class HorarioEntradaDto {
 	@ApiProperty({
 		description: 'Hora de Check In',
 		example: 14,
@@ -35,7 +35,7 @@ class CheckInDto {
 	readonly minuto_check_in: number;
 }
 
-class CheckOutDto {
+class HorarioSalidaDto {
 	@ApiProperty({
 		description: 'Hora de Check Out',
 		example: 11,
@@ -107,7 +107,7 @@ class DiasSemanaDto {
 	aplica_domingo: boolean;
 }
 
-export class CheckInOutDto {
+export class HorariosTurnosDto {
 	@ApiProperty({
 		description: 'ID del horario',
 		example: 1,
@@ -116,17 +116,17 @@ export class CheckInOutDto {
 	@IsNumber()
 	readonly id_horario: number;
 
-	@ApiProperty({ type: CheckInDto })
+	@ApiProperty({ type: HorarioEntradaDto })
 	@IsNotEmpty()
 	@ValidateNested()
-	@Type(() => CheckInDto)
-	readonly check_in: CheckInDto;
+	@Type(() => HorarioEntradaDto)
+	readonly check_in: HorarioEntradaDto;
 
-	@ApiProperty({ type: CheckOutDto })
+	@ApiProperty({ type: HorarioSalidaDto })
 	@IsNotEmpty()
 	@ValidateNested()
-	@Type(() => CheckOutDto)
-	readonly check_out: CheckOutDto;
+	@Type(() => HorarioSalidaDto)
+	readonly check_out: HorarioSalidaDto;
 
 	@ApiProperty({
 		description: 'Indica si aplica todos los días',
@@ -145,4 +145,12 @@ export class CheckInOutDto {
 	@IsNotEmpty()
 	@Type(() => DiasSemanaDto)
 	readonly dias_semana: DiasSemanaDto;
+
+	@ApiProperty({
+		description: 'Cupo máximo',
+		example: 100,
+	})
+	@IsNotEmpty()
+	@IsNumber()
+	readonly cupo_maximo: number;
 }

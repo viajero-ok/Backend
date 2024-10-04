@@ -51,7 +51,7 @@ export class TarifasController {
 		return await this.tarifasService.obtenerDatosRegistroTarifa();
 	}
 
-	@ApiOperation({ summary: 'ABM TARIFA' })
+	@ApiOperation({ summary: 'REGISTRAR TARIFA' })
 	@ApiResponse({
 		status: 201,
 		schema: {

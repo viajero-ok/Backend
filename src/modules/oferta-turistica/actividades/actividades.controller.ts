@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Post, Req } from '@nestjs/common';
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Post,
+	Req,
+} from '@nestjs/common';
 import { ActividadesService } from './actividades.service';
 import {
 	ApiBearerAuth,
@@ -6,9 +14,13 @@ import {
 	ApiResponse,
 	ApiTags,
 } from '@nestjs/swagger';
-import { GuiaDto } from './dto/guia.dto';
-import { EliminarGuiaDto } from './dto/eliminar-guia.dto';
-import { ActividadDto } from './dto/actividad.dto';
+import { GuiaDto } from './dto/pestaña-actividad/guia.dto';
+import { EliminarGuiaDto } from './dto/pestaña-actividad/eliminar-guia.dto';
+import { ActividadDto } from './dto/pestaña-actividad/actividad.dto';
+import { UbicacionActividadDto } from './dto/pestaña-ubicacion/ubicacion-actividad.dto';
+import { HorarioVacioDto } from './dto/pestaña-tarifas/horario-vacio.dto';
+import { HorariosOfertaDto } from './dto/pestaña-tarifas/horarios-oferta.dto';
+import { TarifasDto } from './dto/pestaña-tarifas/tarifa.dto';
 
 @ApiTags('Actividades')
 @ApiBearerAuth()
@@ -161,7 +173,204 @@ export class ActividadesController {
 		return await this.actividadesService.eliminarGuia(req, eliminarGuiaDto);
 	}
 
-	@ApiOperation({ summary: 'REGISTRAR ACTIVIDAD' })
+	@ApiOperation({ summary: 'ACTUALIZAR ACTIVIDAD' })
+	@ApiResponse({
+		status: 201,
+		description: 'Actividad actualizada',
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 201,
+				},
+				id_oferta: {
+					type: 'string',
+					example: '123e4567-e89b-12d3-a456-426614174000',
+				},
+			},
+		},
+	})
+	@Post('actualizar-actividad')
+	async actualizarActividad(
+		@Req() req: Request,
+		@Body() actividadDto: ActividadDto,
+	) {
+		return await this.actividadesService.actualizarActividad(
+			req,
+			actividadDto,
+		);
+	}
+
+	@ApiOperation({ summary: 'ELIMINAR ACTIVIDAD' })
+	@ApiResponse({
+		status: 200,
+		description: 'Actividad eliminada',
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 200,
+				},
+			},
+		},
+	})
+	@Delete('eliminar-actividad/:id_oferta')
+	async eliminarActividad(
+		@Req() req: Request,
+		@Param('id_oferta') id_oferta: string,
+	) {
+		return await this.actividadesService.eliminarActividad(req, id_oferta);
+	}
+
+	@ApiOperation({ summary: 'REGISTRAR UBICACION ACTIVIDAD' })
+	@ApiResponse({
+		status: 201,
+		description: 'Ubicacion registrada',
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 201,
+				},
+			},
+		},
+	})
+	@Post('registrar-ubicacion-actividad')
+	async registrarUbicacionActividad(
+		@Req() req: Request,
+		@Body() ubicacionDto: UbicacionActividadDto,
+	) {
+		return await this.actividadesService.registrarUbicacionActividad(
+			req,
+			ubicacionDto,
+		);
+	}
+
+	@ApiOperation({ summary: 'REGISTRAR HORARIO' })
+	@ApiResponse({
+		status: 200,
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 200,
+				},
+				id_horario: {
+					type: 'string',
+					example: '123e4567-e89b-12d3-a456-426614174000',
+				},
+			},
+		},
+	})
+	@Post('registrar-horario')
+	async registrarHorario(
+		@Req() req: Request,
+		@Body() horarioVacioDto: HorarioVacioDto,
+	) {
+		return await this.actividadesService.registrarHorario(
+			req,
+			horarioVacioDto,
+		);
+	}
+
+	@ApiOperation({ summary: 'ELIMINAR HORARIO' })
+	@ApiResponse({
+		status: 200,
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 200,
+				},
+			},
+		},
+	})
+	@Delete('eliminar-horario/:id_horario')
+	async eliminarHorario(
+		@Req() req: Request,
+		@Param('id_horario') id_horario: string,
+	) {
+		return await this.actividadesService.eliminarHorario(req, id_horario);
+	}
+
+	@ApiOperation({ summary: 'REGISTRAR TARIFA' })
+	@ApiResponse({
+		status: 201,
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 201,
+				},
+				id_tarifa: {
+					type: 'string',
+					example: '123e4567-e89b-12d3-a456-426614174000',
+				},
+			},
+		},
+	})
+	@Post('registrar-tarifa')
+	async registrarTarifa(@Req() req: Request, @Body() tarifaDto: TarifasDto) {
+		return await this.actividadesService.registrarTarifa(req, tarifaDto);
+	}
+
+	@ApiOperation({ summary: 'ELIMINAR TARIFA' })
+	@ApiResponse({
+		status: 200,
+		description: 'TARIFA ELIMINADA',
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 200,
+				},
+			},
+		},
+	})
+	@Delete('eliminar-tarifa/:id_tarifa')
+	async eliminarTarifa(
+		@Req() req: Request,
+		@Param('id_tarifa') id_tarifa: string,
+	) {
+		return await this.actividadesService.eliminarTarifa(req, id_tarifa);
+	}
+
+	@ApiOperation({ summary: 'FINALIZAR REGISTRO ACTIVIDAD' })
 	@ApiResponse({
 		status: 201,
 		description: 'Actividad registrada',
@@ -179,14 +388,14 @@ export class ActividadesController {
 			},
 		},
 	})
-	@Post('registrar-actividad')
-	async registrarActividad(
+	@Post('finalizar-registro-actividad')
+	async finalizarRegistroActividad(
 		@Req() req: Request,
-		@Body() actividadDto: ActividadDto,
+		@Body() horariosOfertaDto: HorariosOfertaDto,
 	) {
-		/* return await this.actividadesService.registrarActividad(
+		return await this.actividadesService.finalizarRegistroActividad(
 			req,
-			actividadDto,
-		); */
+			horariosOfertaDto,
+		);
 	}
 }

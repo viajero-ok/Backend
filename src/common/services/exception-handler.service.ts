@@ -7,6 +7,7 @@ export class ExceptionHandlingService {
 			let descriptionToUse;
 			if (result.descripcion.includes('Error: ')) {
 				descriptionToUse = result.descripcion.replace('Error: ', '');
+				console.log(descriptionToUse);
 			} else {
 				descriptionToUse = mensaje;
 			}

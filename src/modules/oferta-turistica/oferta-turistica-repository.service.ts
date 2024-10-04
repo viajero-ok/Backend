@@ -31,10 +31,11 @@ export class OfertaTuristicaRepositoryService {
 		ofertaTuristicaDto: OfertaTuristicaDto,
 	) {
 		const result = await this.entityManager.query(
-			'CALL SP_ALTA_OFERTA(?, ?, ?)',
+			'CALL SP_ALTA_OFERTA(?, ?, ?, ?)',
 			[
 				ofertaTuristicaDto.id_tipo_oferta,
 				ofertaTuristicaDto.id_sub_tipo_oferta,
+				ofertaTuristicaDto.id_establecimiento,
 				id_usuario,
 			],
 		);

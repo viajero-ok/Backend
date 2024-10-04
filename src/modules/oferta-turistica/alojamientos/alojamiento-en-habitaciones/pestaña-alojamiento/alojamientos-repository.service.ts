@@ -3,7 +3,7 @@ import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 import { AlojamientoDto } from './dto/alojamiento.dto';
 import { DetalleAlojamientoDto } from '../dto/detalle-alojamiento.dto';
-import { TipoObservacion } from '../../enum/tipo-observacion.enum';
+import { TipoObservacion } from '../../../enum/tipo-observacion.enum';
 import { HorarioVacioDto } from './dto/horario-vacio.dto';
 
 @Injectable()
@@ -37,12 +37,11 @@ export class AlojamientosRepositoryService {
 
 				//datos basicos
 				const resultado_alojamiento = await manager.query(
-					`CALL SP_ABM_ALOJAMIENTO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+					`CALL SP_ABM_ALOJAMIENTO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 					[
 						alojamientoDto.id_oferta,
 						1,
 						1,
-						datos_basicos.id_establecimiento,
 						datos_basicos.nombre_alojamiento,
 						datos_basicos.descripcion_alojamiento,
 						id_usuario,
@@ -325,7 +324,6 @@ export class AlojamientosRepositoryService {
 				0,
 			],
 		);
-		console.log(result);
 		return result[0][0];
 	}
 

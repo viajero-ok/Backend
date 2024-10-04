@@ -11,6 +11,7 @@ export class OfertaTuristicaService {
 		private readonly ofertaTuristicaRepositoryService: OfertaTuristicaRepositoryService,
 		private readonly exceptionHandlingService: ExceptionHandlingService,
 	) {}
+
 	async obtenerOfertasPorPrestador(req) {
 		return await this.ofertaTuristicaRepositoryService.obtenerOfertasPorPrestador(
 			req.user.id_usuario,
@@ -32,7 +33,6 @@ export class OfertaTuristicaService {
 				req.user.id_usuario,
 				ofertaTuristicaDto,
 			);
-		console.log(result);
 
 		this.exceptionHandlingService.handleError(
 			result,

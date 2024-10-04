@@ -12,11 +12,6 @@ import {
 import { Transform, Type } from 'class-transformer';
 
 export class DatosBasicosDto {
-	@ApiProperty({ description: 'ID del establecimiento', example: 3 })
-	@IsNotEmpty()
-	@IsNumber()
-	id_establecimiento: number;
-
 	@ApiProperty({
 		description: 'Nombre del alojamiento',
 		example: 'Hotel Paraíso',
