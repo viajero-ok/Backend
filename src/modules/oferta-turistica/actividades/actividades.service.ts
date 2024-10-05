@@ -36,7 +36,7 @@ export class ActividadesService {
 			req.user.id_usuario,
 			guiaDto,
 		);
-		console.log(result);
+
 		this.exceptionHandlingService.handleError(
 			result,
 			'Error al registrar el guia',
@@ -74,7 +74,6 @@ export class ActividadesService {
 				req.user.id_usuario,
 				actividadDto,
 			);
-		console.log(result);
 
 		this.exceptionHandlingService.handleError(
 			result.actividad,
@@ -232,7 +231,6 @@ export class ActividadesService {
 			req.user.id_usuario,
 			tarifaDto,
 		);
-		console.log(result);
 
 		this.exceptionHandlingService.handleError(
 			result,

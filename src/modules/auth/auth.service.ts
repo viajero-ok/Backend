@@ -278,7 +278,6 @@ export class AuthService {
 		const registro = await this.authRepositoryService.registrarPrestador(
 			registrarPrestadorDto,
 		);
-		console.log(registro);
 
 		//comprobar si se registro correctamente
 		if (registro.resultado === 'error') {

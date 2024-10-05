@@ -17,7 +17,6 @@ import {
 } from '@nestjs/swagger';
 import { AlojamientoDto } from './dto/alojamiento.dto';
 import { Request } from 'express';
-import { DetalleAlojamientoDto } from '../dto/detalle-alojamiento.dto';
 import { HorarioVacioDto } from './dto/horario-vacio.dto';
 
 @ApiTags('Alojamientos/Alojamiento')
@@ -359,34 +358,6 @@ export class AlojamientosController {
 		return await this.alojamientosService.obtenerDatosRegistradosAlojamiento(
 			req,
 			id_oferta,
-		);
-	}
-
-	@ApiOperation({ summary: 'FINALIZAR REGISTRO DE ALOJAMIENTO' })
-	@ApiResponse({
-		status: 200,
-		schema: {
-			type: 'object',
-			properties: {
-				resultado: {
-					type: 'string',
-					example: 'ok',
-				},
-				statusCode: {
-					type: 'number',
-					example: 200,
-				},
-			},
-		},
-	})
-	@Post('finalizar-registro-alojamiento')
-	async finalizarRegistroAlojamiento(
-		@Req() req: Request,
-		@Body() detalleAlojamientoDto: DetalleAlojamientoDto,
-	) {
-		return await this.alojamientosService.finalizarRegistroAlojamiento(
-			req,
-			detalleAlojamientoDto,
 		);
 	}
 }

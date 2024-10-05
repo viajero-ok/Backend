@@ -2,7 +2,6 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { AlojamientosRepositoryService } from './alojamientos-repository.service';
 import { AlojamientoDto } from './dto/alojamiento.dto';
 import { ExceptionHandlingService } from 'src/common/services/exception-handler.service';
-import { DetalleAlojamientoDto } from '../dto/detalle-alojamiento.dto';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { HorarioVacioDto } from './dto/horario-vacio.dto';
@@ -178,28 +177,6 @@ export class AlojamientosService {
 		return {
 			resultado: 'ok',
 			statusCode: 200,
-		};
-	}
-
-	async finalizarRegistroAlojamiento(
-		req,
-		detalleAlojamientoDto: DetalleAlojamientoDto,
-	) {
-		const result =
-			await this.alojamientosRepositoryService.finalizarRegistroAlojamiento(
-				req.user.id_usuario,
-				detalleAlojamientoDto,
-			);
-
-		this.exceptionHandlingService.handleError(
-			result,
-			'Error al finalizar el registro del alojamiento',
-			HttpStatus.CONFLICT,
-		);
-
-		return {
-			resultado: 'ok',
-			statusCode: 201,
 		};
 	}
 }

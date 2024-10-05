@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 import { AlojamientoDto } from './dto/alojamiento.dto';
-import { DetalleAlojamientoDto } from '../dto/detalle-alojamiento.dto';
 import { TipoObservacion } from '../../../enum/tipo-observacion.enum';
 import { HorarioVacioDto } from './dto/horario-vacio.dto';
 
@@ -346,21 +345,6 @@ export class AlojamientosRepositoryService {
 				null,
 				null,
 				1,
-			],
-		);
-		return result[0][0];
-	}
-
-	async finalizarRegistroAlojamiento(
-		id_usuario: string,
-		detalleAlojamientoDto: DetalleAlojamientoDto,
-	) {
-		const result = await this.entityManager.query(
-			'CALL SP_ALTA_DETALLE_ALOJAMIENTO(?, ?, ?)',
-			[
-				detalleAlojamientoDto.id_oferta,
-				detalleAlojamientoDto.id_tipo_detalle,
-				id_usuario,
 			],
 		);
 		return result[0][0];

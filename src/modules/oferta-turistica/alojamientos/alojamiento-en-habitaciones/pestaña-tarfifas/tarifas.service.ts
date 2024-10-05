@@ -41,7 +41,6 @@ export class TarifasService {
 			req.user.id_usuario,
 			tarifaDto,
 		);
-		console.log(result);
 
 		this.exceptionHandlingService.handleError(
 			result,

@@ -45,13 +45,14 @@ export class HabitacionesRepositoryService {
 				} = habitacionDto;
 
 				const resultados = {
-					tipoDetalle: null,
+					tipo_detalle: null,
 					plazas: [],
 					caracteristicas: null,
 					observaciones: [],
+					detalle_alojamiento: null,
 				};
 
-				const resultTipoDetalle = await manager.query(
+				const resultado_tipo_detalle = await manager.query(
 					'CALL SP_ABM_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?)',
 					[
 						id_tipo_detalle,
@@ -64,7 +65,7 @@ export class HabitacionesRepositoryService {
 						0,
 					],
 				);
-				resultados.tipoDetalle = resultTipoDetalle[0][0];
+				resultados.tipo_detalle = resultado_tipo_detalle[0][0];
 
 				for (const plaza of plazas) {
 					const resultado = await manager.query(
@@ -101,7 +102,14 @@ export class HabitacionesRepositoryService {
 					resultado_comodidades_y_servicios_habitacion[0][0],
 				);
 
-				console.log(resultados);
+				const resultado_alta_detalle_alojamiento =
+					await this.entityManager.query(
+						'CALL SP_ALTA_DETALLE_ALOJAMIENTO(?, ?, ?)',
+						[id_oferta, id_tipo_detalle, id_usuario],
+					);
+				resultados.detalle_alojamiento =
+					resultado_alta_detalle_alojamiento[0][0];
+
 				return resultados;
 			},
 		);

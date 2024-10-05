@@ -33,8 +33,6 @@ export class HabitacionesService {
 					req.user.id_usuario,
 					imagenProcesada,
 				);
-			console.log('result');
-			console.log(result);
 
 			this.exceptionHandlingService.handleError(
 				result,
@@ -81,10 +79,10 @@ export class HabitacionesService {
 				req.user.id_usuario,
 				habitacionDto,
 			);
-		console.log(habitacionDto);
+
 		// Verificar resultados individuales
 		this.exceptionHandlingService.handleError(
-			resultados.tipoDetalle,
+			resultados.tipo_detalle,
 			'Error al registrar tipo de detalle',
 			HttpStatus.CONFLICT,
 		);
@@ -107,6 +105,11 @@ export class HabitacionesService {
 				HttpStatus.CONFLICT,
 			);
 		});
+		this.exceptionHandlingService.handleError(
+			resultados.detalle_alojamiento,
+			'Error al registrar detalle de alojamiento',
+			HttpStatus.CONFLICT,
+		);
 
 		return {
 			resultado: 'ok',
@@ -119,7 +122,6 @@ export class HabitacionesService {
 			await this.habitacionesRepositoryService.registrarHabitacion(
 				req.user.id_usuario,
 			);
-		console.log(result);
 
 		this.exceptionHandlingService.handleError(
 			result,
