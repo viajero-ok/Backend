@@ -1,11 +1,10 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import {
 	IsUUID,
 	IsString,
 	IsNumber,
 	IsDate,
 	IsNotEmpty,
-	IsOptional,
 	Min,
 } from 'class-validator';
 import { Type } from 'class-transformer';
@@ -20,13 +19,14 @@ export class TarifasDto {
 	@IsString()
 	id_tipo_detalle: string;
 
-	@ApiPropertyOptional({
+	@ApiProperty({
 		description: 'ID de la tarifa',
-		example: '123e4567-e89b-12d3-a456-426614174002',
+		example: 1,
 	})
-	@IsString()
-	@IsOptional()
-	id_tarifa: string;
+	@IsNumber()
+	@IsNotEmpty()
+	@Min(1)
+	id_tarifa: number;
 
 	@ApiProperty({
 		description: 'ID del tipo de pensión',

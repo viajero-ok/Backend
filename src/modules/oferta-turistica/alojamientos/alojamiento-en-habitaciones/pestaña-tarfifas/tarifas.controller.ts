@@ -106,7 +106,7 @@ export class TarifasController {
 			},
 		},
 	})
-	@Patch('actualizar-tarifa/:id_tarifa')
+	@Patch('actualizar-tarifa')
 	async actualizarTarifa(@Req() req: Request, @Body() tarifaDto: TarifasDto) {
 		return await this.tarifasService.actualizarTarifa(req, tarifaDto);
 	}

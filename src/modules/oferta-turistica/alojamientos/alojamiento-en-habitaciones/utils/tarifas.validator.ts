@@ -15,8 +15,8 @@ export class TarifasValidator {
 
 		const tarifasSolapadas = tarifasExistentes.filter(
 			(t) =>
-				t.id_tipo_pension === tarifaDto.id_tipo_pension &&
 				t.id_tarifa !== tarifaDto.id_tarifa &&
+				t.id_tipo_pension === tarifaDto.id_tipo_pension &&
 				((tarifaDto.fecha_desde >= t.fecha_desde &&
 					tarifaDto.fecha_desde < t.fecha_hasta) ||
 					(tarifaDto.fecha_hasta > t.fecha_desde &&
