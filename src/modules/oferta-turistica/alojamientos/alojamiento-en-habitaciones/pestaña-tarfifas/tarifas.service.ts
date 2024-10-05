@@ -3,6 +3,7 @@ import { ExceptionHandlingService } from 'src/common/services/exception-handler.
 import { TarifasValidator } from '../utils/tarifas.validator';
 import { TarifasDto } from './dto/tarifa.dto';
 import { TarifasRepositoryService } from './tarifas-repository.service';
+import { RegistrarTarifaDto } from './dto/registrar-tarifa-dto';
 
 @Injectable()
 export class TarifasService {
@@ -16,7 +17,25 @@ export class TarifasService {
 		return await this.tarifasRepositoryService.obtenerDatosRegistroTarifa();
 	}
 
-	async registrarTarifa(req, tarifaDto: TarifasDto) {
+	async registrarTarifa(req, registrarTarifaDto: RegistrarTarifaDto) {
+		const result = await this.tarifasRepositoryService.registrarTarifa(
+			req.user.id_usuario,
+			registrarTarifaDto,
+		);
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al registrar tarifa',
+			HttpStatus.CONFLICT,
+		);
+
+		return {
+			resultado: 'ok',
+			statusCode: 201,
+			id_tarifa: result.id_tarifa,
+		};
+	}
+
+	async actualizarTarifa(req, tarifaDto: TarifasDto) {
 		const tarifasExistentes =
 			await this.tarifasRepositoryService.obtenerTarifas(
 				tarifaDto.id_tipo_detalle,
@@ -37,7 +56,7 @@ export class TarifasService {
 			);
 		}
 
-		const result = await this.tarifasRepositoryService.registrarTarifa(
+		const result = await this.tarifasRepositoryService.actualizarTarifa(
 			req.user.id_usuario,
 			tarifaDto,
 		);

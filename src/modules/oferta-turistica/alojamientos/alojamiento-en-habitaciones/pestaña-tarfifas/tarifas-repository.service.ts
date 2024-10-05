@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 import { TarifasDto } from './dto/tarifa.dto';
+import { RegistrarTarifaDto } from './dto/registrar-tarifa-dto';
 
 @Injectable()
 export class TarifasRepositoryService {
@@ -20,6 +21,26 @@ export class TarifasRepositoryService {
 		return resultados;
 	}
 
+	async registrarTarifa(
+		id_usuario: string,
+		registrarTarifaDto: RegistrarTarifaDto,
+	) {
+		const result = await this.entityManager.query(
+			'CALL SP_ABM_TARIFA_X_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?)',
+			[
+				null,
+				registrarTarifaDto.id_tipo_detalle,
+				null,
+				null,
+				null,
+				null,
+				id_usuario,
+				0,
+			],
+		);
+		return result[0][0];
+	}
+
 	async obtenerTarifas(id_tipo_detalle: string) {
 		const result = await this.entityManager.query(
 			'CALL SP_OBT_TARIFA_X_TIPO_DETALLE(?)',
@@ -28,7 +49,7 @@ export class TarifasRepositoryService {
 		return result[0];
 	}
 
-	async registrarTarifa(id_usuario: string, tarifa: TarifasDto) {
+	async actualizarTarifa(id_usuario: string, tarifa: TarifasDto) {
 		const result = await this.entityManager.query(
 			'CALL SP_ABM_TARIFA_X_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?)',
 			[

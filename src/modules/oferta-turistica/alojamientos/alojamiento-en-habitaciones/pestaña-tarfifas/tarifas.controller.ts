@@ -4,6 +4,7 @@ import {
 	Delete,
 	Get,
 	Param,
+	Patch,
 	Post,
 	Req,
 } from '@nestjs/common';
@@ -16,6 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { Request } from 'express';
 import { TarifasDto } from './dto/tarifa.dto';
+import { RegistrarTarifaDto } from './dto/registrar-tarifa-dto';
 
 @ApiTags('Alojamientos/Tarifas')
 @ApiBearerAuth()
@@ -73,8 +75,40 @@ export class TarifasController {
 		},
 	})
 	@Post('registrar-tarifa')
-	async registrarTarifa(@Req() req: Request, @Body() tarifaDto: TarifasDto) {
-		return await this.tarifasService.registrarTarifa(req, tarifaDto);
+	async registrarTarifa(
+		@Req() req: Request,
+		@Body() registrarTarifaDto: RegistrarTarifaDto,
+	) {
+		return await this.tarifasService.registrarTarifa(
+			req,
+			registrarTarifaDto,
+		);
+	}
+
+	@ApiOperation({ summary: 'ACTUALIZAR TARIFA' })
+	@ApiResponse({
+		status: 201,
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 201,
+				},
+				id_tarifa: {
+					type: 'string',
+					example: '123e4567-e89b-12d3-a456-426614174000',
+				},
+			},
+		},
+	})
+	@Patch('actualizar-tarifa/:id_tarifa')
+	async actualizarTarifa(@Req() req: Request, @Body() tarifaDto: TarifasDto) {
+		return await this.tarifasService.actualizarTarifa(req, tarifaDto);
 	}
 
 	@ApiOperation({ summary: 'ELIMINAR TARIFA' })
