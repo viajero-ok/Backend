@@ -40,10 +40,6 @@ export class TarifasService {
 			await this.tarifasRepositoryService.obtenerTarifas(
 				tarifaDto.id_tipo_detalle,
 			);
-		console.log('--------------------------------');
-		console.log(tarifasExistentes);
-		console.log('--------------------------------');
-		console.log(tarifaDto);
 
 		const errores = await this.tarifasValidator.validarTarifa(
 			tarifaDto,
@@ -90,6 +86,7 @@ export class TarifasService {
 			await this.tarifasRepositoryService.obtenerDatosRegistradosTarifa(
 				id_oferta,
 			);
+
 		this.exceptionHandlingService.handleError(
 			result,
 			'Error al obtener datos registrados de tarifa',

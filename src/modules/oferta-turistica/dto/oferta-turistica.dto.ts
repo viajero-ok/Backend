@@ -1,5 +1,11 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsOptional, Min } from 'class-validator';
+import {
+	IsNotEmpty,
+	IsNumber,
+	IsOptional,
+	Min,
+	ValidateIf,
+} from 'class-validator';
 
 export class OfertaTuristicaDto {
 	@ApiProperty({
@@ -21,7 +27,8 @@ export class OfertaTuristicaDto {
 	readonly id_sub_tipo_oferta?: number;
 
 	@ApiPropertyOptional({ description: 'ID del establecimiento', example: 3 })
-	@IsOptional()
+	@ValidateIf((o) => o.id_tipo_oferta === 1)
+	@IsNotEmpty()
 	@IsNumber()
 	@Min(1)
 	readonly id_establecimiento?: number;
