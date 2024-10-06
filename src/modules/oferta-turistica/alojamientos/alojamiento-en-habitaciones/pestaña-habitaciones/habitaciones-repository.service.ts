@@ -83,8 +83,8 @@ export class HabitacionesRepositoryService {
 				}
 
 				const resultado_caracteristicas = await manager.query(
-					`CALL SP_ABM_CARACTERISTICAS_X_TIPO_DETALLE(?, ?, ?, ?)`,
-					[id_tipo_detalle, caracteristicas.join(','), id_usuario, 0],
+					`CALL SP_ABM_CARACTERISTICAS_X_TIPO_DETALLE(?, ?, ?)`,
+					[id_tipo_detalle, caracteristicas.join(','), id_usuario],
 				);
 				resultados.caracteristicas = resultado_caracteristicas[0][0];
 

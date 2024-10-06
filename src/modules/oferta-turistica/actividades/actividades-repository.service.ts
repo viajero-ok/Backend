@@ -111,12 +111,11 @@ export class ActividadesRepositoryService {
 			resultados.actividad = resultado_actividad[0][0];
 
 			const resultado_metodos_pago = await manager.query(
-				`CALL SP_ABM_METODOS_PAGO_X_OFERTA(?, ?, ?, ?)`,
+				`CALL SP_ABM_METODOS_PAGO_X_OFERTA(?, ?, ?)`,
 				[
 					actividadDto.id_oferta,
 					actividadDto.metodos_de_pago.join(','),
 					id_usuario,
-					0,
 				],
 			);
 			resultados.metodos_pago = resultado_metodos_pago[0][0];

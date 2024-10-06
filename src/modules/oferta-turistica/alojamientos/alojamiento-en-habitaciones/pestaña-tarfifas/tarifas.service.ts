@@ -1,9 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { ExceptionHandlingService } from 'src/common/services/exception-handler.service';
 import { TarifasValidator } from '../utils/tarifas.validator';
-import { TarifasDto } from './dto/tarifa.dto';
+import { RegistrarTarifasDto } from './dto/registrar-tarifa.dto';
 import { TarifasRepositoryService } from './tarifas-repository.service';
-import { RegistrarTarifaDto } from './dto/registrar-tarifa-dto';
+import { ActualizarTarifasDto } from './dto/actualizar-tarifa.dto';
 
 @Injectable()
 export class TarifasService {
@@ -17,68 +17,75 @@ export class TarifasService {
 		return await this.tarifasRepositoryService.obtenerDatosRegistroTarifa();
 	}
 
-	async registrarTarifa(req, registrarTarifaDto: RegistrarTarifaDto) {
+	async registrarTarifa(req, tarifasDto: RegistrarTarifasDto) {
 		const result = await this.tarifasRepositoryService.registrarTarifa(
 			req.user.id_usuario,
-			registrarTarifaDto,
+			tarifasDto,
 		);
-		this.exceptionHandlingService.handleError(
-			result,
-			'Error al registrar tarifa',
-			HttpStatus.CONFLICT,
-		);
-
-		return {
-			resultado: 'ok',
-			statusCode: 201,
-			id_tarifa: result.id_tarifa,
-		};
-	}
-
-	async actualizarTarifa(req, tarifaDto: TarifasDto) {
-		const tarifasExistentes =
-			await this.tarifasRepositoryService.obtenerTarifas(
-				tarifaDto.id_tipo_detalle,
-			);
-
-		const errores = await this.tarifasValidator.validarTarifa(
-			tarifaDto,
-			tarifasExistentes,
-		);
-
-		if (errores.length > 0) {
-			throw new HttpException(
-				{
-					message: errores,
-					statusCode: HttpStatus.CONFLICT,
-				},
+		console.log(result);
+		for (const tarifa of result) {
+			this.exceptionHandlingService.handleError(
+				tarifa,
+				'Error al registrar tarifa',
 				HttpStatus.CONFLICT,
 			);
 		}
-
-		const result = await this.tarifasRepositoryService.actualizarTarifa(
-			req.user.id_usuario,
-			tarifaDto,
-		);
-
-		this.exceptionHandlingService.handleError(
-			result,
-			'Error al registrar tarifa',
-			HttpStatus.CONFLICT,
-		);
+		const datos = result.map((tarifa) => {
+			return {
+				id_tarifa: tarifa.id_tarifa,
+				id_tipo_detalle: tarifa.id_tipo_detalle,
+			};
+		});
 
 		return {
 			resultado: 'ok',
 			statusCode: 201,
-			id_tarifa: result.id_tarifa,
+			datos: datos,
 		};
 	}
 
-	async eliminarTarifa(req, id_tarifa: string) {
-		return await this.tarifasRepositoryService.eliminarTarifa(
+	async actualizarTarifa(req, actualizarTarifasDto: ActualizarTarifasDto) {
+		const result = await this.tarifasRepositoryService.actualizarTarifa(
 			req.user.id_usuario,
-			id_tarifa,
+			actualizarTarifasDto,
 		);
+
+		for (const tarifa of result) {
+			this.exceptionHandlingService.handleError(
+				tarifa,
+				'Error al registrar tarifa',
+				HttpStatus.CONFLICT,
+			);
+		}
+		const datos = result.map((tarifa) => {
+			return {
+				id_tarifa: tarifa.id_tarifa,
+				id_tipo_detalle: tarifa.id_tipo_detalle,
+			};
+		});
+
+		return {
+			resultado: 'ok',
+			statusCode: 201,
+			datos: datos,
+		};
+	}
+
+	async eliminarTarifa(req, id_tarifa: number) {
+		const result = await this.tarifasRepositoryService.eliminarTarifa(
+			id_tarifa,
+			req.user.id_usuario,
+		);
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al eliminar tarifa',
+			HttpStatus.CONFLICT,
+		);
+		return {
+			resultado: 'ok',
+			statusCode: 200,
+			id_tarifa: result.id_tarifa,
+		};
 	}
 
 	async obtenerDatosRegistradosTarifa(req, id_oferta: string) {

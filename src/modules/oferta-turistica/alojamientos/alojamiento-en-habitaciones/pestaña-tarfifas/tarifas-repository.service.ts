@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
-import { TarifasDto } from './dto/tarifa.dto';
-import { RegistrarTarifaDto } from './dto/registrar-tarifa-dto';
+import { RegistrarTarifasDto } from './dto/registrar-tarifa.dto';
+import { ActualizarTarifasDto } from './dto/actualizar-tarifa.dto';
 
 @Injectable()
 export class TarifasRepositoryService {
@@ -23,22 +23,31 @@ export class TarifasRepositoryService {
 
 	async registrarTarifa(
 		id_usuario: string,
-		registrarTarifaDto: RegistrarTarifaDto,
+		registrarTarifasDto: RegistrarTarifasDto,
 	) {
-		const result = await this.entityManager.query(
-			'CALL SP_ABM_TARIFA_X_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?)',
-			[
-				null,
-				registrarTarifaDto.id_tipo_detalle,
-				null,
-				null,
-				null,
-				null,
-				id_usuario,
-				0,
-			],
+		const { fecha_desde, fecha_hasta } = registrarTarifasDto;
+		const resultados_tarifas = [];
+		return this.entityManager.transaction(
+			async (manager: EntityManager) => {
+				for (const tarifa of registrarTarifasDto.tarifas) {
+					const result = await manager.query(
+						'CALL SP_ABM_TARIFA_X_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?)',
+						[
+							null,
+							tarifa.id_tipo_detalle,
+							tarifa.id_tipo_pension,
+							tarifa.monto_tarifa,
+							fecha_desde,
+							fecha_hasta,
+							id_usuario,
+							0,
+						],
+					);
+					resultados_tarifas.push(result[0][0]);
+				}
+				return resultados_tarifas;
+			},
 		);
-		return result[0][0];
 	}
 
 	async obtenerTarifas(id_tipo_detalle: string) {
@@ -49,27 +58,39 @@ export class TarifasRepositoryService {
 		return result[0];
 	}
 
-	async actualizarTarifa(id_usuario: string, tarifa: TarifasDto) {
-		const result = await this.entityManager.query(
-			'CALL SP_ABM_TARIFA_X_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?)',
-			[
-				tarifa.id_tarifa,
-				tarifa.id_tipo_detalle,
-				tarifa.id_tipo_pension,
-				tarifa.monto_tarifa,
-				tarifa.fecha_desde,
-				tarifa.fecha_hasta,
-				id_usuario,
-				0,
-			],
+	async actualizarTarifa(
+		id_usuario: string,
+		actualizarTarifasDto: ActualizarTarifasDto,
+	) {
+		const { fecha_desde, fecha_hasta } = actualizarTarifasDto;
+		const resultados_tarifas = [];
+		return this.entityManager.transaction(
+			async (manager: EntityManager) => {
+				for (const tarifa of actualizarTarifasDto.tarifas) {
+					const result = await manager.query(
+						'CALL SP_ABM_TARIFA_X_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?)',
+						[
+							tarifa.id_tarifa,
+							tarifa.id_tipo_detalle,
+							tarifa.id_tipo_pension,
+							tarifa.monto_tarifa,
+							fecha_desde,
+							fecha_hasta,
+							id_usuario,
+							0,
+						],
+					);
+					resultados_tarifas.push(result[0][0]);
+				}
+				return resultados_tarifas;
+			},
 		);
-		return result[0][0];
 	}
 
-	async eliminarTarifa(id_tarifa: string, id_usuario: string) {
+	async eliminarTarifa(id_tarifa: number, id_usuario: string) {
 		const result = await this.entityManager.query(
 			'CALL SP_ABM_TARIFA_X_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?)',
-			[id_tarifa, id_usuario, 0, 0, 0, 0, 0, 1],
+			[id_tarifa, null, null, null, null, null, id_usuario, 1],
 		);
 		return result[0][0];
 	}

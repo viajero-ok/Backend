@@ -36,7 +36,7 @@ export class AlojamientosRepositoryService {
 
 				//datos basicos
 				const resultado_alojamiento = await manager.query(
-					`CALL SP_ABM_ALOJAMIENTO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+					`CALL SP_ABM_ALOJAMIENTO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 					[
 						alojamientoDto.id_oferta,
 						1,
@@ -48,12 +48,7 @@ export class AlojamientosRepositoryService {
 						politicas_reserva.plazo_dias_cancelacion,
 						politicas_reserva.monto_garantia ? true : false,
 						politicas_reserva.monto_garantia ?? null,
-						politicas_reserva.monto_pago_anticipado
-							? 2
-							: politicas_reserva.porcentaje_pago_anticipado
-								? 1
-								: 3,
-						politicas_reserva.monto_pago_anticipado,
+						politicas_reserva.id_tipo_pago_anticipado,
 						politicas_reserva.porcentaje_pago_anticipado,
 						politicas_reserva.minimo_dias_estadia,
 						0,
@@ -63,11 +58,10 @@ export class AlojamientosRepositoryService {
 
 				if (alojamientoDto.caracteristicas) {
 					const resultado_caracteristicas = await manager.query(
-						`CALL SP_ABM_CARACTERISTICAS_OFERTA(?, ?, ?)`,
+						`CALL SP_ABM_CARACTERISTICAS_OFERTA(?, ?)`,
 						[
 							alojamientoDto.id_oferta,
 							alojamientoDto.caracteristicas.join(','),
-							0,
 						],
 					);
 					resultados.caracteristicas =
@@ -183,12 +177,11 @@ export class AlojamientosRepositoryService {
 
 				//metodos de pago
 				const resultado_metodos_pago = await manager.query(
-					`CALL SP_ABM_METODOS_PAGO_X_OFERTA(?, ?, ?, ?)`,
+					`CALL SP_ABM_METODOS_PAGO_X_OFERTA(?, ?, ?)`,
 					[
 						alojamientoDto.id_oferta,
 						alojamientoDto.metodos_de_pago.join(','),
 						id_usuario,
-						0,
 					],
 				);
 				resultados.metodos_pago = resultado_metodos_pago[0][0];
@@ -200,7 +193,7 @@ export class AlojamientosRepositoryService {
 
 	async eliminarAlojamiento(id_usuario: string, id_oferta: string) {
 		const result = await this.entityManager.query(
-			'CALL SP_ABM_ALOJAMIENTO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			'CALL SP_ABM_ALOJAMIENTO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
 				id_oferta,
 				null,
