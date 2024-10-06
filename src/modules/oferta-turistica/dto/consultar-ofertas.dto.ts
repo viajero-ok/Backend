@@ -1,11 +1,4 @@
-import {
-	IsOptional,
-	IsInt,
-	IsString,
-	IsDecimal,
-	Min,
-	MaxLength,
-} from 'class-validator';
+import { IsOptional, IsInt, IsString, Min, MaxLength } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -78,7 +71,6 @@ export class ConsultarOfertasDto {
 		example: 100.0,
 	})
 	@IsOptional()
-	@IsDecimal({ decimal_digits: '2' })
 	@Type(() => Number)
 	@Min(0)
 	min_monto_garantia?: number;
@@ -88,7 +80,6 @@ export class ConsultarOfertasDto {
 		example: 500.0,
 	})
 	@IsOptional()
-	@IsDecimal({ decimal_digits: '2' })
 	@Type(() => Number)
 	@Min(0)
 	max_monto_garantia?: number;

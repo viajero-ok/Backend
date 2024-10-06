@@ -122,8 +122,18 @@ export class HabitacionesRepositoryService {
 
 	async eliminarHabitacion(id_usuario: string, id_tipo_detalle: string) {
 		const resultado = await this.entityManager.query(
-			'CALL SP_ABM_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?)',
-			[id_tipo_detalle, null, null, null, null, null, id_usuario, 1],
+			'CALL SP_ABM_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			[
+				null,
+				id_tipo_detalle,
+				null,
+				null,
+				null,
+				null,
+				null,
+				id_usuario,
+				1,
+			],
 		);
 		return resultado[0][0];
 	}
@@ -171,6 +181,7 @@ export class HabitacionesRepositoryService {
 			'CALL SP_OBT_DATOS_HABITACIONES_X_OFERTA(?)',
 			[id_oferta],
 		);
-		return resultado[0];
+		console.log(resultado);
+		return resultado;
 	}
 }

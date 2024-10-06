@@ -83,8 +83,8 @@ export class OfertaTuristicaRepositoryService {
 			[
 				pagina,
 				limite,
-				null,
-				null,
+				consultarOfertasDto.id_sub_tipo_oferta,
+				consultarOfertasDto.id_establecimiento,
 				null,
 				null,
 				null,
