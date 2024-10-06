@@ -5,6 +5,7 @@ import { TipoObservacion } from '../../../enum/tipo-observacion.enum';
 import { ImagenProcesadaDto } from '../dto/imagen-procesada.dto';
 import { HabitacionDto } from './dto/habitacion.dto';
 import { RegistrarHabitacionDto } from './dto/registrar-habitacion.dto';
+import { RegistrarImagenHabitacionDto } from './dto/registrar-imagen-habitacion.dto';
 
 @Injectable()
 export class HabitacionesRepositoryService {
@@ -139,7 +140,7 @@ export class HabitacionesRepositoryService {
 	}
 
 	async registrarImagenHabitacion(
-		id_tipo_detalle: string,
+		registrarImagenHabitacionDto: RegistrarImagenHabitacionDto,
 		id_usuario: string,
 		imagen: ImagenProcesadaDto,
 	) {
@@ -150,7 +151,7 @@ export class HabitacionesRepositoryService {
 				imagen.nombre_unico,
 				imagen.ruta,
 				imagen.mime_type,
-				id_tipo_detalle,
+				registrarImagenHabitacionDto.id_tipo_detalle,
 				id_usuario,
 				imagen.tamaño,
 				null,

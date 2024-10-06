@@ -22,6 +22,7 @@ import { multerHabitacionConfig } from '../utils/multer-habitacion.config';
 import { HabitacionesService } from './habitaciones.service';
 import { HabitacionDto } from './dto/habitacion.dto';
 import { RegistrarHabitacionDto } from './dto/registrar-habitacion.dto';
+import { RegistrarImagenHabitacionDto } from './dto/registrar-imagen-habitacion.dto';
 
 @ApiTags('Alojamientos/Habitaciones')
 @Controller('alojamientos')
@@ -199,12 +200,12 @@ export class HabitacionesController {
 	async registrarImagenHabitacion(
 		@Req() req: Request,
 		@UploadedFile() imagen: Express.Multer.File,
-		@Body('id_tipo_detalle') id_tipo_detalle: string,
+		@Body() registrarImagenHabitacionDto: RegistrarImagenHabitacionDto,
 	) {
 		return await this.habitacionesService.registrarImagenHabitacion(
 			req,
 			imagen,
-			id_tipo_detalle,
+			registrarImagenHabitacionDto,
 		);
 	}
 

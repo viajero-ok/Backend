@@ -7,11 +7,10 @@ export class ExceptionHandlingService {
 			let descriptionToUse;
 			if (result.descripcion.includes('Error: ')) {
 				descriptionToUse = result.descripcion.replace('Error: ', '');
-				console.log(descriptionToUse);
 			} else {
 				descriptionToUse = mensaje;
-				console.log(descriptionToUse);
 			}
+			console.log(descriptionToUse);
 
 			throw new HttpException(
 				{

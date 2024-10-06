@@ -5,6 +5,7 @@ import { ExceptionHandlingService } from 'src/common/services/exception-handler.
 import { eliminarArchivo } from './utils/eliminar-archivo';
 import { ImagenProcesadaDto } from './dto/imagen-procesada.dto';
 import { ConsultarOfertasDto } from './dto/consultar-ofertas.dto';
+import { RegistrarImagenOfertaDto } from './dto/registrar-imagen-oferta.dto';
 
 @Injectable()
 export class OfertaTuristicaService {
@@ -51,7 +52,7 @@ export class OfertaTuristicaService {
 	async registrarImagenOfertaTuristica(
 		req,
 		file: Express.Multer.File,
-		id_oferta: string,
+		registrarImagenOfertaDto: RegistrarImagenOfertaDto,
 	) {
 		try {
 			const imagenProcesada = new ImagenProcesadaDto();
@@ -63,7 +64,7 @@ export class OfertaTuristicaService {
 
 			const result =
 				await this.ofertaTuristicaRepositoryService.registrarImagenOfertaTuristica(
-					id_oferta,
+					registrarImagenOfertaDto,
 					req.user.id_usuario,
 					imagenProcesada,
 				);

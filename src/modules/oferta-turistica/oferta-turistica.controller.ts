@@ -24,6 +24,7 @@ import { OfertaTuristicaDto } from './dto/oferta-turistica.dto';
 import { multerOfertaConfig } from './utils/multer-oferta.config';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ConsultarOfertasDto } from './dto/consultar-ofertas.dto';
+import { RegistrarImagenOfertaDto } from './dto/registrar-imagen-oferta.dto';
 
 @ApiTags('Ofertas Turísticas')
 @ApiBearerAuth()
@@ -181,12 +182,12 @@ export class OfertaTuristicaController {
 	async registrarImagenOfertaTuristica(
 		@Req() req: Request,
 		@UploadedFile() imagen: Express.Multer.File,
-		@Body('id_oferta') id_oferta: string,
+		@Body() registrarImagenOfertaDto: RegistrarImagenOfertaDto,
 	) {
 		return await this.ofertaTuristicaService.registrarImagenOfertaTuristica(
 			req,
 			imagen,
-			id_oferta,
+			registrarImagenOfertaDto,
 		);
 	}
 

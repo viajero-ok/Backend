@@ -7,6 +7,7 @@ import { HabitacionDto } from './dto/habitacion.dto';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { RegistrarHabitacionDto } from './dto/registrar-habitacion.dto';
+import { RegistrarImagenHabitacionDto } from './dto/registrar-imagen-habitacion.dto';
 
 @Injectable()
 export class HabitacionesService {
@@ -18,7 +19,7 @@ export class HabitacionesService {
 	async registrarImagenHabitacion(
 		req,
 		file: Express.Multer.File,
-		id_tipo_detalle: string,
+		registrarImagenHabitacionDto: RegistrarImagenHabitacionDto,
 	) {
 		try {
 			const imagenProcesada = new ImagenProcesadaDto();
@@ -30,7 +31,7 @@ export class HabitacionesService {
 
 			const result =
 				await this.habitacionesRepositoryService.registrarImagenHabitacion(
-					id_tipo_detalle,
+					registrarImagenHabitacionDto,
 					req.user.id_usuario,
 					imagenProcesada,
 				);

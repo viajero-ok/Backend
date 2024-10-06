@@ -4,6 +4,7 @@ import { EntityManager } from 'typeorm';
 import { OfertaTuristicaDto } from './dto/oferta-turistica.dto';
 import { ImagenProcesadaDto } from './dto/imagen-procesada.dto';
 import { ConsultarOfertasDto } from './dto/consultar-ofertas.dto';
+import { RegistrarImagenOfertaDto } from './dto/registrar-imagen-oferta.dto';
 
 @Injectable()
 export class OfertaTuristicaRepositoryService {
@@ -44,7 +45,7 @@ export class OfertaTuristicaRepositoryService {
 	}
 
 	async registrarImagenOfertaTuristica(
-		id_oferta: string,
+		registrarImagenOfertaDto: RegistrarImagenOfertaDto,
 		id_usuario: string,
 		imagen: ImagenProcesadaDto,
 	) {
@@ -55,7 +56,7 @@ export class OfertaTuristicaRepositoryService {
 				imagen.nombre_unico,
 				imagen.ruta,
 				imagen.mime_type,
-				id_oferta,
+				registrarImagenOfertaDto.id_oferta,
 				id_usuario,
 				imagen.tamaño,
 				null,
