@@ -158,12 +158,30 @@ export class HabitacionesService {
 	}
 
 	async obtenerDatosRegistradosHabitacion(req, id_oferta: string) {
-		const result =
+		const resultado =
 			await this.habitacionesRepositoryService.obtenerDatosRegistradosHabitacion(
 				id_oferta,
 			);
 
-		for (const tipoDetalle of result) {
+		const habitaciones = resultado.habitaciones;
+		const plazas = resultado.plazas;
+		const caracteristicas = resultado.caracteristicas;
+
+		const respuesta = habitaciones.map((habitacion) => {
+			return {
+				...habitacion,
+				plazas: plazas.filter(
+					(plaza) =>
+						plaza.id_tipo_detalle === habitacion.id_tipo_detalle,
+				),
+				caracteristicas: caracteristicas.filter(
+					(carac) =>
+						carac.id_tipo_detalle === habitacion.id_tipo_detalle,
+				),
+			};
+		});
+
+		for (const tipoDetalle of respuesta) {
 			const datosImagenes =
 				await this.habitacionesRepositoryService.obtenerImagenes(
 					tipoDetalle.id_tipo_detalle,
@@ -173,7 +191,7 @@ export class HabitacionesService {
 		}
 
 		return {
-			datos: result,
+			datos: respuesta,
 		};
 	}
 

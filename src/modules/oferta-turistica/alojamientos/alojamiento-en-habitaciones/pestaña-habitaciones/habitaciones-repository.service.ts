@@ -178,11 +178,18 @@ export class HabitacionesRepositoryService {
 	}
 
 	async obtenerDatosRegistradosHabitacion(id_oferta: string) {
+		const resultados = {
+			habitaciones: [],
+			plazas: [],
+			caracteristicas: [],
+		};
 		const resultado = await this.entityManager.query(
 			'CALL SP_OBT_DATOS_HABITACIONES_X_OFERTA(?)',
 			[id_oferta],
 		);
-		console.log(resultado);
-		return resultado;
+		resultados.habitaciones = resultado[0];
+		resultados.plazas = resultado[1];
+		resultados.caracteristicas = resultado[2];
+		return resultados;
 	}
 }
