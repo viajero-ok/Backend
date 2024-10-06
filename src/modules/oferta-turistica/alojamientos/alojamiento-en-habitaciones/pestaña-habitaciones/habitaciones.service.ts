@@ -6,6 +6,7 @@ import { HabitacionesRepositoryService } from './habitaciones-repository.service
 import { HabitacionDto } from './dto/habitacion.dto';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import { RegistrarHabitacionDto } from './dto/registrar-habitacion.dto';
 
 @Injectable()
 export class HabitacionesService {
@@ -117,22 +118,32 @@ export class HabitacionesService {
 		};
 	}
 
-	async registrarHabitacion(req) {
+	async registrarHabitacion(
+		req,
+		registrarHabitacionDto: RegistrarHabitacionDto,
+	) {
 		const result =
 			await this.habitacionesRepositoryService.registrarHabitacion(
 				req.user.id_usuario,
+				registrarHabitacionDto,
 			);
+		console.log(result);
 
 		this.exceptionHandlingService.handleError(
-			result,
+			result.tipo_detalle,
 			'Error al registrar habitación vacía',
+			HttpStatus.CONFLICT,
+		);
+		this.exceptionHandlingService.handleError(
+			result.detalle_alojamiento,
+			'Error al registrar detalle de alojamiento',
 			HttpStatus.CONFLICT,
 		);
 
 		return {
 			resultado: 'ok',
 			statusCode: 201,
-			id_tipo_detalle: result.id_tipo_detalle,
+			id_tipo_detalle: result.tipo_detalle.id_tipo_detalle,
 		};
 	}
 

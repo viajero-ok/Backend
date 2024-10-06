@@ -10,6 +10,7 @@ export class ExceptionHandlingService {
 				console.log(descriptionToUse);
 			} else {
 				descriptionToUse = mensaje;
+				console.log(descriptionToUse);
 			}
 
 			throw new HttpException(

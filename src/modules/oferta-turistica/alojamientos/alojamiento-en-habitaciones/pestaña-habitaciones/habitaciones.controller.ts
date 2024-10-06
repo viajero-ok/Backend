@@ -21,6 +21,7 @@ import {
 import { multerHabitacionConfig } from '../utils/multer-habitacion.config';
 import { HabitacionesService } from './habitaciones.service';
 import { HabitacionDto } from './dto/habitacion.dto';
+import { RegistrarHabitacionDto } from './dto/registrar-habitacion.dto';
 
 @ApiTags('Alojamientos/Habitaciones')
 @Controller('alojamientos')
@@ -91,8 +92,14 @@ export class HabitacionesController {
 		},
 	})
 	@Post('registrar-habitacion')
-	async registrarHabitacion(@Req() req: Request) {
-		return await this.habitacionesService.registrarHabitacion(req);
+	async registrarHabitacion(
+		@Req() req: Request,
+		@Body() registrarHabitacionDto: RegistrarHabitacionDto,
+	) {
+		return await this.habitacionesService.registrarHabitacion(
+			req,
+			registrarHabitacionDto,
+		);
 	}
 
 	@ApiOperation({ summary: 'ACTUALIZAR HABITACION' })

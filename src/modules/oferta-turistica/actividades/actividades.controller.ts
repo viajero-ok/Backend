@@ -4,6 +4,7 @@ import {
 	Delete,
 	Get,
 	Param,
+	Patch,
 	Post,
 	Req,
 } from '@nestjs/common';
@@ -195,7 +196,7 @@ export class ActividadesController {
 			},
 		},
 	})
-	@Post('actualizar-actividad')
+	@Patch('actualizar-actividad')
 	async actualizarActividad(
 		@Req() req: Request,
 		@Body() actividadDto: ActividadDto,

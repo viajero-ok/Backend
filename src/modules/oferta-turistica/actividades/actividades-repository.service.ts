@@ -156,22 +156,25 @@ export class ActividadesRepositoryService {
 	) {
 		const resultados = { ubicacion: null, observacion: null };
 		await this.entityManager.transaction(async (manager) => {
-			const resultado_ubicacion = manager.query(
-				'CALL SP_ABM_DOMICILIO_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			const resultado_ubicacion = await manager.query(
+				'CALL SP_ABM_DOMICILIO_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				[
 					ubicacionDto.id_oferta,
 					ubicacionDto.calle,
 					ubicacionDto.numero,
 					ubicacionDto.id_localidad,
 					ubicacionDto.id_departamento,
+					ubicacionDto.id_provincia,
+					1,
 					ubicacionDto.sin_numero,
 					ubicacionDto.latitud,
 					ubicacionDto.longitud,
 					0,
 				],
 			);
+			console.log(resultado_ubicacion);
 			resultados.ubicacion = resultado_ubicacion[0][0];
-			const resultado_observacion = manager.query(
+			const resultado_observacion = await manager.query(
 				'CALL SP_ABM_OBSERVACIONES_X_OFERTA(?, ?, ?, ?, ?, ?, ?)',
 				[
 					ubicacionDto.id_oferta,

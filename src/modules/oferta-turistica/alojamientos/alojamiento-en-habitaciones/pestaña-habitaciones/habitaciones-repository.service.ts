@@ -4,6 +4,7 @@ import { EntityManager } from 'typeorm';
 import { TipoObservacion } from '../../../enum/tipo-observacion.enum';
 import { ImagenProcesadaDto } from '../dto/imagen-procesada.dto';
 import { HabitacionDto } from './dto/habitacion.dto';
+import { RegistrarHabitacionDto } from './dto/registrar-habitacion.dto';
 
 @Injectable()
 export class HabitacionesRepositoryService {
@@ -102,11 +103,10 @@ export class HabitacionesRepositoryService {
 					resultado_comodidades_y_servicios_habitacion[0][0],
 				);
 
-				const resultado_alta_detalle_alojamiento =
-					await this.entityManager.query(
-						'CALL SP_ALTA_DETALLE_ALOJAMIENTO(?, ?, ?)',
-						[id_oferta, id_tipo_detalle, id_usuario],
-					);
+				const resultado_alta_detalle_alojamiento = await manager.query(
+					'CALL SP_ALTA_DETALLE_ALOJAMIENTO(?, ?, ?)',
+					[id_oferta, id_tipo_detalle, id_usuario],
+				);
 				resultados.detalle_alojamiento =
 					resultado_alta_detalle_alojamiento[0][0];
 
@@ -115,12 +115,36 @@ export class HabitacionesRepositoryService {
 		);
 	}
 
-	async registrarHabitacion(id_usuario: string) {
-		const result = await this.entityManager.query(
-			'CALL SP_ABM_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?)',
-			[null, null, null, null, null, null, id_usuario, 0],
+	async registrarHabitacion(
+		id_usuario: string,
+		registrarHabitacionDto: RegistrarHabitacionDto,
+	) {
+		return this.entityManager.transaction(
+			async (manager: EntityManager) => {
+				const resultados = {
+					tipo_detalle: null,
+					detalle_alojamiento: null,
+				};
+				const { id_oferta } = registrarHabitacionDto;
+				const resultado_tipo_detalle = await manager.query(
+					'CALL SP_ABM_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?)',
+					[id_oferta, null, null, null, null, null, id_usuario, 0],
+				);
+				resultados.tipo_detalle = resultado_tipo_detalle[0][0];
+
+				const resultado_alta_detalle_alojamiento = await manager.query(
+					'CALL SP_ALTA_DETALLE_ALOJAMIENTO(?, ?, ?)',
+					[
+						id_oferta,
+						resultados.tipo_detalle.id_tipo_detalle,
+						id_usuario,
+					],
+				);
+				resultados.detalle_alojamiento =
+					resultado_alta_detalle_alojamiento[0][0];
+				return resultados;
+			},
 		);
-		return result[0][0];
 	}
 
 	async eliminarHabitacion(id_usuario: string, id_tipo_detalle: string) {
