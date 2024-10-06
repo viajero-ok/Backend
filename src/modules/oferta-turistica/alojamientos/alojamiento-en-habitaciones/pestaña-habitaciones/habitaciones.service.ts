@@ -181,13 +181,17 @@ export class HabitacionesService {
 			};
 		});
 
-		for (const tipoDetalle of respuesta) {
+		for (const tipo_detalle of respuesta) {
 			const datosImagenes =
 				await this.habitacionesRepositoryService.obtenerImagenes(
-					tipoDetalle.id_tipo_detalle,
+					tipo_detalle.id_tipo_detalle,
 				);
-			tipoDetalle.imagenes =
+			tipo_detalle.imagenes =
 				await this.obtenerImagenesOferta(datosImagenes);
+			tipo_detalle.bl_baño_compartido =
+				tipo_detalle.bl_baño_compartido === 1 ? true : false;
+			tipo_detalle.bl_baño_adaptado =
+				tipo_detalle.bl_baño_adaptado === 1 ? true : false;
 		}
 
 		return {
