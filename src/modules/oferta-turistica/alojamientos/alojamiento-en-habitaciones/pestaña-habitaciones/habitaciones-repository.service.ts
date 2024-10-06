@@ -50,12 +50,12 @@ export class HabitacionesRepositoryService {
 					plazas: [],
 					caracteristicas: null,
 					observaciones: [],
-					detalle_alojamiento: null,
 				};
 
 				const resultado_tipo_detalle = await manager.query(
-					'CALL SP_ABM_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?)',
+					'CALL SP_ABM_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?, ?)',
 					[
+						id_oferta,
 						id_tipo_detalle,
 						tipologia.nombre_tipologia,
 						tipologia.cantidad,
@@ -103,13 +103,6 @@ export class HabitacionesRepositoryService {
 					resultado_comodidades_y_servicios_habitacion[0][0],
 				);
 
-				const resultado_alta_detalle_alojamiento = await manager.query(
-					'CALL SP_ALTA_DETALLE_ALOJAMIENTO(?, ?, ?)',
-					[id_oferta, id_tipo_detalle, id_usuario],
-				);
-				resultados.detalle_alojamiento =
-					resultado_alta_detalle_alojamiento[0][0];
-
 				return resultados;
 			},
 		);
@@ -119,40 +112,20 @@ export class HabitacionesRepositoryService {
 		id_usuario: string,
 		registrarHabitacionDto: RegistrarHabitacionDto,
 	) {
-		return this.entityManager.transaction(
-			async (manager: EntityManager) => {
-				const resultados = {
-					tipo_detalle: null,
-					detalle_alojamiento: null,
-				};
-				const { id_oferta } = registrarHabitacionDto;
-				const resultado_tipo_detalle = await manager.query(
-					'CALL SP_ABM_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?)',
-					[id_oferta, null, null, null, null, null, id_usuario, 0],
-				);
-				resultados.tipo_detalle = resultado_tipo_detalle[0][0];
-
-				const resultado_alta_detalle_alojamiento = await manager.query(
-					'CALL SP_ALTA_DETALLE_ALOJAMIENTO(?, ?, ?)',
-					[
-						id_oferta,
-						resultados.tipo_detalle.id_tipo_detalle,
-						id_usuario,
-					],
-				);
-				resultados.detalle_alojamiento =
-					resultado_alta_detalle_alojamiento[0][0];
-				return resultados;
-			},
+		const { id_oferta } = registrarHabitacionDto;
+		const resultado = await this.entityManager.query(
+			'CALL SP_ABM_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			[id_oferta, null, null, null, null, null, null, id_usuario, 0],
 		);
+		return resultado[0][0];
 	}
 
 	async eliminarHabitacion(id_usuario: string, id_tipo_detalle: string) {
-		const result = await this.entityManager.query(
+		const resultado = await this.entityManager.query(
 			'CALL SP_ABM_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?)',
 			[id_tipo_detalle, null, null, null, null, null, id_usuario, 1],
 		);
-		return result[0][0];
+		return resultado[0][0];
 	}
 
 	async registrarImagenHabitacion(
@@ -160,7 +133,7 @@ export class HabitacionesRepositoryService {
 		id_usuario: string,
 		imagen: ImagenProcesadaDto,
 	) {
-		const result = await this.entityManager.query(
+		const resultado = await this.entityManager.query(
 			'CALL SP_ABM_IMAGEN_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
 				imagen.nombre_original,
@@ -174,30 +147,30 @@ export class HabitacionesRepositoryService {
 				0,
 			],
 		);
-		return result[0][0];
+		return resultado[0][0];
 	}
 
 	async eliminarImagenHabitacion(id_usuario: string, id_imagen: string) {
-		const result = await this.entityManager.query(
+		const resultado = await this.entityManager.query(
 			'CALL SP_ABM_IMAGEN_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[null, null, null, null, null, id_usuario, null, id_imagen, 1],
 		);
-		return result[0][0];
+		return resultado[0][0];
 	}
 
 	async obtenerImagenes(id_tipo_detalle: string) {
-		const result = await this.entityManager.query(
+		const resultado = await this.entityManager.query(
 			'CALL SP_OBT_IMAGENES_X_TIPO_DETALLE(?)',
 			[id_tipo_detalle],
 		);
-		return result[0];
+		return resultado[0];
 	}
 
 	async obtenerDatosRegistradosHabitacion(id_oferta: string) {
-		const result = await this.entityManager.query(
+		const resultado = await this.entityManager.query(
 			'CALL SP_OBT_DATOS_HABITACIONES_X_OFERTA(?)',
 			[id_oferta],
 		);
-		return result[0];
+		return resultado[0];
 	}
 }

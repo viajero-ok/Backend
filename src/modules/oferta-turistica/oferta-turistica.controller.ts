@@ -5,6 +5,7 @@ import {
 	Get,
 	Param,
 	Post,
+	Query,
 	Req,
 	UploadedFile,
 	UseInterceptors,
@@ -22,6 +23,7 @@ import { Request } from 'express';
 import { OfertaTuristicaDto } from './dto/oferta-turistica.dto';
 import { multerOfertaConfig } from './utils/multer-oferta.config';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ConsultarOfertasDto } from './dto/consultar-ofertas.dto';
 
 @ApiTags('Ofertas Turísticas')
 @ApiBearerAuth()
@@ -213,6 +215,22 @@ export class OfertaTuristicaController {
 		return await this.ofertaTuristicaService.eliminarImagenOfertaTuristica(
 			req,
 			id_imagen,
+		);
+	}
+
+	@ApiOperation({ summary: 'OBTENER OFERTAS TURÍSTICAS CON PAGINACIÓN' })
+	@Get('obtener-ofertas-turisticas')
+	async obtenerOfertasTuristicas(
+		@Req() req: Request,
+		@Query('pagina') pagina: number,
+		@Query('limite') limite: number,
+		@Query() consultarOfertasDto: ConsultarOfertasDto,
+	) {
+		return await this.ofertaTuristicaService.obtenerOfertasTuristicas(
+			req,
+			pagina,
+			limite,
+			consultarOfertasDto,
 		);
 	}
 }

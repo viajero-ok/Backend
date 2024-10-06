@@ -106,11 +106,6 @@ export class HabitacionesService {
 				HttpStatus.CONFLICT,
 			);
 		});
-		this.exceptionHandlingService.handleError(
-			resultados.detalle_alojamiento,
-			'Error al registrar detalle de alojamiento',
-			HttpStatus.CONFLICT,
-		);
 
 		return {
 			resultado: 'ok',
@@ -130,20 +125,15 @@ export class HabitacionesService {
 		console.log(result);
 
 		this.exceptionHandlingService.handleError(
-			result.tipo_detalle,
+			result,
 			'Error al registrar habitación vacía',
-			HttpStatus.CONFLICT,
-		);
-		this.exceptionHandlingService.handleError(
-			result.detalle_alojamiento,
-			'Error al registrar detalle de alojamiento',
 			HttpStatus.CONFLICT,
 		);
 
 		return {
 			resultado: 'ok',
 			statusCode: 201,
-			id_tipo_detalle: result.tipo_detalle.id_tipo_detalle,
+			id_tipo_detalle: result.id_tipo_detalle,
 		};
 	}
 

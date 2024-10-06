@@ -3,6 +3,7 @@ import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 import { OfertaTuristicaDto } from './dto/oferta-turistica.dto';
 import { ImagenProcesadaDto } from './dto/imagen-procesada.dto';
+import { ConsultarOfertasDto } from './dto/consultar-ofertas.dto';
 
 @Injectable()
 export class OfertaTuristicaRepositoryService {
@@ -70,5 +71,30 @@ export class OfertaTuristicaRepositoryService {
 			[null, null, null, null, null, id_usuario, null, id_imagen, 1],
 		);
 		return result[0][0];
+	}
+
+	async obtenerOfertasTuristicas(
+		pagina: number,
+		limite: number,
+		consultarOfertasDto: ConsultarOfertasDto,
+	) {
+		const result = await this.entityManager.query(
+			'CALL SP_OBTENER_ALOJAMIENTOS_X_FILTRO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			[
+				pagina,
+				limite,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+			],
+		);
+		return result[0];
 	}
 }

@@ -4,6 +4,7 @@ import { OfertaTuristicaDto } from './dto/oferta-turistica.dto';
 import { ExceptionHandlingService } from 'src/common/services/exception-handler.service';
 import { eliminarArchivo } from './utils/eliminar-archivo';
 import { ImagenProcesadaDto } from './dto/imagen-procesada.dto';
+import { ConsultarOfertasDto } from './dto/consultar-ofertas.dto';
 
 @Injectable()
 export class OfertaTuristicaService {
@@ -100,5 +101,18 @@ export class OfertaTuristicaService {
 		await eliminarArchivo(result.ruta_archivo);
 
 		return { resultado: 'ok', statusCode: 200 };
+	}
+
+	async obtenerOfertasTuristicas(
+		req,
+		pagina: number,
+		limite: number,
+		consultarOfertasDto: ConsultarOfertasDto,
+	) {
+		return await this.ofertaTuristicaRepositoryService.obtenerOfertasTuristicas(
+			pagina,
+			limite,
+			consultarOfertasDto,
+		);
 	}
 }
