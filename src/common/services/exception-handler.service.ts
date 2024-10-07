@@ -11,6 +11,7 @@ export class ExceptionHandlingService {
 				descriptionToUse = mensaje;
 			}
 			console.log(descriptionToUse);
+			console.log(result);
 
 			throw new HttpException(
 				{
