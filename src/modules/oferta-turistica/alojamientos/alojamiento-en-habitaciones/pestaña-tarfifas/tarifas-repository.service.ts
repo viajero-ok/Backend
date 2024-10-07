@@ -14,10 +14,18 @@ export class TarifasRepositoryService {
 	async obtenerDatosRegistroTarifa() {
 		const resultados = {
 			tipos_pension: null,
+			tipos_detalle: null,
 		};
-		resultados.tipos_pension = (
-			await this.entityManager.query('CALL SP_LISTAR_TIPOS_PENSION()')
-		)[0];
+		return this.entityManager.transaction(
+			async (manager: EntityManager) => {
+				resultados.tipos_pension = (
+					await manager.query('CALL SP_LISTAR_TIPOS_PENSION()')
+				)[0];
+				resultados.tipos_detalle = (
+					await manager.query('CALL SP_OBT_TIPOS_DETALLE_X_OFERTA()')
+				)[0];
+			},
+		);
 		return resultados;
 	}
 

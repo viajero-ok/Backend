@@ -22,15 +22,6 @@ class TarifaDto {
 	@IsString()
 	id_tipo_detalle: string;
 
-	@ApiPropertyOptional({
-		description: 'ID de la tarifa',
-		example: 1,
-	})
-	@IsNumber()
-	@IsOptional()
-	@Min(1)
-	id_tarifa: number;
-
 	@ApiProperty({
 		description: 'ID del tipo de pensión',
 		example: 1,
