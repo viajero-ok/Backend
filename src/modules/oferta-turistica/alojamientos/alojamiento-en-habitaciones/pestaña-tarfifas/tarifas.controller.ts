@@ -18,6 +18,7 @@ import {
 import { Request } from 'express';
 import { RegistrarTarifasDto } from './dto/registrar-tarifa.dto';
 import { ActualizarTarifasDto } from './dto/actualizar-tarifa.dto';
+import { ConsultarDetallesDto } from './dto/consultar-detalles.dto';
 
 @ApiTags('Alojamientos/Tarifas')
 @ApiBearerAuth()
@@ -49,8 +50,12 @@ export class TarifasController {
 		},
 	})
 	@Get('datos-registro-tarifa')
-	async obtenerDatosRegistroTarifa() {
-		return await this.tarifasService.obtenerDatosRegistroTarifa();
+	async obtenerDatosRegistroTarifa(
+		@Body() consultarDetallesDto: ConsultarDetallesDto,
+	) {
+		return await this.tarifasService.obtenerDatosRegistroTarifa(
+			consultarDetallesDto,
+		);
 	}
 
 	@ApiOperation({ summary: 'REGISTRAR TARIFA' })

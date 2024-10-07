@@ -4,6 +4,7 @@ import { TarifasValidator } from '../utils/tarifas.validator';
 import { RegistrarTarifasDto } from './dto/registrar-tarifa.dto';
 import { TarifasRepositoryService } from './tarifas-repository.service';
 import { ActualizarTarifasDto } from './dto/actualizar-tarifa.dto';
+import { ConsultarDetallesDto } from './dto/consultar-detalles.dto';
 
 @Injectable()
 export class TarifasService {
@@ -13,8 +14,12 @@ export class TarifasService {
 		private readonly tarifasValidator: TarifasValidator,
 	) {}
 
-	async obtenerDatosRegistroTarifa() {
-		return await this.tarifasRepositoryService.obtenerDatosRegistroTarifa();
+	async obtenerDatosRegistroTarifa(
+		consultarDetallesDto: ConsultarDetallesDto,
+	) {
+		return await this.tarifasRepositoryService.obtenerDatosRegistroTarifa(
+			consultarDetallesDto,
+		);
 	}
 
 	async registrarTarifa(req, tarifasDto: RegistrarTarifasDto) {

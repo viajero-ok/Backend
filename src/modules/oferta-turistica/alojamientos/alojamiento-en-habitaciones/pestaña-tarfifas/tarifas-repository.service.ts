@@ -3,6 +3,7 @@ import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 import { RegistrarTarifasDto } from './dto/registrar-tarifa.dto';
 import { ActualizarTarifasDto } from './dto/actualizar-tarifa.dto';
+import { ConsultarDetallesDto } from './dto/consultar-detalles.dto';
 
 @Injectable()
 export class TarifasRepositoryService {
@@ -11,7 +12,10 @@ export class TarifasRepositoryService {
 		private entityManager: EntityManager,
 	) {}
 
-	async obtenerDatosRegistroTarifa() {
+	async obtenerDatosRegistroTarifa(
+		consultarDetallesDto: ConsultarDetallesDto,
+	) {
+		const { id_oferta } = consultarDetallesDto;
 		const resultados = {
 			tipos_pension: null,
 			tipos_detalle: null,
@@ -22,11 +26,14 @@ export class TarifasRepositoryService {
 					await manager.query('CALL SP_LISTAR_TIPOS_PENSION()')
 				)[0];
 				resultados.tipos_detalle = (
-					await manager.query('CALL SP_OBT_TIPOS_DETALLE_X_OFERTA()')
+					await manager.query(
+						'CALL SP_OBT_TIPOS_DETALLE_X_OFERTA(?)',
+						[id_oferta],
+					)
 				)[0];
+				return resultados;
 			},
 		);
-		return resultados;
 	}
 
 	async registrarTarifa(
