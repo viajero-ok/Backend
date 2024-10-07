@@ -3,7 +3,6 @@ import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 import { RegistrarTarifasDto } from './dto/registrar-tarifa.dto';
 import { ActualizarTarifasDto } from './dto/actualizar-tarifa.dto';
-import { ConsultarDetallesDto } from './dto/consultar-detalles.dto';
 
 @Injectable()
 export class TarifasRepositoryService {
@@ -12,10 +11,7 @@ export class TarifasRepositoryService {
 		private entityManager: EntityManager,
 	) {}
 
-	async obtenerDatosRegistroTarifa(
-		consultarDetallesDto: ConsultarDetallesDto,
-	) {
-		const { id_oferta } = consultarDetallesDto;
+	async obtenerDatosRegistroTarifa(id_oferta: string) {
 		const resultados = {
 			tipos_pension: null,
 			tipos_detalle: null,
