@@ -208,7 +208,6 @@ export class AlojamientosRepositoryService {
 				null,
 				null,
 				null,
-				null,
 				1,
 			],
 		);
