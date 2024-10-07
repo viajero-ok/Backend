@@ -70,6 +70,7 @@ export class RegistrarTarifasDto {
 
 	@ApiProperty({
 		description: 'Array de tarifas',
+		type: [TarifaDto],
 	})
 	@IsNotEmpty()
 	@IsArray()
