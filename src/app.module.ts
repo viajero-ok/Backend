@@ -19,6 +19,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { GlobalModule } from './common/services/global.module';
+import { PagosModule } from './modules/pagos/pagos.module';
 
 @Module({
 	imports: [
@@ -83,6 +84,7 @@ import { GlobalModule } from './common/services/global.module';
 			},
 		}),
 		GlobalModule,
+		PagosModule,
 	],
 	controllers: [AppController],
 	providers: [

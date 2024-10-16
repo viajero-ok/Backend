@@ -25,6 +25,7 @@ import { multerOfertaConfig } from './utils/multer-oferta.config';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ConsultarOfertasDto } from './dto/consultar-ofertas.dto';
 import { RegistrarImagenOfertaDto } from './dto/registrar-imagen-oferta.dto';
+import { Public } from 'src/common/decorators/public/public.decorator';
 
 @ApiTags('Ofertas Turísticas')
 @ApiBearerAuth()
@@ -219,6 +220,7 @@ export class OfertaTuristicaController {
 		);
 	}
 
+	@Public()
 	@ApiOperation({ summary: 'OBTENER OFERTAS TURÍSTICAS CON PAGINACIÓN' })
 	@Get('obtener-ofertas-turisticas')
 	async obtenerOfertasTuristicas(
