@@ -116,4 +116,34 @@ export class OfertaTuristicaService {
 			consultarOfertasDto,
 		);
 	}
+
+	async obtenerOfertasGuardadasPorUsuario(req) {
+		const result =
+			await this.ofertaTuristicaRepositoryService.obtenerOfertasGuardadasPorUsuario(
+				req.user.id_usuario,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al obtener ofertas guardadas por usuario',
+			HttpStatus.CONFLICT,
+		);
+
+		return { resultado: 'ok', statusCode: 200, ofertas_guardadas: result };
+	}
+
+	async obtenerOfertasReservadasPorUsuario(req) {
+		const result =
+			await this.ofertaTuristicaRepositoryService.obtenerOfertasReservadasPorUsuario(
+				req.user.id_usuario,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al obtener ofertas reservadas por usuario',
+			HttpStatus.CONFLICT,
+		);
+
+		return { resultado: 'ok', statusCode: 200, ofertas_reservadas: result };
+	}
 }

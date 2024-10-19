@@ -33,6 +33,6 @@ export class PagosService {
 			},
 		});
 
-		return response.id;
+		return response;
 	}
 }

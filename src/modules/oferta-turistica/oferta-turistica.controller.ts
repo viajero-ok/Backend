@@ -236,4 +236,56 @@ export class OfertaTuristicaController {
 			consultarOfertasDto,
 		);
 	}
+
+	@ApiOperation({ summary: 'OBTENER OFERTAS GUARDADAS POR USUARIO' })
+	@Get('obtener-ofertas-guardadas-por-usuario')
+	async obtenerOfertasGuardadasPorUsuario(@Req() req: Request) {
+		return await this.ofertaTuristicaService.obtenerOfertasGuardadasPorUsuario(
+			req,
+		);
+	}
+
+	/* @ApiOperation({ summary: 'GUARDAR OFERTA TURÍSTICA' })
+	@Post('guardar-oferta-turistica')
+	async guardarOfertaTuristica(@Req() req: Request) {
+		return await this.ofertaTuristicaService.guardarOfertaTuristica(req);
+	}
+
+	@ApiOperation({ summary: 'ELIMINAR OFERTA TURÍSTICA GUARDADA' })
+	@Delete('eliminar-oferta-turistica-guardada/:id_oferta')
+	async eliminarOfertaTuristicaGuardada(
+		@Req() req: Request,
+		@Param('id_oferta') id_oferta: string,
+	) {
+		return await this.ofertaTuristicaService.eliminarOfertaTuristicaGuardada(
+			req,
+			id_oferta,
+		);
+	} */
+
+	@ApiOperation({ summary: 'OBTENER OFERTAS RESERVADAS POR USUARIO' })
+	@Get('obtener-ofertas-reservadas-por-usuario')
+	async obtenerOfertasReservadasPorUsuario(@Req() req: Request) {
+		return await this.ofertaTuristicaService.obtenerOfertasReservadasPorUsuario(
+			req,
+		);
+	}
+
+	/* @ApiOperation({ summary: 'RESERVAR OFERTA TURÍSTICA' })
+	@Post('reservar-oferta-turistica')
+	async reservarOfertaTuristica(@Req() req: Request) {
+		return await this.ofertaTuristicaService.reservarOfertaTuristica(req);
+	}
+
+	@ApiOperation({ summary: 'ELIMINAR RESERVA DE OFERTA TURÍSTICA' })
+	@Delete('eliminar-reserva-oferta-turistica/:id_reserva')
+	async eliminarReservaOfertaTuristica(
+		@Req() req: Request,
+		@Param('id_reserva') id_reserva: string,
+	) {
+		return await this.ofertaTuristicaService.eliminarReservaOfertaTuristica(
+			req,
+			id_reserva,
+		);
+	} */
 }
