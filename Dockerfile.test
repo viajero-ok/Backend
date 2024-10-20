@@ -39,6 +39,9 @@ COPY --chown=nestjs:nodejs --from=build /app/package.json ./
 COPY --chown=nestjs:nodejs --from=build /app/tsconfig*.json ./
 COPY --chown=nestjs:nodejs --from=build /app/nest-cli.json ./
 
+# Crear el directorio uploads y asignar los permisos correctos
+RUN mkdir -p /app/uploads && chown -R nestjs:nodejs /app/uploads
+
 # Cambio la propiedad de los archivos al usuario no root
 # RUN chown -R nestjs:nodejs /app
 # Cambio al usuario no root
