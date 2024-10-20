@@ -22,10 +22,6 @@ export class PagosController {
 	@Get('solicitar-autorizacion-prestador')
 	@Redirect()
 	async solicitarAutorizacionPrestador() {
-		const appId = process.env.MERCADO_PAGO_APP_ID;
-		const redirectUri = process.env.REDIRECT_URI;
-		return {
-			url: `https://auth.mercadopago.com.ar/authorization?client_id=${appId}&response_type=code&platform_id=mp&redirect_uri=${redirectUri}`,
-		};
+		return this.pagosService.solicitarAutorizacionPrestador();
 	}
 }
