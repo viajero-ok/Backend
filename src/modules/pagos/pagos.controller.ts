@@ -18,6 +18,7 @@ export class PagosController {
 		console.log(code);
 	}
 
+	@Public()
 	@Get('solicitar-autorizacion-prestador')
 	@Redirect()
 	async solicitarAutorizacionPrestador() {
