@@ -7,6 +7,7 @@ import {
 	Delete,
 	Param,
 	Patch,
+	UseGuards,
 } from '@nestjs/common';
 import { AlojamientosService } from './alojamientos.service';
 import {
@@ -18,6 +19,7 @@ import {
 import { AlojamientoDto } from './dto/alojamiento.dto';
 import { Request } from 'express';
 import { HorarioVacioDto } from './dto/horario-vacio.dto';
+import { OfertaOwnerGuard } from 'src/common/guards/authorization/oferta-owner.guard';
 
 @ApiTags('Alojamientos/Alojamiento')
 @ApiBearerAuth()
@@ -246,6 +248,7 @@ export class AlojamientosController {
 			},
 		},
 	})
+	@UseGuards(OfertaOwnerGuard)
 	@Patch('actualizar-alojamiento')
 	async actualizarAlojamiento(
 		@Req() req: Request,
@@ -275,6 +278,7 @@ export class AlojamientosController {
 			},
 		},
 	})
+	@UseGuards(OfertaOwnerGuard)
 	@Delete('eliminar-alojamiento/:id_oferta')
 	async eliminarAlojamiento(
 		@Req() req: Request,
@@ -307,6 +311,7 @@ export class AlojamientosController {
 			},
 		},
 	})
+	@UseGuards(OfertaOwnerGuard)
 	@Post('registrar-horario')
 	async registrarHorario(
 		@Req() req: Request,
@@ -350,6 +355,7 @@ export class AlojamientosController {
 			type: 'object',
 		},
 	})
+	@UseGuards(OfertaOwnerGuard)
 	@Get('obtener-datos-registrados-alojamiento/:id_oferta')
 	async obtenerDatosRegistradosAlojamiento(
 		@Req() req: Request,

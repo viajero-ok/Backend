@@ -174,7 +174,7 @@ export class ActividadesRepositoryService {
 			console.log(resultado_ubicacion);
 			resultados.ubicacion = resultado_ubicacion[0][0];
 			const resultado_observacion = await manager.query(
-				'CALL SP_ABM_OBSERVACIONES_X_OFERTA(?, ?, ?, ?, ?, ?, ?)',
+				'CALL SP_ABM_OBSERVACIONES_X_OFERTA(?, ?, ?, ?, ?)',
 				[
 					ubicacionDto.id_oferta,
 					TipoObservacion.NORMAS,
@@ -290,7 +290,7 @@ export class ActividadesRepositoryService {
 	) {
 		const resultados = { horarios: [], registro_actividad: null };
 		await this.entityManager.transaction(async (manager) => {
-			for (const horario of horariosOfertaDto.check_in_out) {
+			for (const horario of horariosOfertaDto.horarios_turnos) {
 				const {
 					check_in,
 					check_out,

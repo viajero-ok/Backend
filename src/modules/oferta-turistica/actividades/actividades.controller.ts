@@ -7,6 +7,7 @@ import {
 	Patch,
 	Post,
 	Req,
+	UseGuards,
 } from '@nestjs/common';
 import { ActividadesService } from './actividades.service';
 import {
@@ -22,6 +23,7 @@ import { UbicacionActividadDto } from './dto/pestaña-ubicacion/ubicacion-activi
 import { HorarioVacioDto } from './dto/pestaña-tarifas/horario-vacio.dto';
 import { HorariosOfertaDto } from './dto/pestaña-tarifas/horarios-oferta.dto';
 import { TarifasDto } from './dto/pestaña-tarifas/tarifa.dto';
+import { OfertaOwnerGuard } from 'src/common/guards/authorization/oferta-owner.guard';
 
 @ApiTags('Actividades')
 @ApiBearerAuth()
@@ -143,6 +145,7 @@ export class ActividadesController {
 			},
 		},
 	})
+	@UseGuards(OfertaOwnerGuard)
 	@Post('registrar-guia')
 	async registrarGuia(@Req() req: Request, @Body() guiaDto: GuiaDto) {
 		return await this.actividadesService.registrarGuia(req, guiaDto);
@@ -166,6 +169,7 @@ export class ActividadesController {
 			},
 		},
 	})
+	@UseGuards(OfertaOwnerGuard)
 	@Delete('eliminar-guia')
 	async eliminarGuia(
 		@Req() req: Request,
@@ -196,6 +200,7 @@ export class ActividadesController {
 			},
 		},
 	})
+	@UseGuards(OfertaOwnerGuard)
 	@Patch('actualizar-actividad')
 	async actualizarActividad(
 		@Req() req: Request,
@@ -225,6 +230,7 @@ export class ActividadesController {
 			},
 		},
 	})
+	@UseGuards(OfertaOwnerGuard)
 	@Delete('eliminar-actividad/:id_oferta')
 	async eliminarActividad(
 		@Req() req: Request,
@@ -251,6 +257,7 @@ export class ActividadesController {
 			},
 		},
 	})
+	@UseGuards(OfertaOwnerGuard)
 	@Post('registrar-ubicacion-actividad')
 	async registrarUbicacionActividad(
 		@Req() req: Request,
@@ -283,6 +290,7 @@ export class ActividadesController {
 			},
 		},
 	})
+	@UseGuards(OfertaOwnerGuard)
 	@Post('registrar-horario')
 	async registrarHorario(
 		@Req() req: Request,
@@ -363,6 +371,7 @@ export class ActividadesController {
 			},
 		},
 	})
+	@UseGuards(OfertaOwnerGuard)
 	@Delete('eliminar-tarifa/:id_tarifa')
 	async eliminarTarifa(
 		@Req() req: Request,
@@ -389,6 +398,7 @@ export class ActividadesController {
 			},
 		},
 	})
+	@UseGuards(OfertaOwnerGuard)
 	@Post('finalizar-registro-actividad')
 	async finalizarRegistroActividad(
 		@Req() req: Request,

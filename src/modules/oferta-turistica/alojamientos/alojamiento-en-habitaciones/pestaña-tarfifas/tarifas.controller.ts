@@ -7,6 +7,7 @@ import {
 	Patch,
 	Post,
 	Req,
+	UseGuards,
 } from '@nestjs/common';
 import { TarifasService } from './tarifas.service';
 import {
@@ -18,6 +19,7 @@ import {
 import { Request } from 'express';
 import { RegistrarTarifasDto } from './dto/registrar-tarifa.dto';
 import { ActualizarTarifasDto } from './dto/actualizar-tarifa.dto';
+import { OfertaOwnerGuard } from 'src/common/guards/authorization/oferta-owner.guard';
 
 @ApiTags('Alojamientos/Tarifas')
 @ApiBearerAuth()
@@ -45,9 +47,23 @@ export class TarifasController {
 						},
 					},
 				},
+				tipos_detalle: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_tipo_detalle: { type: 'number', example: 1 },
+							nombre_tipo_detalle: {
+								type: 'string',
+								example: 'Doble',
+							},
+						},
+					},
+				},
 			},
 		},
 	})
+	@UseGuards(OfertaOwnerGuard)
 	@Get('datos-registro-tarifa/:id_oferta')
 	async obtenerDatosRegistroTarifa(@Param('id_oferta') id_oferta: string) {
 		return await this.tarifasService.obtenerDatosRegistroTarifa(id_oferta);
@@ -155,6 +171,7 @@ export class TarifasController {
 			},
 		},
 	})
+	@UseGuards(OfertaOwnerGuard)
 	@Get('obtener-datos-registrados-tarifa/:id_oferta')
 	async obtenerDatosRegistradosTarifa(
 		@Req() req: Request,

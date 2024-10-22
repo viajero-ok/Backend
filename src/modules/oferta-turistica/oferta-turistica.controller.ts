@@ -178,8 +178,8 @@ export class OfertaTuristicaController {
 		},
 	})
 	@ApiConsumes('multipart/form-data')
-	@Post('registrar-imagen-oferta-turistica')
 	@UseInterceptors(FileInterceptor('imagen', multerOfertaConfig))
+	@Post('registrar-imagen-oferta-turistica')
 	async registrarImagenOfertaTuristica(
 		@Req() req: Request,
 		@UploadedFile() imagen: Express.Multer.File,

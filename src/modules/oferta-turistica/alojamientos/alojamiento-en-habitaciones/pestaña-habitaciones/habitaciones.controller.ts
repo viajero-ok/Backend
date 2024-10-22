@@ -8,6 +8,7 @@ import {
 	Post,
 	Req,
 	UploadedFile,
+	UseGuards,
 	UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -23,6 +24,7 @@ import { HabitacionesService } from './habitaciones.service';
 import { HabitacionDto } from './dto/habitacion.dto';
 import { RegistrarHabitacionDto } from './dto/registrar-habitacion.dto';
 import { RegistrarImagenHabitacionDto } from './dto/registrar-imagen-habitacion.dto';
+import { OfertaOwnerGuard } from 'src/common/guards/authorization/oferta-owner.guard';
 
 @ApiTags('Alojamientos/Habitaciones')
 @Controller('alojamientos')
@@ -92,6 +94,7 @@ export class HabitacionesController {
 			},
 		},
 	})
+	@UseGuards(OfertaOwnerGuard)
 	@Post('registrar-habitacion')
 	async registrarHabitacion(
 		@Req() req: Request,
@@ -124,6 +127,7 @@ export class HabitacionesController {
 			},
 		},
 	})
+	@UseGuards(OfertaOwnerGuard)
 	@Patch('actualizar-habitacion')
 	async actualizarHabitacion(
 		@Req() req: Request,
@@ -249,6 +253,7 @@ export class HabitacionesController {
 			},
 		},
 	})
+	@UseGuards(OfertaOwnerGuard)
 	@Get('obtener-datos-registrados-habitacion/:id_oferta')
 	async obtenerDatosRegistradosHabitacion(
 		@Req() req: Request,

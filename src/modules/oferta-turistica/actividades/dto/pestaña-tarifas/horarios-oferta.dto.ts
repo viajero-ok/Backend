@@ -31,5 +31,5 @@ export class HorariosOfertaDto {
 	@ValidateNested({ each: true })
 	@ValidateHorariosTurnos()
 	@Type(() => HorariosTurnosDto)
-	readonly check_in_out: HorariosTurnosDto[];
+	readonly horarios_turnos: HorariosTurnosDto[];
 }
