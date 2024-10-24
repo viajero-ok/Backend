@@ -1,21 +1,19 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { ActividadesRepositoryService } from './actividades-repository.service';
 import { ExceptionHandlingService } from 'src/common/services/exception-handler.service';
 import { GuiaDto } from './dto/pestaña-actividad/guia.dto';
 import { EliminarGuiaDto } from './dto/pestaña-actividad/eliminar-guia.dto';
 import { ActividadDto } from './dto/pestaña-actividad/actividad.dto';
 import { UbicacionActividadDto } from './dto/pestaña-ubicacion/ubicacion-actividad.dto';
-import { HorarioVacioDto } from './dto/pestaña-tarifas/horario-vacio.dto';
-import { HorariosOfertaDto } from './dto/pestaña-tarifas/horarios-oferta.dto';
-import { TarifasValidator } from './utils/tarifas.validator';
-import { TarifasDto } from './dto/pestaña-tarifas/tarifa.dto';
+import { HorarioVacioDto } from './dto/pestaña-horarios-entradas/horario-vacio.dto';
+import { EntradaVaciaDto } from './dto/pestaña-horarios-entradas/entrada-vacia.dto';
+import { FinalizarRegistroDto } from './dto/pestaña-horarios-entradas/finalizar-registro.dto';
 
 @Injectable()
 export class ActividadesService {
 	constructor(
 		private readonly actividadesRepositoryService: ActividadesRepositoryService,
 		private readonly exceptionHandlingService: ExceptionHandlingService,
-		private readonly tarifasValidator: TarifasValidator,
 	) {}
 
 	async obtenerDatosRegistroActividades() {
@@ -176,14 +174,51 @@ export class ActividadesService {
 		};
 	}
 
+	async registrarEntrada(req, entradaVaciaDto: EntradaVaciaDto) {
+		const result = await this.actividadesRepositoryService.registrarEntrada(
+			req.user.id_usuario,
+			entradaVaciaDto,
+		);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al registrar la entrada',
+			HttpStatus.CONFLICT,
+		);
+
+		return {
+			resultado: 'ok',
+			statusCode: 201,
+			id_entrada: result.id_tipo_entrada,
+		};
+	}
+
+	async eliminarEntrada(req, id_entrada: string) {
+		const result = await this.actividadesRepositoryService.eliminarEntrada(
+			req.user.id_usuario,
+			id_entrada,
+		);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al eliminar la entrada',
+			HttpStatus.CONFLICT,
+		);
+
+		return {
+			resultado: 'ok',
+			statusCode: 200,
+		};
+	}
+
 	async finalizarRegistroActividad(
 		req,
-		horariosOfertaDto: HorariosOfertaDto,
+		finalizarRegistroDto: FinalizarRegistroDto,
 	) {
 		const resultados =
 			await this.actividadesRepositoryService.finalizarRegistroActividad(
 				req.user.id_usuario,
-				horariosOfertaDto,
+				finalizarRegistroDto,
 			);
 
 		resultados.horarios.forEach((horario, index) => {
@@ -200,55 +235,17 @@ export class ActividadesService {
 			HttpStatus.CONFLICT,
 		);
 
-		return {
-			resultado: 'ok',
-			statusCode: 201,
-		};
-	}
-
-	async registrarTarifa(req, tarifaDto: TarifasDto) {
-		const tarifasExistentes =
-			await this.actividadesRepositoryService.obtenerTarifas(
-				tarifaDto.id_oferta,
-			);
-
-		const errores = await this.tarifasValidator.validarTarifa(
-			tarifaDto,
-			tarifasExistentes,
-		);
-
-		if (errores.length > 0) {
-			throw new HttpException(
-				{
-					message: errores,
-					statusCode: HttpStatus.CONFLICT,
-				},
+		resultados.entradas.forEach((entrada, index) => {
+			this.exceptionHandlingService.handleError(
+				entrada,
+				`Error al registrar la entrada ${index + 1}`,
 				HttpStatus.CONFLICT,
 			);
-		}
-
-		const result = await this.actividadesRepositoryService.registrarTarifa(
-			req.user.id_usuario,
-			tarifaDto,
-		);
-
-		this.exceptionHandlingService.handleError(
-			result,
-			'Error al registrar tarifa',
-			HttpStatus.CONFLICT,
-		);
+		});
 
 		return {
 			resultado: 'ok',
 			statusCode: 201,
-			id_tarifa: result.id_tarifa,
 		};
-	}
-
-	async eliminarTarifa(req, id_tarifa: string) {
-		return await this.actividadesRepositoryService.eliminarTarifa(
-			req.user.id_usuario,
-			id_tarifa,
-		);
 	}
 }

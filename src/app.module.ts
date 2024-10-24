@@ -3,7 +3,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './modules/auth/auth.module';
-import { UsuariosModule } from './modules/usuarios/usuarios.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthorizationGuard } from './common/guards/authorization/authorization.guard';
 import { GlobalJwtGuard } from './common/guards/jwt/global-jwt.guard';
@@ -20,6 +19,8 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { GlobalModule } from './common/services/global.module';
 import { PagosModule } from './modules/pagos/pagos.module';
+import { PublicacionesModule } from './modules/publicaciones/publicaciones.module';
+import { ReservasModule } from './modules/reservas/reservas.module';
 
 @Module({
 	imports: [
@@ -50,7 +51,6 @@ import { PagosModule } from './modules/pagos/pagos.module';
 			},
 		]),
 		AuthModule,
-		UsuariosModule,
 		EmailModule,
 		EventMailModule,
 		PassportModule.register({ session: true }),
@@ -85,6 +85,8 @@ import { PagosModule } from './modules/pagos/pagos.module';
 		}),
 		GlobalModule,
 		PagosModule,
+		PublicacionesModule,
+		ReservasModule,
 	],
 	controllers: [AppController],
 	providers: [

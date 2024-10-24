@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { TarifasDto } from '../dto/pestaña-tarifas/tarifa.dto';
+import { RegistrarTarifasDto } from '../dto/registrar-tarifa.dto';
 
 @Injectable()
 export class TarifasValidator {
 	async validarTarifa(
-		tarifaDto: TarifasDto,
-		tarifasExistentes: TarifasDto[],
+		tarifaDto: RegistrarTarifasDto,
+		tarifasExistentes: RegistrarTarifasDto[],
 	): Promise<string[]> {
 		const errores: string[] = [];
 
@@ -13,10 +13,10 @@ export class TarifasValidator {
 			errores.push('La fecha desde debe ser anterior a la fecha hasta');
 		}
 
-		const tarifasSolapadas = tarifasExistentes.filter(
+		/* const tarifasSolapadas = tarifasExistentes.filter(
 			(t) =>
-				t.id_tipo_entrada === tarifaDto.id_tipo_entrada &&
 				t.id_tarifa !== tarifaDto.id_tarifa &&
+				t.id_tipo_pension === tarifaDto.id_tipo_pension &&
 				((tarifaDto.fecha_desde >= t.fecha_desde &&
 					tarifaDto.fecha_desde < t.fecha_hasta) ||
 					(tarifaDto.fecha_hasta > t.fecha_desde &&
@@ -29,7 +29,7 @@ export class TarifasValidator {
 			errores.push(
 				'Ya existe una tarifa para este tipo de pensión con fechas que se solapan',
 			);
-		}
+		} */
 
 		return errores;
 	}

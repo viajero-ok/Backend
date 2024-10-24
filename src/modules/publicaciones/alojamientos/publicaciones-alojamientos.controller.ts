@@ -1,52 +1,40 @@
 import {
-	Body,
 	Controller,
-	Delete,
-	Get,
 	Param,
-	Patch,
-	Post,
-	Req,
+	Get,
 	UseGuards,
+	Req,
+	Delete,
+	Patch,
+	Body,
+	Post,
 } from '@nestjs/common';
-import { TarifasService } from './tarifas.service';
+import { PublicacionesAlojamientosService } from './publicaciones-alojamientos.service';
 import {
 	ApiBearerAuth,
 	ApiOperation,
 	ApiResponse,
 	ApiTags,
 } from '@nestjs/swagger';
-import { Request } from 'express';
-import { RegistrarTarifasDto } from './dto/registrar-tarifa.dto';
-import { ActualizarTarifasDto } from './dto/actualizar-tarifa.dto';
 import { OfertaOwnerGuard } from 'src/common/guards/authorization/oferta-owner.guard';
+import { ActualizarTarifasDto } from './dto/actualizar-tarifa.dto';
+import { RegistrarTarifasDto } from './dto/registrar-tarifa.dto';
 
-@ApiTags('Alojamientos/Tarifas')
+@ApiTags('Publicaciones/Alojamientos')
 @ApiBearerAuth()
-@Controller('alojamientos')
-export class TarifasController {
-	constructor(private readonly tarifasService: TarifasService) {}
+@Controller('publicaciones')
+export class PublicacionesAlojamientosController {
+	constructor(
+		private readonly publicacionesAlojamientosService: PublicacionesAlojamientosService,
+	) {}
 
-	@ApiOperation({ summary: 'OBTENER DATOS REGISTRO TARIFA' })
+	@ApiOperation({ summary: 'OBTENER DATOS PUBLICACION ALOJAMIENTO' })
 	@ApiResponse({
 		status: 200,
-		description: 'Datos de tipos de pension',
+		description: 'Datos de publicacion alojamiento',
 		schema: {
 			type: 'object',
 			properties: {
-				tipos_pension: {
-					type: 'array',
-					items: {
-						type: 'object',
-						properties: {
-							id_tipo_pension: { type: 'number', example: 1 },
-							tipo_pension: {
-								type: 'string',
-								example: 'Completa',
-							},
-						},
-					},
-				},
 				tipos_detalle: {
 					type: 'array',
 					items: {
@@ -64,9 +52,13 @@ export class TarifasController {
 		},
 	})
 	@UseGuards(OfertaOwnerGuard)
-	@Get('datos-registro-tarifa/:id_oferta')
-	async obtenerDatosRegistroTarifa(@Param('id_oferta') id_oferta: string) {
-		return await this.tarifasService.obtenerDatosRegistroTarifa(id_oferta);
+	@Get('datos-publicacion-alojamiento/:id_oferta')
+	async obtenerDatosPublicacionAlojamiento(
+		@Param('id_oferta') id_oferta: string,
+	) {
+		return await this.publicacionesAlojamientosService.obtenerDatosPublicacionAlojamiento(
+			id_oferta,
+		);
 	}
 
 	@ApiOperation({ summary: 'REGISTRAR TARIFA' })
@@ -95,7 +87,10 @@ export class TarifasController {
 		@Req() req: Request,
 		@Body() tarifasDto: RegistrarTarifasDto,
 	) {
-		return await this.tarifasService.registrarTarifa(req, tarifasDto);
+		return await this.publicacionesAlojamientosService.registrarTarifa(
+			req,
+			tarifasDto,
+		);
 	}
 
 	@ApiOperation({ summary: 'ACTUALIZAR TARIFA' })
@@ -124,7 +119,7 @@ export class TarifasController {
 		@Req() req: Request,
 		@Body() actualizarTarifasDto: ActualizarTarifasDto,
 	) {
-		return await this.tarifasService.actualizarTarifa(
+		return await this.publicacionesAlojamientosService.actualizarTarifa(
 			req,
 			actualizarTarifasDto,
 		);
@@ -153,7 +148,10 @@ export class TarifasController {
 		@Req() req: Request,
 		@Param('id_tarifa') id_tarifa: number,
 	) {
-		return await this.tarifasService.eliminarTarifa(req, id_tarifa);
+		return await this.publicacionesAlojamientosService.eliminarTarifa(
+			req,
+			id_tarifa,
+		);
 	}
 
 	@ApiOperation({ summary: 'OBTENER DATOS REGISTRADOS' })
@@ -177,7 +175,7 @@ export class TarifasController {
 		@Req() req: Request,
 		@Param('id_oferta') id_oferta: string,
 	) {
-		return await this.tarifasService.obtenerDatosRegistradosTarifa(
+		return await this.publicacionesAlojamientosService.obtenerDatosRegistradosTarifa(
 			req,
 			id_oferta,
 		);

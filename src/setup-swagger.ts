@@ -12,6 +12,7 @@ import { EventosModule } from './modules/oferta-turistica/eventos/eventos.module
 import { ActividadesModule } from './modules/oferta-turistica/actividades/actividades.module';
 import { EstablecimientosModule } from './modules/oferta-turistica/establecimientos/establecimientos.module';
 import { UbicacionesModule } from './modules/tipificados/ubicaciones/ubicaciones.module';
+import { PublicacionesModule } from './modules/publicaciones/publicaciones.module';
 
 /**
  * Sets up password-protected swagger documentation for the application
@@ -46,7 +47,7 @@ export const setupSwagger = (app: INestApplication) => {
 			ActividadesModule,
 			EstablecimientosModule,
 			UbicacionesModule,
-			AlojamientosModule,
+			PublicacionesModule,
 		],
 		extraModels: [],
 	};

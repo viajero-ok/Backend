@@ -1,34 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
-import { RegistrarTarifasDto } from './dto/registrar-tarifa.dto';
 import { ActualizarTarifasDto } from './dto/actualizar-tarifa.dto';
+import { RegistrarTarifasDto } from './dto/registrar-tarifa.dto';
 
 @Injectable()
-export class TarifasRepositoryService {
+export class PublicacionesAlojamientosRepositoryService {
 	constructor(
 		@InjectEntityManager()
 		private entityManager: EntityManager,
 	) {}
 
-	async obtenerDatosRegistroTarifa(id_oferta: string) {
-		const resultados = {
-			tipos_pension: null,
-			tipos_detalle: null,
-		};
-		return this.entityManager.transaction(
-			async (manager: EntityManager) => {
-				resultados.tipos_pension = (
-					await manager.query('CALL SP_LISTAR_TIPOS_PENSION()')
-				)[0];
-				resultados.tipos_detalle = (
-					await manager.query(
-						'CALL SP_OBT_TIPOS_DETALLE_X_OFERTA(?)',
-						[id_oferta],
-					)
-				)[0];
-				return resultados;
-			},
+	async obtenerDatosPublicacionAlojamiento(id_oferta: string) {
+		return this.entityManager.query(
+			'CALL SP_OBT_TIPOS_DETALLE_X_OFERTA(?)',
+			[id_oferta],
 		);
 	}
 
@@ -42,7 +28,7 @@ export class TarifasRepositoryService {
 			async (manager: EntityManager) => {
 				for (const tarifa of registrarTarifasDto.tarifas) {
 					const result = await manager.query(
-						'CALL SP_ABM_TARIFA_X_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?)',
+						'CALL SP_ABM_TARIFA_X_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?)',
 						[
 							null,
 							tarifa.id_tipo_detalle,
@@ -79,7 +65,7 @@ export class TarifasRepositoryService {
 			async (manager: EntityManager) => {
 				for (const tarifa of actualizarTarifasDto.tarifas) {
 					const result = await manager.query(
-						'CALL SP_ABM_TARIFA_X_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?)',
+						'CALL SP_ABM_TARIFA_X_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?)',
 						[
 							tarifa.id_tarifa,
 							tarifa.id_tipo_detalle,
@@ -100,7 +86,7 @@ export class TarifasRepositoryService {
 
 	async eliminarTarifa(id_tarifa: number, id_usuario: string) {
 		const result = await this.entityManager.query(
-			'CALL SP_ABM_TARIFA_X_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?)',
+			'CALL SP_ABM_TARIFA_X_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[id_tarifa, null, null, null, null, null, id_usuario, 1],
 		);
 		return result[0][0];

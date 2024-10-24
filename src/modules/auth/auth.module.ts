@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Usuario } from 'src/modules/usuarios/entities/usuario.entity';
+import { Usuario } from 'src/modules/auth/entities/usuario.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { AuthRepositoryService } from './auth-repository.service';

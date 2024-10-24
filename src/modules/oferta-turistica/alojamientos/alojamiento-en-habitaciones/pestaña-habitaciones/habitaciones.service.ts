@@ -123,7 +123,6 @@ export class HabitacionesService {
 				req.user.id_usuario,
 				registrarHabitacionDto,
 			);
-		console.log(result);
 
 		this.exceptionHandlingService.handleError(
 			result,

@@ -10,8 +10,6 @@ export class OfertaOwnerGuard implements CanActivate {
 		const request = context.switchToHttp().getRequest();
 		const id_usuario = request.user.id_usuario;
 
-		console.log(request.body);
-
 		const id_oferta = request.body?.id_oferta || request.params?.id_oferta;
 
 		if (!id_oferta) {

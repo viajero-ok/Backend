@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
 	IsNotEmpty,
 	IsBoolean,
@@ -6,6 +6,7 @@ import {
 	ValidateNested,
 	Min,
 	Max,
+	IsOptional,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -147,11 +148,11 @@ export class HorariosTurnosDto {
 	@Type(() => DiasSemanaDto)
 	readonly dias_semana: DiasSemanaDto;
 
-	@ApiProperty({
+	@ApiPropertyOptional({
 		description: 'Cupo máximo',
 		example: 100,
 	})
-	@IsNotEmpty()
+	@IsOptional()
 	@IsNumber()
 	readonly cupo_maximo: number;
 }

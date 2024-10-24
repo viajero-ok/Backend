@@ -39,7 +39,6 @@ export class EstablecimientosService {
 				req.user.id_usuario,
 				establecimientoDto,
 			);
-		console.log(result);
 		this.exceptionHandlingService.handleError(
 			result,
 			'Error al actualizar establecimiento',

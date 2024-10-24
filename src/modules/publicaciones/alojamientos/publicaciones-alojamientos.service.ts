@@ -1,30 +1,28 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
+import { PublicacionesAlojamientosRepositoryService } from './publicaciones-alojamientos-repository.service';
 import { ExceptionHandlingService } from 'src/common/services/exception-handler.service';
-import { TarifasValidator } from '../utils/tarifas.validator';
 import { RegistrarTarifasDto } from './dto/registrar-tarifa.dto';
-import { TarifasRepositoryService } from './tarifas-repository.service';
 import { ActualizarTarifasDto } from './dto/actualizar-tarifa.dto';
 
 @Injectable()
-export class TarifasService {
+export class PublicacionesAlojamientosService {
 	constructor(
-		private readonly tarifasRepositoryService: TarifasRepositoryService,
+		private readonly publicacionesAlojamientosRepositoryService: PublicacionesAlojamientosRepositoryService,
 		private readonly exceptionHandlingService: ExceptionHandlingService,
-		private readonly tarifasValidator: TarifasValidator,
 	) {}
 
-	async obtenerDatosRegistroTarifa(id_oferta: string) {
-		return await this.tarifasRepositoryService.obtenerDatosRegistroTarifa(
+	async obtenerDatosPublicacionAlojamiento(id_oferta: string) {
+		return await this.publicacionesAlojamientosRepositoryService.obtenerDatosPublicacionAlojamiento(
 			id_oferta,
 		);
 	}
 
 	async registrarTarifa(req, tarifasDto: RegistrarTarifasDto) {
-		const result = await this.tarifasRepositoryService.registrarTarifa(
-			req.user.id_usuario,
-			tarifasDto,
-		);
-		console.log(result);
+		const result =
+			await this.publicacionesAlojamientosRepositoryService.registrarTarifa(
+				req.user.id_usuario,
+				tarifasDto,
+			);
 		for (const tarifa of result) {
 			this.exceptionHandlingService.handleError(
 				tarifa,
@@ -47,10 +45,11 @@ export class TarifasService {
 	}
 
 	async actualizarTarifa(req, actualizarTarifasDto: ActualizarTarifasDto) {
-		const result = await this.tarifasRepositoryService.actualizarTarifa(
-			req.user.id_usuario,
-			actualizarTarifasDto,
-		);
+		const result =
+			await this.publicacionesAlojamientosRepositoryService.actualizarTarifa(
+				req.user.id_usuario,
+				actualizarTarifasDto,
+			);
 
 		for (const tarifa of result) {
 			this.exceptionHandlingService.handleError(
@@ -74,10 +73,11 @@ export class TarifasService {
 	}
 
 	async eliminarTarifa(req, id_tarifa: number) {
-		const result = await this.tarifasRepositoryService.eliminarTarifa(
-			id_tarifa,
-			req.user.id_usuario,
-		);
+		const result =
+			await this.publicacionesAlojamientosRepositoryService.eliminarTarifa(
+				id_tarifa,
+				req.user.id_usuario,
+			);
 		this.exceptionHandlingService.handleError(
 			result,
 			'Error al eliminar tarifa',
@@ -92,7 +92,7 @@ export class TarifasService {
 
 	async obtenerDatosRegistradosTarifa(req, id_oferta: string) {
 		const result =
-			await this.tarifasRepositoryService.obtenerDatosRegistradosTarifa(
+			await this.publicacionesAlojamientosRepositoryService.obtenerDatosRegistradosTarifa(
 				id_oferta,
 			);
 

@@ -67,7 +67,7 @@ export class CheckInOutValidator implements ValidatorConstraintInterface {
 	defaultMessage(args: ValidationArguments) {
 		const errors = args.object['checkInOutErrors'];
 		return errors.length > 0
-			? errors.join(', \n')
+			? errors.join(', \u000A')
 			: 'Los horarios de check-in/out no son válidos';
 	}
 }

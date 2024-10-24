@@ -20,10 +20,10 @@ import { GuiaDto } from './dto/pestaña-actividad/guia.dto';
 import { EliminarGuiaDto } from './dto/pestaña-actividad/eliminar-guia.dto';
 import { ActividadDto } from './dto/pestaña-actividad/actividad.dto';
 import { UbicacionActividadDto } from './dto/pestaña-ubicacion/ubicacion-actividad.dto';
-import { HorarioVacioDto } from './dto/pestaña-tarifas/horario-vacio.dto';
-import { HorariosOfertaDto } from './dto/pestaña-tarifas/horarios-oferta.dto';
-import { TarifasDto } from './dto/pestaña-tarifas/tarifa.dto';
+import { HorarioVacioDto } from './dto/pestaña-horarios-entradas/horario-vacio.dto';
 import { OfertaOwnerGuard } from 'src/common/guards/authorization/oferta-owner.guard';
+import { EntradaVaciaDto } from './dto/pestaña-horarios-entradas/entrada-vacia.dto';
+import { FinalizarRegistroDto } from './dto/pestaña-horarios-entradas/finalizar-registro.dto';
 
 @ApiTags('Actividades')
 @ApiBearerAuth()
@@ -327,57 +327,26 @@ export class ActividadesController {
 		return await this.actividadesService.eliminarHorario(req, id_horario);
 	}
 
-	@ApiOperation({ summary: 'REGISTRAR TARIFA' })
-	@ApiResponse({
-		status: 201,
-		schema: {
-			type: 'object',
-			properties: {
-				resultado: {
-					type: 'string',
-					example: 'ok',
-				},
-				statusCode: {
-					type: 'number',
-					example: 201,
-				},
-				id_tarifa: {
-					type: 'string',
-					example: '123e4567-e89b-12d3-a456-426614174000',
-				},
-			},
-		},
-	})
-	@Post('registrar-tarifa')
-	async registrarTarifa(@Req() req: Request, @Body() tarifaDto: TarifasDto) {
-		return await this.actividadesService.registrarTarifa(req, tarifaDto);
+	@ApiOperation({ summary: 'REGISTRAR ENTRADA' })
+	@UseGuards(OfertaOwnerGuard)
+	@Post('registrar-entrada')
+	async registrarEntrada(
+		@Req() req: Request,
+		@Body() entradaVaciaDto: EntradaVaciaDto,
+	) {
+		return await this.actividadesService.registrarEntrada(
+			req,
+			entradaVaciaDto,
+		);
 	}
 
-	@ApiOperation({ summary: 'ELIMINAR TARIFA' })
-	@ApiResponse({
-		status: 200,
-		description: 'TARIFA ELIMINADA',
-		schema: {
-			type: 'object',
-			properties: {
-				resultado: {
-					type: 'string',
-					example: 'ok',
-				},
-				statusCode: {
-					type: 'number',
-					example: 200,
-				},
-			},
-		},
-	})
-	@UseGuards(OfertaOwnerGuard)
-	@Delete('eliminar-tarifa/:id_tarifa')
-	async eliminarTarifa(
+	@ApiOperation({ summary: 'ELIMINAR ENTRADA' })
+	@Delete('eliminar-entrada/:id_entrada')
+	async eliminarEntrada(
 		@Req() req: Request,
-		@Param('id_tarifa') id_tarifa: string,
+		@Param('id_entrada') id_entrada: string,
 	) {
-		return await this.actividadesService.eliminarTarifa(req, id_tarifa);
+		return await this.actividadesService.eliminarEntrada(req, id_entrada);
 	}
 
 	@ApiOperation({ summary: 'FINALIZAR REGISTRO ACTIVIDAD' })
@@ -402,11 +371,11 @@ export class ActividadesController {
 	@Post('finalizar-registro-actividad')
 	async finalizarRegistroActividad(
 		@Req() req: Request,
-		@Body() horariosOfertaDto: HorariosOfertaDto,
+		@Body() finalizarRegistroDto: FinalizarRegistroDto,
 	) {
 		return await this.actividadesService.finalizarRegistroActividad(
 			req,
-			horariosOfertaDto,
+			finalizarRegistroDto,
 		);
 	}
 }

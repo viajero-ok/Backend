@@ -2,7 +2,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { PassportSerializer } from '@nestjs/passport';
-import { Usuario } from '../../usuarios/entities/usuario.entity';
+import { Usuario } from '../entities/usuario.entity';
 import { AuthRepositoryService } from '../auth-repository.service';
 
 @Injectable()

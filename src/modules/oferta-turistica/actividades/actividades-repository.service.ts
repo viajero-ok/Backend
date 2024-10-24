@@ -6,9 +6,9 @@ import { EliminarGuiaDto } from './dto/pestaña-actividad/eliminar-guia.dto';
 import { ActividadDto } from './dto/pestaña-actividad/actividad.dto';
 import { TipoObservacion } from '../enum/tipo-observacion.enum';
 import { UbicacionActividadDto } from './dto/pestaña-ubicacion/ubicacion-actividad.dto';
-import { HorarioVacioDto } from './dto/pestaña-tarifas/horario-vacio.dto';
-import { HorariosOfertaDto } from './dto/pestaña-tarifas/horarios-oferta.dto';
-import { TarifasDto } from './dto/pestaña-tarifas/tarifa.dto';
+import { HorarioVacioDto } from './dto/pestaña-horarios-entradas/horario-vacio.dto';
+import { EntradaVaciaDto } from './dto/pestaña-horarios-entradas/entrada-vacia.dto';
+import { FinalizarRegistroDto } from './dto/pestaña-horarios-entradas/finalizar-registro.dto';
 
 @Injectable()
 export class ActividadesRepositoryService {
@@ -171,7 +171,6 @@ export class ActividadesRepositoryService {
 					0,
 				],
 			);
-			console.log(resultado_ubicacion);
 			resultados.ubicacion = resultado_ubicacion[0][0];
 			const resultado_observacion = await manager.query(
 				'CALL SP_ABM_OBSERVACIONES_X_OFERTA(?, ?, ?, ?, ?)',
@@ -238,64 +237,43 @@ export class ActividadesRepositoryService {
 		return result[0][0];
 	}
 
-	async obtenerTarifas(id_tipo_detalle: string) {
+	async registrarEntrada(
+		id_usuario: string,
+		entradaVaciaDto: EntradaVaciaDto,
+	) {
 		const result = await this.entityManager.query(
-			'CALL SP_OBT_TARIFA_X_TIPO_DETALLE(?)',
-			[id_tipo_detalle],
-		);
-		return result[0];
-	}
-
-	async registrarTarifa(id_usuario: string, tarifa: TarifasDto) {
-		const result = await this.entityManager.query(
-			'CALL SP_ABM_TARIFA_X_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-			[
-				tarifa.id_tarifa,
-				tarifa.id_oferta,
-				tarifa.id_tipo_entrada,
-				tarifa.monto_tarifa,
-				tarifa.fecha_desde,
-				tarifa.fecha_hasta,
-				id_usuario,
-				0,
-				tarifa.edad_desde,
-				tarifa.edad_hasta,
-			],
+			'CALL SP_ABM_TIPOS_ENTRADA_X_OFERTA(?, ?, ?, ?, ?, ?)',
+			[null, null, entradaVaciaDto.id_oferta, id_usuario, null, 0],
 		);
 		return result[0][0];
 	}
 
-	async eliminarTarifa(id_tarifa: string, id_usuario: string) {
+	async eliminarEntrada(id_usuario: string, id_entrada: string) {
 		const result = await this.entityManager.query(
-			'CALL SP_ABM_TARIFA_X_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-			[
-				id_tarifa,
-				null,
-				null,
-				null,
-				null,
-				null,
-				id_usuario,
-				1,
-				null,
-				null,
-			],
+			'CALL SP_ABM_TIPOS_ENTRADA_X_OFERTA(?, ?, ?, ?, ?, ?)',
+			[null, null, null, id_usuario, id_entrada, 1],
 		);
 		return result[0][0];
 	}
 
 	async finalizarRegistroActividad(
 		id_usuario: string,
-		horariosOfertaDto: HorariosOfertaDto,
+		finalizarRegistroDto: FinalizarRegistroDto,
 	) {
-		const resultados = { horarios: [], registro_actividad: null };
+		const { id_oferta, entradas, horarios_turnos } = finalizarRegistroDto;
+		const resultados = {
+			horarios: [],
+			entradas: [],
+			registro_actividad: null,
+		};
 		await this.entityManager.transaction(async (manager) => {
-			for (const horario of horariosOfertaDto.horarios_turnos) {
+			for (const horario of horarios_turnos) {
 				const {
 					check_in,
 					check_out,
 					dias_semana,
 					aplica_todos_los_dias,
+					cupo_maximo,
 				} = horario;
 				if (aplica_todos_los_dias) {
 					dias_semana.aplica_lunes = true;
@@ -309,7 +287,7 @@ export class ActividadesRepositoryService {
 				const resultado = await manager.query(
 					`CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 					[
-						horariosOfertaDto.id_oferta,
+						id_oferta,
 						check_in.hora_check_in,
 						check_in.minuto_check_in,
 						check_out.hora_check_out,
@@ -322,7 +300,7 @@ export class ActividadesRepositoryService {
 						dias_semana.aplica_sabado,
 						dias_semana.aplica_domingo,
 						horario.id_horario,
-						null,
+						cupo_maximo,
 						null,
 						0,
 					],
@@ -331,8 +309,22 @@ export class ActividadesRepositoryService {
 			}
 			const resultado_actividad = await manager.query(
 				`CALL SP_REGISTRAR_ACTIVIDAD(?, ?)`,
-				[horariosOfertaDto.id_oferta, id_usuario],
+				[id_oferta, id_usuario],
 			);
+			for (const entrada of entradas) {
+				const resultado_entradas = await manager.query(
+					`CALL SP_ABM_TIPOS_ENTRADA_X_OFERTA(?, ?, ?, ?, ?, ?)`,
+					[
+						entrada.nombre,
+						entrada.descripcion,
+						id_oferta,
+						id_usuario,
+						entrada.id_entrada,
+						0,
+					],
+				);
+				resultados.entradas.push(resultado_entradas[0][0]);
+			}
 			resultados.registro_actividad = resultado_actividad[0][0];
 		});
 		return resultados;
