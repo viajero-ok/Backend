@@ -6,12 +6,37 @@ import {
 	IsDate,
 	IsNotEmpty,
 	Min,
-	IsArray,
-	ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-class TarifaDto {
+export class ActualizarTarifasDto {
+	@ApiProperty({
+		description: 'Fecha desde la que aplica la tarifa',
+		example: '2023-01-01',
+	})
+	@IsNotEmpty()
+	@IsDate()
+	@Type(() => Date)
+	fecha_desde: Date;
+
+	@ApiProperty({
+		description: 'Fecha hasta la que aplica la tarifa',
+		example: '2023-12-31',
+	})
+	@IsNotEmpty()
+	@IsDate()
+	@Type(() => Date)
+	fecha_hasta: Date;
+
+	@ApiProperty({
+		description: 'ID de la oferta',
+		example: '123e4567-e89b-12d3-a456-426614174002',
+	})
+	@IsUUID()
+	@IsNotEmpty()
+	@IsString()
+	id_oferta: string;
+
 	@ApiProperty({
 		description: 'ID del tipo de detalle',
 		example: '123e4567-e89b-12d3-a456-426614174002',
@@ -46,33 +71,4 @@ class TarifaDto {
 	@IsNumber()
 	@IsNotEmpty()
 	monto_tarifa: number;
-}
-
-export class ActualizarTarifasDto {
-	@ApiProperty({
-		description: 'Fecha desde la que aplica la tarifa',
-		example: '2023-01-01',
-	})
-	@IsNotEmpty()
-	@IsDate()
-	@Type(() => Date)
-	fecha_desde: Date;
-
-	@ApiProperty({
-		description: 'Fecha hasta la que aplica la tarifa',
-		example: '2023-12-31',
-	})
-	@IsNotEmpty()
-	@IsDate()
-	@Type(() => Date)
-	fecha_hasta: Date;
-
-	@ApiProperty({
-		description: 'Array de tarifas',
-	})
-	@IsNotEmpty()
-	@IsArray()
-	@ValidateNested({ each: true })
-	@Type(() => TarifaDto)
-	tarifas: TarifaDto[];
 }

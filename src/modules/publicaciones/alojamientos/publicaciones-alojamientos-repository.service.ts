@@ -23,29 +23,21 @@ export class PublicacionesAlojamientosRepositoryService {
 		id_usuario: string,
 		registrarTarifasDto: RegistrarTarifasDto,
 	) {
-		const { fecha_desde, fecha_hasta } = registrarTarifasDto;
-		const resultados_tarifas = [];
-		return this.entityManager.transaction(
-			async (manager: EntityManager) => {
-				for (const tarifa of registrarTarifasDto.tarifas) {
-					const result = await manager.query(
-						'CALL SP_ABM_TARIFA_X_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?)',
-						[
-							null,
-							tarifa.id_tipo_detalle,
-							tarifa.id_tipo_pension,
-							tarifa.monto_tarifa,
-							fecha_desde,
-							fecha_hasta,
-							id_usuario,
-							0,
-						],
-					);
-					resultados_tarifas.push(result[0][0]);
-				}
-				return resultados_tarifas;
-			},
+		const result = await this.entityManager.query(
+			'CALL SP_ABM_TARIFA_X_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			[
+				null,
+				registrarTarifasDto.id_oferta,
+				registrarTarifasDto.id_tipo_detalle,
+				registrarTarifasDto.id_tipo_pension,
+				registrarTarifasDto.monto_tarifa,
+				registrarTarifasDto.fecha_desde,
+				registrarTarifasDto.fecha_hasta,
+				id_usuario,
+				0,
+			],
 		);
+		return result;
 	}
 
 	async obtenerTarifas(id_tipo_detalle: string) {
@@ -60,29 +52,21 @@ export class PublicacionesAlojamientosRepositoryService {
 		id_usuario: string,
 		actualizarTarifasDto: ActualizarTarifasDto,
 	) {
-		const { fecha_desde, fecha_hasta } = actualizarTarifasDto;
-		const resultados_tarifas = [];
-		return this.entityManager.transaction(
-			async (manager: EntityManager) => {
-				for (const tarifa of actualizarTarifasDto.tarifas) {
-					const result = await manager.query(
-						'CALL SP_ABM_TARIFA_X_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?)',
-						[
-							tarifa.id_tarifa,
-							tarifa.id_tipo_detalle,
-							tarifa.id_tipo_pension,
-							tarifa.monto_tarifa,
-							fecha_desde,
-							fecha_hasta,
-							id_usuario,
-							0,
-						],
-					);
-					resultados_tarifas.push(result[0][0]);
-				}
-				return resultados_tarifas;
-			},
+		const result = await this.entityManager.query(
+			'CALL SP_ABM_TARIFA_X_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			[
+				null,
+				actualizarTarifasDto.id_oferta,
+				actualizarTarifasDto.id_tipo_detalle,
+				actualizarTarifasDto.id_tipo_pension,
+				actualizarTarifasDto.monto_tarifa,
+				actualizarTarifasDto.fecha_desde,
+				actualizarTarifasDto.fecha_hasta,
+				id_usuario,
+				0,
+			],
 		);
+		return result;
 	}
 
 	async eliminarTarifa(id_tarifa: number, id_usuario: string) {

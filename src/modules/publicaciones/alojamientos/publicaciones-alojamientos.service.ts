@@ -26,24 +26,16 @@ export class PublicacionesAlojamientosService {
 				req.user.id_usuario,
 				tarifasDto,
 			);
-		for (const tarifa of result) {
-			this.exceptionHandlingService.handleError(
-				tarifa,
-				'Error al registrar tarifa',
-				HttpStatus.CONFLICT,
-			);
-		}
-		const datos = result.map((tarifa) => {
-			return {
-				id_tarifa: tarifa.id_tarifa,
-				id_tipo_detalle: tarifa.id_tipo_detalle,
-			};
-		});
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al registrar tarifa',
+			HttpStatus.CONFLICT,
+		);
 
 		return {
 			resultado: 'ok',
 			statusCode: 201,
-			datos: datos,
 		};
 	}
 
@@ -54,24 +46,15 @@ export class PublicacionesAlojamientosService {
 				actualizarTarifasDto,
 			);
 
-		for (const tarifa of result) {
-			this.exceptionHandlingService.handleError(
-				tarifa,
-				'Error al registrar tarifa',
-				HttpStatus.CONFLICT,
-			);
-		}
-		const datos = result.map((tarifa) => {
-			return {
-				id_tarifa: tarifa.id_tarifa,
-				id_tipo_detalle: tarifa.id_tipo_detalle,
-			};
-		});
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al registrar tarifa',
+			HttpStatus.CONFLICT,
+		);
 
 		return {
 			resultado: 'ok',
 			statusCode: 201,
-			datos: datos,
 		};
 	}
 
