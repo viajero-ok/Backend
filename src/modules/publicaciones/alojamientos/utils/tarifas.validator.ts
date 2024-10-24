@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { RegistrarTarifasDto } from '../dto/registrar-tarifa.dto';
+import { ActualizarTarifasDto } from '../dto/actualizar-tarifa.dto';
 
 @Injectable()
 export class TarifasValidator {
 	async validarTarifa(
-		tarifaDto: RegistrarTarifasDto,
-		tarifasExistentes: RegistrarTarifasDto[],
+		tarifaDto: RegistrarTarifasDto | ActualizarTarifasDto,
+		tarifasExistentes: RegistrarTarifasDto[] | ActualizarTarifasDto[],
 	): Promise<string[]> {
 		const errores: string[] = [];
 

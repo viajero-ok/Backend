@@ -3,12 +3,14 @@ import { PublicacionesAlojamientosRepositoryService } from './publicaciones-aloj
 import { ExceptionHandlingService } from 'src/common/services/exception-handler.service';
 import { RegistrarTarifasDto } from './dto/registrar-tarifa.dto';
 import { ActualizarTarifasDto } from './dto/actualizar-tarifa.dto';
+import { TarifasValidator } from './utils/tarifas.validator';
 
 @Injectable()
 export class PublicacionesAlojamientosService {
 	constructor(
 		private readonly publicacionesAlojamientosRepositoryService: PublicacionesAlojamientosRepositoryService,
 		private readonly exceptionHandlingService: ExceptionHandlingService,
+		private readonly tarifasValidator: TarifasValidator,
 	) {}
 
 	async obtenerDatosPublicacionAlojamiento(id_oferta: string) {
@@ -36,6 +38,7 @@ export class PublicacionesAlojamientosService {
 		return {
 			resultado: 'ok',
 			statusCode: 201,
+			id_tarifa: result.id_tarifa,
 		};
 	}
 

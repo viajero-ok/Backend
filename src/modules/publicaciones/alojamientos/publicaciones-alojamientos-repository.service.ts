@@ -37,7 +37,7 @@ export class PublicacionesAlojamientosRepositoryService {
 				0,
 			],
 		);
-		return result;
+		return result[0][0];
 	}
 
 	async obtenerTarifas(id_tipo_detalle: string) {
@@ -72,7 +72,7 @@ export class PublicacionesAlojamientosRepositoryService {
 	async eliminarTarifa(id_tarifa: number, id_usuario: string) {
 		const result = await this.entityManager.query(
 			'CALL SP_ABM_TARIFA_X_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?)',
-			[id_tarifa, null, null, null, null, null, id_usuario, 1],
+			[id_tarifa, null, null, null, null, null, null, id_usuario, 1],
 		);
 		return result[0][0];
 	}

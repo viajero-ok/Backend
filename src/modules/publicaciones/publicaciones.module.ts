@@ -5,7 +5,8 @@ import { PublicacionesActividadesService } from './actividades/publicaciones-act
 import { PublicacionesAlojamientosService } from './alojamientos/publicaciones-alojamientos.service';
 import { PublicacionesAlojamientosRepositoryService } from './alojamientos/publicaciones-alojamientos-repository.service';
 import { PublicacionesActividadesRepositoryService } from './actividades/publicaciones-actividades-repository.service';
-import { TarifasValidator } from './actividades/utils/tarifas.validator';
+import { TarifasValidator as TarifasValidatorAlojamientos } from './alojamientos/utils/tarifas.validator';
+import { TarifasValidator as TarifasValidatorActividades } from './actividades/utils/tarifas.validator';
 
 @Module({
 	controllers: [
@@ -17,7 +18,8 @@ import { TarifasValidator } from './actividades/utils/tarifas.validator';
 		PublicacionesActividadesRepositoryService,
 		PublicacionesAlojamientosService,
 		PublicacionesAlojamientosRepositoryService,
-		TarifasValidator,
+		TarifasValidatorActividades,
+		TarifasValidatorAlojamientos,
 	],
 })
 export class PublicacionesModule {}
