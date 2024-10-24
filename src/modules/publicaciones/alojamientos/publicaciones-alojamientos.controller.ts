@@ -22,7 +22,7 @@ import { RegistrarTarifasDto } from './dto/registrar-tarifa.dto';
 
 @ApiTags('Publicaciones/Alojamientos')
 @ApiBearerAuth()
-@Controller('publicaciones')
+@Controller('publicaciones/alojamientos')
 export class PublicacionesAlojamientosController {
 	constructor(
 		private readonly publicacionesAlojamientosService: PublicacionesAlojamientosService,

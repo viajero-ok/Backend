@@ -29,7 +29,7 @@ export class PublicacionesAlojamientosRepositoryService {
 				null,
 				registrarTarifasDto.id_oferta,
 				registrarTarifasDto.id_tipo_detalle,
-				registrarTarifasDto.id_tipo_pension,
+				null,
 				registrarTarifasDto.monto_tarifa,
 				registrarTarifasDto.fecha_desde,
 				registrarTarifasDto.fecha_hasta,
@@ -40,10 +40,10 @@ export class PublicacionesAlojamientosRepositoryService {
 		return result[0][0];
 	}
 
-	async obtenerTarifas(id_tipo_detalle: string) {
+	async obtenerTarifas(id_oferta: string) {
 		const result = await this.entityManager.query(
-			'CALL SP_OBT_TARIFA_X_TIPO_DETALLE(?)',
-			[id_tipo_detalle],
+			'CALL SP_OBT_TARIFAS_X_OFERTA(?)',
+			[id_oferta],
 		);
 		return result[0];
 	}
@@ -55,10 +55,10 @@ export class PublicacionesAlojamientosRepositoryService {
 		const result = await this.entityManager.query(
 			'CALL SP_ABM_TARIFA_X_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
-				null,
+				actualizarTarifasDto.id_tarifa,
 				actualizarTarifasDto.id_oferta,
 				actualizarTarifasDto.id_tipo_detalle,
-				actualizarTarifasDto.id_tipo_pension,
+				null,
 				actualizarTarifasDto.monto_tarifa,
 				actualizarTarifasDto.fecha_desde,
 				actualizarTarifasDto.fecha_hasta,

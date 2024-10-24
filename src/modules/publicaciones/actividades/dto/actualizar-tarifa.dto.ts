@@ -38,13 +38,13 @@ export class ActualizarTarifasDto {
 	id_oferta: string;
 
 	@ApiProperty({
-		description: 'ID del tipo de detalle',
-		example: '123e4567-e89b-12d3-a456-426614174002',
+		description: 'ID del tipo de pensión',
+		example: 1,
 	})
-	@IsUUID()
+	@IsNumber()
 	@IsNotEmpty()
-	@IsString()
-	id_tipo_detalle: string;
+	@Min(1)
+	id_tipo_entrada: number;
 
 	@ApiProperty({
 		description: 'ID de la tarifa',

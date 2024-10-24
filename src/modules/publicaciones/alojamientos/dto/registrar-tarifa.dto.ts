@@ -5,7 +5,6 @@ import {
 	IsNumber,
 	IsDate,
 	IsNotEmpty,
-	Min,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -45,15 +44,6 @@ export class RegistrarTarifasDto {
 	@IsNotEmpty()
 	@IsString()
 	id_tipo_detalle: string;
-
-	@ApiProperty({
-		description: 'ID del tipo de pensión',
-		example: 1,
-	})
-	@IsNumber()
-	@IsNotEmpty()
-	@Min(1)
-	id_tipo_pension: number;
 
 	@ApiProperty({
 		description: 'Monto de la tarifa',

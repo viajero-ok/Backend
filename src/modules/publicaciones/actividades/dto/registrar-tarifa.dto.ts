@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class ActualizarTarifasDto {
+export class RegistrarTarifasDto {
 	@ApiProperty({
 		description: 'Fecha desde la que aplica la tarifa',
 		example: '2023-01-01',
@@ -38,22 +38,13 @@ export class ActualizarTarifasDto {
 	id_oferta: string;
 
 	@ApiProperty({
-		description: 'ID del tipo de detalle',
-		example: '123e4567-e89b-12d3-a456-426614174002',
-	})
-	@IsUUID()
-	@IsNotEmpty()
-	@IsString()
-	id_tipo_detalle: string;
-
-	@ApiProperty({
-		description: 'ID de la tarifa',
+		description: 'ID del tipo de pensión',
 		example: 1,
 	})
 	@IsNumber()
 	@IsNotEmpty()
 	@Min(1)
-	id_tarifa: number;
+	id_tipo_entrada: number;
 
 	@ApiProperty({
 		description: 'Monto de la tarifa',

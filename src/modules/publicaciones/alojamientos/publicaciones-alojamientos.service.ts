@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PublicacionesAlojamientosRepositoryService } from './publicaciones-alojamientos-repository.service';
 import { ExceptionHandlingService } from 'src/common/services/exception-handler.service';
 import { RegistrarTarifasDto } from './dto/registrar-tarifa.dto';
@@ -22,11 +22,31 @@ export class PublicacionesAlojamientosService {
 		return { tipos_detalle: resultado };
 	}
 
-	async registrarTarifa(req, tarifasDto: RegistrarTarifasDto) {
+	async registrarTarifa(req, registrarTarifasDto: RegistrarTarifasDto) {
+		const tarifasExistentes =
+			await this.publicacionesAlojamientosRepositoryService.obtenerTarifas(
+				registrarTarifasDto.id_oferta,
+			);
+
+		const errores = await this.tarifasValidator.validarTarifa(
+			registrarTarifasDto,
+			tarifasExistentes,
+		);
+
+		if (errores.length > 0) {
+			throw new HttpException(
+				{
+					message: errores,
+					statusCode: HttpStatus.CONFLICT,
+				},
+				HttpStatus.CONFLICT,
+			);
+		}
+
 		const result =
 			await this.publicacionesAlojamientosRepositoryService.registrarTarifa(
 				req.user.id_usuario,
-				tarifasDto,
+				registrarTarifasDto,
 			);
 
 		this.exceptionHandlingService.handleError(
@@ -43,6 +63,26 @@ export class PublicacionesAlojamientosService {
 	}
 
 	async actualizarTarifa(req, actualizarTarifasDto: ActualizarTarifasDto) {
+		const tarifasExistentes =
+			await this.publicacionesAlojamientosRepositoryService.obtenerTarifas(
+				actualizarTarifasDto.id_oferta,
+			);
+
+		const errores = await this.tarifasValidator.validarTarifa(
+			actualizarTarifasDto,
+			tarifasExistentes,
+		);
+
+		if (errores.length > 0) {
+			throw new HttpException(
+				{
+					message: errores,
+					statusCode: HttpStatus.CONFLICT,
+				},
+				HttpStatus.CONFLICT,
+			);
+		}
+
 		const result =
 			await this.publicacionesAlojamientosRepositoryService.actualizarTarifa(
 				req.user.id_usuario,
