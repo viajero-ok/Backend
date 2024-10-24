@@ -12,9 +12,12 @@ export class PublicacionesAlojamientosService {
 	) {}
 
 	async obtenerDatosPublicacionAlojamiento(id_oferta: string) {
-		return await this.publicacionesAlojamientosRepositoryService.obtenerDatosPublicacionAlojamiento(
-			id_oferta,
-		);
+		const resultado =
+			await this.publicacionesAlojamientosRepositoryService.obtenerDatosPublicacionAlojamiento(
+				id_oferta,
+			);
+
+		return { tipos_detalle: resultado };
 	}
 
 	async registrarTarifa(req, tarifasDto: RegistrarTarifasDto) {

@@ -12,10 +12,11 @@ export class PublicacionesAlojamientosRepositoryService {
 	) {}
 
 	async obtenerDatosPublicacionAlojamiento(id_oferta: string) {
-		return this.entityManager.query(
+		const resultado = await this.entityManager.query(
 			'CALL SP_OBT_TIPOS_DETALLE_X_OFERTA(?)',
 			[id_oferta],
 		);
+		return resultado[0];
 	}
 
 	async registrarTarifa(
