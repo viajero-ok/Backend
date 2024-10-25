@@ -17,24 +17,23 @@ export class PoliticasReservaDto {
 	@Min(0)
 	plazo_dias_cancelacion: number;
 
+	@ApiProperty({
+		description: 'ID del tipo de pago anticipado',
+		example: 1,
+	})
+	@IsNotEmpty()
+	@IsNumber()
+	@Min(1)
+	id_tipo_pago_anticipado: number;
+
 	@ApiPropertyOptional({
 		description: 'Porcentaje de pago anticipado',
 		example: 25.5,
 	})
-	@ValidateIf((o) => o.monto_pago_anticipado === undefined)
+	@ValidateIf((o) => o.id_tipo_pago_anticipado === 1)
 	@IsNotEmpty()
 	@IsNumber()
 	@Min(0)
 	@Max(100)
 	porcentaje_pago_anticipado?: number;
-
-	@ApiPropertyOptional({
-		description: 'Monto de pago anticipado',
-		example: 100.5,
-	})
-	@ValidateIf((o) => o.porcentaje_pago_anticipado === undefined)
-	@IsNotEmpty()
-	@IsNumber()
-	@Min(0)
-	monto_pago_anticipado?: number;
 }
