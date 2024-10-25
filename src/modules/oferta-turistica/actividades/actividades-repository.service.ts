@@ -112,12 +112,8 @@ export class ActividadesRepositoryService {
 					id_usuario,
 					politicas_reserva.id_politica_cancelacion,
 					politicas_reserva.plazo_dias_cancelacion,
-					politicas_reserva.monto_pago_anticipado
-						? 2
-						: politicas_reserva.porcentaje_pago_anticipado
-							? 1
-							: 3,
-					politicas_reserva.monto_pago_anticipado,
+					politicas_reserva.id_tipo_pago_anticipado,
+					null,
 					politicas_reserva.porcentaje_pago_anticipado,
 					actividadDto.id_dificultad,
 					actividadDto.duracion_actividad,
