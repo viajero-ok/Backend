@@ -25,6 +25,9 @@ export class ActividadesRepositoryService {
 			},
 			sub_categorias_actividades: [],
 			dificultad_actividades: [],
+			politicas_cancelacion: null,
+			tipos_pago_anticipado: null,
+			metodos_pago: null,
 		};
 		await this.entityManager.transaction(async (manager: EntityManager) => {
 			const tipos_subtipos = await manager.query(
@@ -43,6 +46,21 @@ export class ActividadesRepositoryService {
 				`CALL SP_LISTAR_DIFICULTAD_ACTIVIDAD()`,
 			);
 			resultados.dificultad_actividades = dificultad_actividades[0];
+
+			const politicas_cancelacion = await manager.query(
+				`CALL SP_LISTAR_POLITICAS_CANCELACION()`,
+			);
+			resultados.politicas_cancelacion = politicas_cancelacion[0];
+
+			const tipos_pago_anticipado = await manager.query(
+				`CALL SP_LISTAR_TIPOS_PAGO_ANTICIPADO()`,
+			);
+			resultados.tipos_pago_anticipado = tipos_pago_anticipado[0];
+
+			const metodos_pago = await manager.query(
+				`CALL SP_LISTAR_METODOS_PAGO()`,
+			);
+			resultados.metodos_pago = metodos_pago[0];
 		});
 		return resultados;
 	}

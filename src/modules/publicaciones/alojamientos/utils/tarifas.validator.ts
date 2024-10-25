@@ -13,16 +13,12 @@ export class TarifasValidator {
 		if (tarifaDto.fecha_desde >= tarifaDto.fecha_hasta) {
 			errores.push('La fecha desde debe ser anterior a la fecha hasta');
 		}
-		console.log(tarifasExistentes);
 		let tarifasSolapadas = [];
-		/* if (tarifasExistentes.length > 0 && Array.isArray(tarifasExistentes)) {
+		if (tarifasExistentes.length > 0 && Array.isArray(tarifasExistentes)) {
 			tarifasSolapadas = tarifasExistentes.filter((t) => {
 				let seSuperpone = true;
-				if (
-					t instanceof ActualizarTarifasDto &&
-					tarifaDto instanceof ActualizarTarifasDto
-				) {
-					if (t.id_tarifa !== tarifaDto.id_tarifa) {
+				if ('id_tarifa' in tarifaDto && 'id_tarifa' in t) {
+					if (t.id_tarifa === tarifaDto.id_tarifa) {
 						return false;
 					}
 				}
@@ -36,10 +32,9 @@ export class TarifasValidator {
 							tarifaDto.fecha_hasta >= t.fecha_hasta) ||
 						(tarifaDto.fecha_desde <= t.fecha_desde &&
 							tarifaDto.fecha_hasta >= t.fecha_desde));
-				console.log(seSuperpone);
 				return seSuperpone;
 			});
-		} */
+		}
 		if (tarifasSolapadas.length > 0) {
 			errores.push(
 				'Existe una tarifa para esta habitación con fechas que se solapan con la ingresada',
