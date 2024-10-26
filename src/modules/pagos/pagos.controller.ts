@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Query, Redirect, Req } from '@nestjs/common';
+import { Controller, Get, Post, Query, Req } from '@nestjs/common';
 import { PagosService } from './pagos.service';
 import { Public } from 'src/common/decorators/public/public.decorator';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -13,12 +13,10 @@ export class PagosController {
 		return this.pagosService.generarOrden();
 	}
 
-	@Public()
+	/* @Public() */
 	@Get('solicitar-autorizacion-prestador')
-	@Redirect()
 	async solicitarAutorizacionPrestador(@Req() req) {
-		console.log('REQUEST', req);
-		/* return this.pagosService.solicitarAutorizacionPrestador(req); */
+		return this.pagosService.solicitarAutorizacionPrestador(req);
 	}
 
 	@Public()

@@ -87,7 +87,7 @@ export class ActividadDto {
 
 	@ApiProperty({
 		description: 'Bandera de si tiene guía',
-		example: true,
+		example: false,
 	})
 	@IsNotEmpty()
 	@IsBoolean()

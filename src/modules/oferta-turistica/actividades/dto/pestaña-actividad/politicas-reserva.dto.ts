@@ -28,7 +28,7 @@ export class PoliticasReservaDto {
 
 	@ApiPropertyOptional({
 		description: 'Porcentaje de pago anticipado',
-		example: 25.5,
+		example: 30.5,
 	})
 	@ValidateIf((o) => o.id_tipo_pago_anticipado === 1)
 	@IsNotEmpty()
