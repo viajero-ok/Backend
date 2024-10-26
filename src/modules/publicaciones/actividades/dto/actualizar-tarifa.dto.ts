@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
 	IsUUID,
 	IsString,
@@ -6,6 +6,8 @@ import {
 	IsDate,
 	IsNotEmpty,
 	Min,
+	ValidateIf,
+	IsBoolean,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -55,11 +57,21 @@ export class ActualizarTarifasDto {
 	@Min(1)
 	id_tarifa: number;
 
-	@ApiProperty({
+	@ApiPropertyOptional({
 		description: 'Monto de la tarifa',
 		example: 1000.5,
 	})
+	@ValidateIf((o) => !o.bl_gratuito)
 	@IsNumber()
 	@IsNotEmpty()
 	monto_tarifa: number;
+
+	@ApiPropertyOptional({
+		description: 'Indica si la tarifa es gratuita',
+		example: true,
+	})
+	@ValidateIf((o) => !o.monto_tarifa)
+	@IsBoolean()
+	@IsNotEmpty()
+	bl_gratuito: boolean;
 }

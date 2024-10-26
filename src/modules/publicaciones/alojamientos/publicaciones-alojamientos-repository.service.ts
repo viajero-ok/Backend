@@ -24,7 +24,7 @@ export class PublicacionesAlojamientosRepositoryService {
 		registrarTarifasDto: RegistrarTarifasDto,
 	) {
 		const result = await this.entityManager.query(
-			'CALL SP_ABM_TARIFA_X_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			'CALL SP_ABM_TARIFA_X_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
 				null,
 				registrarTarifasDto.id_oferta,
@@ -33,6 +33,7 @@ export class PublicacionesAlojamientosRepositoryService {
 				registrarTarifasDto.monto_tarifa,
 				registrarTarifasDto.fecha_desde,
 				registrarTarifasDto.fecha_hasta,
+				null,
 				id_usuario,
 				0,
 			],
@@ -53,7 +54,7 @@ export class PublicacionesAlojamientosRepositoryService {
 		actualizarTarifasDto: ActualizarTarifasDto,
 	) {
 		const result = await this.entityManager.query(
-			'CALL SP_ABM_TARIFA_X_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			'CALL SP_ABM_TARIFA_X_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
 				actualizarTarifasDto.id_tarifa,
 				actualizarTarifasDto.id_oferta,
@@ -62,6 +63,7 @@ export class PublicacionesAlojamientosRepositoryService {
 				actualizarTarifasDto.monto_tarifa,
 				actualizarTarifasDto.fecha_desde,
 				actualizarTarifasDto.fecha_hasta,
+				null,
 				id_usuario,
 				0,
 			],
@@ -71,8 +73,19 @@ export class PublicacionesAlojamientosRepositoryService {
 
 	async eliminarTarifa(id_tarifa: number, id_usuario: string) {
 		const result = await this.entityManager.query(
-			'CALL SP_ABM_TARIFA_X_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?)',
-			[id_tarifa, null, null, null, null, null, null, id_usuario, 1],
+			'CALL SP_ABM_TARIFA_X_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			[
+				id_tarifa,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				id_usuario,
+				1,
+			],
 		);
 		return result[0][0];
 	}

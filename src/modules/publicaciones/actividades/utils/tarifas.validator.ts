@@ -37,7 +37,7 @@ export class TarifasValidator {
 		}
 		if (tarifasSolapadas.length > 0) {
 			errores.push(
-				'Existe una tarifa para esta habitación con fechas que se solapan con la ingresada',
+				'Existe una tarifa para esta actividad con fechas que se solapan con la ingresada',
 			);
 		}
 

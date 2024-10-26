@@ -3,7 +3,7 @@ import { ReservasService } from './reservas.service';
 import { ReservasController } from './reservas.controller';
 
 @Module({
-  controllers: [ReservasController],
-  providers: [ReservasService],
+	controllers: [ReservasController],
+	providers: [ReservasService],
 })
 export class ReservasModule {}
