@@ -18,7 +18,7 @@ export class PagosController {
 	@Redirect()
 	async solicitarAutorizacionPrestador(@Req() req) {
 		console.log('REQUEST', req);
-		return this.pagosService.solicitarAutorizacionPrestador(req);
+		/* return this.pagosService.solicitarAutorizacionPrestador(req); */
 	}
 
 	@Public()
