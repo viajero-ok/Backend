@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Query, Redirect } from '@nestjs/common';
+import { Controller, Get, Post, Query, Redirect, Req } from '@nestjs/common';
 import { PagosService } from './pagos.service';
 import { Public } from 'src/common/decorators/public/public.decorator';
 
@@ -12,16 +12,22 @@ export class PagosController {
 	}
 
 	@Public()
-	@Get('oauth')
-	async oauthCallback(@Query('code') code: string) {
-		/* return this.pagosService.oauthCallback(code); */
-		console.log(code);
+	@Get('solicitar-autorizacion-prestador')
+	@Redirect()
+	async solicitarAutorizacionPrestador(@Req() req) {
+		return this.pagosService.solicitarAutorizacionPrestador(req);
 	}
 
 	@Public()
-	@Get('solicitar-autorizacion-prestador')
-	@Redirect()
-	async solicitarAutorizacionPrestador() {
-		return this.pagosService.solicitarAutorizacionPrestador();
+	@Get('oauth')
+	async oauthCallback(
+		@Query('code') code: string,
+		@Query('id_usuario') id_usuario: string,
+		@Req() req,
+	) {
+		console.log('REQUEST', req);
+		console.log('CODE', code);
+		console.log('ID_USUARIO', id_usuario);
+		return this.pagosService.oauthCallback(code, id_usuario);
 	}
 }

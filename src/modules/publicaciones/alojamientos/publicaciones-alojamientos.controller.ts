@@ -180,4 +180,21 @@ export class PublicacionesAlojamientosController {
 			id_oferta,
 		);
 	}
+
+	@ApiOperation({ summary: 'PUBLICAR ACTIVIDAD' })
+	@ApiResponse({
+		status: 201,
+		description: 'ACTIVIDAD PUBLICADA',
+	})
+	@UseGuards(OfertaOwnerGuard)
+	@Post('publicar-actividad/:id_oferta')
+	async publicarActividad(
+		@Req() req: Request,
+		@Param('id_oferta') id_oferta: string,
+	) {
+		return await this.publicacionesAlojamientosService.publicarActividad(
+			req,
+			id_oferta,
+		);
+	}
 }

@@ -7,6 +7,8 @@ import { PublicacionesAlojamientosRepositoryService } from './alojamientos/publi
 import { PublicacionesActividadesRepositoryService } from './actividades/publicaciones-actividades-repository.service';
 import { TarifasValidator as TarifasValidatorAlojamientos } from './alojamientos/utils/tarifas.validator';
 import { TarifasValidator as TarifasValidatorActividades } from './actividades/utils/tarifas.validator';
+import { PeriodoSinTarifasValidator as PeriodoSinTarifasValidatorActividades } from './actividades/utils/periodo-sin-tarifas.validator';
+import { PeriodoSinTarifasValidator as PeriodoSinTarifasValidatorAlojamientos } from './alojamientos/utils/periodo-sin-tarifas.validator';
 
 @Module({
 	controllers: [
@@ -20,6 +22,8 @@ import { TarifasValidator as TarifasValidatorActividades } from './actividades/u
 		PublicacionesAlojamientosRepositoryService,
 		TarifasValidatorActividades,
 		TarifasValidatorAlojamientos,
+		PeriodoSinTarifasValidatorActividades,
+		PeriodoSinTarifasValidatorAlojamientos,
 	],
 })
 export class PublicacionesModule {}

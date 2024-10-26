@@ -4,6 +4,7 @@ import { ExceptionHandlingService } from 'src/common/services/exception-handler.
 import { RegistrarTarifasDto } from './dto/registrar-tarifa.dto';
 import { ActualizarTarifasDto } from './dto/actualizar-tarifa.dto';
 import { TarifasValidator } from './utils/tarifas.validator';
+import { PeriodoSinTarifasValidator } from './utils/periodo-sin-tarifas.validator';
 
 @Injectable()
 export class PublicacionesAlojamientosService {
@@ -11,6 +12,7 @@ export class PublicacionesAlojamientosService {
 		private readonly publicacionesAlojamientosRepositoryService: PublicacionesAlojamientosRepositoryService,
 		private readonly exceptionHandlingService: ExceptionHandlingService,
 		private readonly tarifasValidator: TarifasValidator,
+		private readonly periodoSinTarifasValidator: PeriodoSinTarifasValidator,
 	) {}
 
 	async obtenerDatosPublicacionAlojamiento(id_oferta: string) {
@@ -133,6 +135,45 @@ export class PublicacionesAlojamientosService {
 
 		return {
 			datos: result,
+		};
+	}
+
+	async publicarActividad(req, id_oferta: string) {
+		const tarifasExistentes =
+			await this.publicacionesAlojamientosRepositoryService.obtenerTarifas(
+				id_oferta,
+			);
+
+		const errores =
+			await this.periodoSinTarifasValidator.validarPeriodoSinTarifas(
+				tarifasExistentes,
+			);
+
+		if (errores.length > 0) {
+			throw new HttpException(
+				{
+					message: errores,
+					statusCode: HttpStatus.CONFLICT,
+				},
+				HttpStatus.CONFLICT,
+			);
+		}
+
+		const result =
+			await this.publicacionesAlojamientosRepositoryService.publicarActividad(
+				req.user.id_usuario,
+				id_oferta,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al publicar actividad',
+			HttpStatus.CONFLICT,
+		);
+
+		return {
+			resultado: 'ok',
+			statusCode: 201,
 		};
 	}
 }

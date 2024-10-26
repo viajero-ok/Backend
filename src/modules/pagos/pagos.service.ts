@@ -36,11 +36,50 @@ export class PagosService {
 		return response;
 	}
 
-	async solicitarAutorizacionPrestador() {
+	async solicitarAutorizacionPrestador(req) {
 		const appId = process.env.MERCADO_PAGO_APP_ID;
-		const redirectUri = process.env.REDIRECT_URI;
+		const redirectUri =
+			process.env.REDIRECT_URI + '?id_usuario=' + req.user.id_usuario;
 		return {
 			url: `https://auth.mercadopago.com.ar/authorization?client_id=${appId}&response_type=code&platform_id=mp&redirect_uri=${redirectUri}`,
 		};
+	}
+
+	async oauthCallback(code: string, id_usuario: string) {
+		const url = 'https://api.mercadopago.com/oauth/token';
+		const clientId = process.env.MERCADO_PAGO_APP_ID;
+		const clientSecret = process.env.MERCADO_PAGO_CLIENT_SECRET;
+		const redirectUri = process.env.REDIRECT_URI;
+
+		const body = new URLSearchParams({
+			client_id: clientId,
+			client_secret: clientSecret,
+			grant_type: 'authorization_code',
+			code: code,
+			redirect_uri: `${redirectUri}${id_usuario}`,
+			state: uuidv4(), // Generamos un ID aleatorio usando uuid
+		});
+
+		try {
+			const response = await fetch(url, {
+				method: 'POST',
+				headers: {
+					accept: 'application/json',
+					'content-type': 'application/x-www-form-urlencoded',
+				},
+				body: body,
+			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const data = await response.json();
+			console.log('DATA', data);
+			return data;
+		} catch (error) {
+			console.error('Error en la solicitud OAuth:', error);
+			throw error;
+		}
 	}
 }
