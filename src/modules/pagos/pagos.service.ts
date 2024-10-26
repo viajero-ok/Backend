@@ -39,7 +39,7 @@ export class PagosService {
 	async solicitarAutorizacionPrestador(req) {
 		const appId = process.env.MERCADO_PAGO_APP_ID;
 		const redirectUri =
-			process.env.REDIRECT_URI + '?id_usuario=' + req.user.id_usuario;
+			process.env.REDIRECT_URI + '/' + req.user.id_usuario;
 		return {
 			url: `https://auth.mercadopago.com.ar/authorization?client_id=${appId}&response_type=code&platform_id=mp&redirect_uri=${redirectUri}`,
 		};

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Query, Req } from '@nestjs/common';
+import { Controller, Get, Param, Post, Query, Req } from '@nestjs/common';
 import { PagosService } from './pagos.service';
 import { Public } from 'src/common/decorators/public/public.decorator';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -20,13 +20,13 @@ export class PagosController {
 	}
 
 	@Public()
-	@Get('oauth')
+	@Get('oauth/:id_usuario')
 	async oauthCallback(
 		@Query('code') code: string,
-		@Query('id_usuario') id_usuario: string,
-		@Req() req,
+		@Param('id_usuario') id_usuario: string,
+		@Req() req?,
 	) {
-		console.log('REQUEST', req);
+		if (req.user) console.log('REQUEST', req.user);
 		console.log('CODE', code);
 		console.log('ID_USUARIO', id_usuario);
 		return this.pagosService.oauthCallback(code, id_usuario);
