@@ -20,15 +20,11 @@ export class PagosController {
 	}
 
 	@Public()
-	@Get('oauth/:id_usuario')
-	async oauthCallback(
-		@Query('code') code: string,
-		@Param('id_usuario') id_usuario: string,
-		@Req() req?,
-	) {
+	@Get('oauth')
+	async oauthCallback(@Query('code') code: string, @Req() req?) {
 		if (req.user) console.log('REQUEST', req.user);
 		console.log('CODE', code);
-		console.log('ID_USUARIO', id_usuario);
-		return this.pagosService.oauthCallback(code, id_usuario);
+		console.log('ID_USUARIO');
+		return this.pagosService.oauthCallback(code);
 	}
 }

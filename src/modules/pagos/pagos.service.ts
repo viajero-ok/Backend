@@ -45,7 +45,7 @@ export class PagosService {
 		};
 	}
 
-	async oauthCallback(code: string, id_usuario: string) {
+	async oauthCallback(code: string) {
 		const url = 'https://api.mercadopago.com/oauth/token';
 		const clientId = process.env.MERCADO_PAGO_APP_ID;
 		const clientSecret = process.env.MERCADO_PAGO_CLIENT_SECRET;
@@ -56,7 +56,7 @@ export class PagosService {
 			client_secret: clientSecret,
 			grant_type: 'authorization_code',
 			code: code,
-			redirect_uri: `${redirectUri}${id_usuario}`,
+			redirect_uri: `${redirectUri}`,
 			state: uuidv4(), // Generamos un ID aleatorio usando uuid
 		});
 
