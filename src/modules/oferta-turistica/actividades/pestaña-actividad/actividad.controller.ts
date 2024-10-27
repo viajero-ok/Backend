@@ -1,35 +1,31 @@
 import {
 	Body,
 	Controller,
-	Delete,
-	Get,
 	Param,
+	Get,
 	Patch,
-	Post,
 	Req,
 	UseGuards,
+	Delete,
+	Post,
 } from '@nestjs/common';
-import { ActividadesService } from './actividades.service';
 import {
 	ApiBearerAuth,
 	ApiOperation,
 	ApiResponse,
 	ApiTags,
 } from '@nestjs/swagger';
-import { GuiaDto } from './dto/pestaña-actividad/guia.dto';
-import { EliminarGuiaDto } from './dto/pestaña-actividad/eliminar-guia.dto';
-import { ActividadDto } from './dto/pestaña-actividad/actividad.dto';
-import { UbicacionActividadDto } from './dto/pestaña-ubicacion/ubicacion-actividad.dto';
-import { HorarioVacioDto } from './dto/pestaña-horarios-entradas/horario-vacio.dto';
+import { ActividadService } from './actividad.service';
+import { ActividadDto } from './dto/actividad.dto';
 import { OfertaOwnerGuard } from 'src/common/guards/authorization/oferta-owner.guard';
-import { EntradaVaciaDto } from './dto/pestaña-horarios-entradas/entrada-vacia.dto';
-import { FinalizarRegistroDto } from './dto/pestaña-horarios-entradas/finalizar-registro.dto';
+import { EliminarGuiaDto } from './dto/eliminar-guia.dto';
+import { GuiaDto } from './dto/guia.dto';
 
-@ApiTags('Actividades')
+@ApiTags('Actividades/Actividad')
 @ApiBearerAuth()
 @Controller('actividades')
-export class ActividadesController {
-	constructor(private readonly actividadesService: ActividadesService) {}
+export class ActividadController {
+	constructor(private readonly actividadService: ActividadService) {}
 
 	@ApiOperation({ summary: 'OBTENER DATOS REGISTRO ACTIVIDADES' })
 	@ApiResponse({
@@ -119,12 +115,61 @@ export class ActividadesController {
 						},
 					},
 				},
+				politicas_cancelacion: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_politica_cancelacion: {
+								type: 'number',
+								example: 1,
+							},
+							politica_cancelacion: {
+								type: 'string',
+								example:
+									'Cancelación con devolución de pago anticipado',
+							},
+						},
+					},
+				},
+				tipos_pago_anticipado: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_tipo_pago_anticipado: {
+								type: 'number',
+								example: 1,
+							},
+							tipo_pago_anticipado: {
+								type: 'string',
+								example: 'Porcentaje en concepto de seña',
+							},
+						},
+					},
+				},
+				metodos_pago: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_metodo_pago: {
+								type: 'number',
+								example: 1,
+							},
+							metodo_pago: {
+								type: 'string',
+								example: 'Transferencia',
+							},
+						},
+					},
+				},
 			},
 		},
 	})
 	@Get('datos-registro-actividades')
 	async obtenerDatosRegistroActividades() {
-		return await this.actividadesService.obtenerDatosRegistroActividades();
+		return await this.actividadService.obtenerDatosRegistroActividades();
 	}
 
 	@ApiOperation({ summary: 'REGISTRAR GUIA' })
@@ -148,7 +193,7 @@ export class ActividadesController {
 	@UseGuards(OfertaOwnerGuard)
 	@Post('registrar-guia')
 	async registrarGuia(@Req() req: Request, @Body() guiaDto: GuiaDto) {
-		return await this.actividadesService.registrarGuia(req, guiaDto);
+		return await this.actividadService.registrarGuia(req, guiaDto);
 	}
 
 	@ApiOperation({ summary: 'ELIMINAR GUIA' })
@@ -175,7 +220,7 @@ export class ActividadesController {
 		@Req() req: Request,
 		@Body() eliminarGuiaDto: EliminarGuiaDto,
 	) {
-		return await this.actividadesService.eliminarGuia(req, eliminarGuiaDto);
+		return await this.actividadService.eliminarGuia(req, eliminarGuiaDto);
 	}
 
 	@ApiOperation({ summary: 'ACTUALIZAR ACTIVIDAD' })
@@ -206,7 +251,7 @@ export class ActividadesController {
 		@Req() req: Request,
 		@Body() actividadDto: ActividadDto,
 	) {
-		return await this.actividadesService.actualizarActividad(
+		return await this.actividadService.actualizarActividad(
 			req,
 			actividadDto,
 		);
@@ -236,146 +281,6 @@ export class ActividadesController {
 		@Req() req: Request,
 		@Param('id_oferta') id_oferta: string,
 	) {
-		return await this.actividadesService.eliminarActividad(req, id_oferta);
-	}
-
-	@ApiOperation({ summary: 'REGISTRAR UBICACION ACTIVIDAD' })
-	@ApiResponse({
-		status: 201,
-		description: 'Ubicacion registrada',
-		schema: {
-			type: 'object',
-			properties: {
-				resultado: {
-					type: 'string',
-					example: 'ok',
-				},
-				statusCode: {
-					type: 'number',
-					example: 201,
-				},
-			},
-		},
-	})
-	@UseGuards(OfertaOwnerGuard)
-	@Post('registrar-ubicacion-actividad')
-	async registrarUbicacionActividad(
-		@Req() req: Request,
-		@Body() ubicacionDto: UbicacionActividadDto,
-	) {
-		return await this.actividadesService.registrarUbicacionActividad(
-			req,
-			ubicacionDto,
-		);
-	}
-
-	@ApiOperation({ summary: 'REGISTRAR HORARIO' })
-	@ApiResponse({
-		status: 200,
-		schema: {
-			type: 'object',
-			properties: {
-				resultado: {
-					type: 'string',
-					example: 'ok',
-				},
-				statusCode: {
-					type: 'number',
-					example: 200,
-				},
-				id_horario: {
-					type: 'string',
-					example: '123e4567-e89b-12d3-a456-426614174000',
-				},
-			},
-		},
-	})
-	@UseGuards(OfertaOwnerGuard)
-	@Post('registrar-horario')
-	async registrarHorario(
-		@Req() req: Request,
-		@Body() horarioVacioDto: HorarioVacioDto,
-	) {
-		return await this.actividadesService.registrarHorario(
-			req,
-			horarioVacioDto,
-		);
-	}
-
-	@ApiOperation({ summary: 'ELIMINAR HORARIO' })
-	@ApiResponse({
-		status: 200,
-		schema: {
-			type: 'object',
-			properties: {
-				resultado: {
-					type: 'string',
-					example: 'ok',
-				},
-				statusCode: {
-					type: 'number',
-					example: 200,
-				},
-			},
-		},
-	})
-	@Delete('eliminar-horario/:id_horario')
-	async eliminarHorario(
-		@Req() req: Request,
-		@Param('id_horario') id_horario: string,
-	) {
-		return await this.actividadesService.eliminarHorario(req, id_horario);
-	}
-
-	@ApiOperation({ summary: 'REGISTRAR ENTRADA' })
-	@UseGuards(OfertaOwnerGuard)
-	@Post('registrar-entrada')
-	async registrarEntrada(
-		@Req() req: Request,
-		@Body() entradaVaciaDto: EntradaVaciaDto,
-	) {
-		return await this.actividadesService.registrarEntrada(
-			req,
-			entradaVaciaDto,
-		);
-	}
-
-	@ApiOperation({ summary: 'ELIMINAR ENTRADA' })
-	@Delete('eliminar-entrada/:id_entrada')
-	async eliminarEntrada(
-		@Req() req: Request,
-		@Param('id_entrada') id_entrada: string,
-	) {
-		return await this.actividadesService.eliminarEntrada(req, id_entrada);
-	}
-
-	@ApiOperation({ summary: 'FINALIZAR REGISTRO ACTIVIDAD' })
-	@ApiResponse({
-		status: 201,
-		description: 'Actividad registrada',
-		schema: {
-			type: 'object',
-			properties: {
-				resultado: {
-					type: 'string',
-					example: 'ok',
-				},
-				statusCode: {
-					type: 'number',
-					example: 201,
-				},
-			},
-		},
-	})
-	@UseGuards(OfertaOwnerGuard)
-	@Post('finalizar-registro-actividad')
-	async finalizarRegistroActividad(
-		@Req() req: Request,
-		@Body() finalizarRegistroDto: FinalizarRegistroDto,
-	) {
-		return await this.actividadesService.finalizarRegistroActividad(
-			req,
-			finalizarRegistroDto,
-		);
+		return await this.actividadService.eliminarActividad(req, id_oferta);
 	}
 }
