@@ -40,10 +40,15 @@ export class PublicacionesActividadesController {
 					items: {
 						type: 'object',
 						properties: {
-							id_tipo_detalle: { type: 'number', example: 1 },
-							nombre_tipo_detalle: {
+							id_tipo_entrada: { type: 'number', example: 1 },
+							nombre_tipo_entrada: {
 								type: 'string',
-								example: 'Doble',
+								example: 'Entrada general',
+							},
+							descripcion_tipo_entrada: {
+								type: 'string',
+								example:
+									'Esta entrada incluye acceso al parque',
 							},
 						},
 					},
@@ -186,6 +191,60 @@ export class PublicacionesActividadesController {
 	@ApiResponse({
 		status: 201,
 		description: 'ACTIVIDAD PUBLICADA',
+		schema: {
+			type: 'object',
+			properties: {
+				datos: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_tarifa: {
+								type: 'number',
+								example: 1,
+							},
+							id_oferta: {
+								type: 'string',
+								example: '123e4567-e89b-12d3-a456-426614174000',
+							},
+							nombre_oferta: {
+								type: 'string',
+								example: 'Oferta de prueba',
+							},
+							id_tipo_entrada: {
+								type: 'number',
+								example: 1,
+							},
+							nombre_tipo_entrada: {
+								type: 'string',
+								example: 'Entrada general',
+							},
+							descripcion_tipo_entrada: {
+								type: 'string',
+								example:
+									'Esta entrada incluye acceso al parque',
+							},
+							monto_tarifa: {
+								type: 'number',
+								example: 100.5,
+							},
+							fecha_desde: {
+								type: 'string',
+								example: '2024-01-01',
+							},
+							fecha_hasta: {
+								type: 'string',
+								example: '2024-01-01',
+							},
+							bl_gratis: {
+								type: 'boolean',
+								example: 1,
+							},
+						},
+					},
+				},
+			},
+		},
 	})
 	@UseGuards(OfertaOwnerGuard)
 	@Post('publicar-actividad/:id_oferta')

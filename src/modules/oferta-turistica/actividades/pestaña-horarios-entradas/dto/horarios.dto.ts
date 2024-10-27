@@ -154,5 +154,6 @@ export class HorariosTurnosDto {
 	})
 	@IsOptional()
 	@IsNumber()
+	@Min(0)
 	readonly cupo_maximo: number;
 }

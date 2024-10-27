@@ -38,7 +38,7 @@ export class UbicacionRepositoryService {
 				'CALL SP_ABM_OBSERVACIONES_X_OFERTA(?, ?, ?, ?, ?)',
 				[
 					ubicacionDto.id_oferta,
-					TipoObservacion.NORMAS,
+					TipoObservacion.DOMICILIOS,
 					ubicacionDto.observaciones,
 					id_usuario,
 					0,
@@ -47,5 +47,16 @@ export class UbicacionRepositoryService {
 			resultados.observacion = resultado_observacion[0][0];
 		});
 		return resultados;
+	}
+
+	async obtenerDatosRegistradosUbicacion(
+		id_usuario: string,
+		id_oferta: string,
+	) {
+		const result = await this.entityManager.query(
+			`CALL SP_OBT_DOMICILIO_OFERTA(?, ?)`,
+			[id_oferta, id_usuario],
+		);
+		return result[0][0];
 	}
 }

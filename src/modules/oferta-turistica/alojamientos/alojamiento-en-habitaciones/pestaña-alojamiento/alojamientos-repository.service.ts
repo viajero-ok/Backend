@@ -281,6 +281,7 @@ export class AlojamientosRepositoryService {
 			metodos_pago: result[1],
 			caracteristicas: result[2],
 			observaciones: result[3],
+			horarios_checkin_checkout: result[4],
 		};
 	}
 

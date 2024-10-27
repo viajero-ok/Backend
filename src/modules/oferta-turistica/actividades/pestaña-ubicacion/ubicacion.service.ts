@@ -37,4 +37,20 @@ export class UbicacionService {
 			statusCode: HttpStatus.CREATED,
 		};
 	}
+
+	async obtenerDatosRegistradosUbicacion(req, id_oferta: string) {
+		const result =
+			await this.ubicacionRepositoryService.obtenerDatosRegistradosUbicacion(
+				req.user.id_usuario,
+				id_oferta,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al obtener los datos de registro de ubicaciones',
+			HttpStatus.CONFLICT,
+		);
+
+		return { datos_ubicacion: result };
+	}
 }

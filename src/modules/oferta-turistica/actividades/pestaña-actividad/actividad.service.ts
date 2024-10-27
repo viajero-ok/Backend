@@ -105,4 +105,19 @@ export class ActividadService {
 			statusCode: HttpStatus.OK,
 		};
 	}
+
+	async obtenerDatosRegistradosActividad(id_oferta: string) {
+		const result =
+			await this.actividadRepositoryService.obtenerDatosRegistradosActividad(
+				id_oferta,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al obtener los datos de registro de actividades',
+			HttpStatus.CONFLICT,
+		);
+
+		return { datos_actividad: result };
+	}
 }

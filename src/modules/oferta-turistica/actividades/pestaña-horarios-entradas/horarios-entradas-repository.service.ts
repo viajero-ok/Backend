@@ -154,4 +154,25 @@ export class HorariosEntradasRepositoryService {
 		});
 		return resultados;
 	}
+
+	async obtenerDatosRegistradosHorariosYEntradas(
+		id_usuario: string,
+		id_oferta: string,
+	) {
+		const resultados = {
+			horarios_turnos: [],
+			entradas: [],
+		};
+		const resultado_entradas = await this.entityManager.query(
+			`CALL SP_OBT_TIPOS_ENTRADA_X_OFERTA(?)`,
+			[id_oferta],
+		);
+		resultados.entradas = resultado_entradas[0];
+		const resultado_horarios = await this.entityManager.query(
+			`CALL SP_OBT_HORARIOS_X_OFERTA(?)`,
+			[id_oferta],
+		);
+		resultados.horarios_turnos = resultado_horarios[0];
+		return resultados;
+	}
 }

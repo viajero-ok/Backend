@@ -283,4 +283,128 @@ export class ActividadController {
 	) {
 		return await this.actividadService.eliminarActividad(req, id_oferta);
 	}
+
+	@ApiOperation({ summary: 'OBTENER DATOS REGISTRADOS ACTIVIDAD' })
+	@ApiResponse({
+		status: 200,
+		description: 'Datos de registro de actividad',
+		schema: {
+			type: 'object',
+			properties: {
+				datos_actividad: {
+					type: 'object',
+					properties: {
+						datos_basicos: {
+							type: 'object',
+							properties: {
+								id_oferta_turistica: {
+									type: 'string',
+									example:
+										'8c8b0b1a-9481-11ef-a05a-0242ac140007',
+								},
+								nombre: {
+									type: 'string',
+									example: 'Senderismo en la Sierra Nevada',
+								},
+								descripcion: {
+									type: 'string',
+									example:
+										'Disfruta de una emocionante caminata por los senderos de la Sierra Nevada, admirando la belleza natural y la diversidad de flora y fauna.',
+								},
+								id_tipo_oferta: { type: 'number', example: 2 },
+								tipo_oferta: {
+									type: 'string',
+									example: 'Actividad',
+								},
+								id_sub_tipo_oferta: {
+									type: 'number',
+									example: 2,
+								},
+								sub_tipo_oferta: {
+									type: 'string',
+									example: 'En unidades de vivienda',
+								},
+								id_sub_categoria: {
+									type: 'string',
+									example: 'Vuelo de paracaídas/paracaídismo',
+								},
+								id_politica_cancelacion: {
+									type: 'number',
+									example: 2,
+								},
+								plazo_dias_cancelacion: {
+									type: 'number',
+									example: 5,
+								},
+								bl_solicita_garantia: {
+									type: 'boolean',
+									nullable: true,
+								},
+								monto_garantia: {
+									type: 'number',
+									nullable: true,
+								},
+								id_tipo_pago_anticipado: {
+									type: 'number',
+									example: 1,
+								},
+								porcentaje_pago_anticipado: {
+									type: 'string',
+									example: '30.00',
+								},
+								duracion_horas: {
+									type: 'string',
+									example: '4.50',
+								},
+								distancia_km: {
+									type: 'string',
+									example: '8.00',
+								},
+								id_dificultad: { type: 'number', example: 2 },
+								dificultad: {
+									type: 'string',
+									example: 'Nivel medio',
+								},
+								requisitos: {
+									type: 'string',
+									example:
+										'Buena condición física, calzado adecuado para senderismo, ropa cómoda, protector solar y agua.',
+								},
+								bl_con_guia: { type: 'number', example: 1 },
+							},
+						},
+						metodos_pago: {
+							type: 'array',
+							items: {
+								type: 'object',
+								properties: {
+									id_metodo_pago_oferta: {
+										type: 'number',
+										example: 88,
+									},
+									id_metodo_pago: {
+										type: 'number',
+										example: 1,
+									},
+									metodo_pago: {
+										type: 'string',
+										example: 'Transferencia',
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+	@UseGuards(OfertaOwnerGuard)
+	@Get('obtener-datos-registrados-actividad/:id_oferta')
+	async obtenerDatosRegistradosActividad(
+		@Param('id_oferta') id_oferta: string,
+	) {
+		return await this.actividadService.obtenerDatosRegistradosActividad(
+			id_oferta,
+		);
+	}
 }

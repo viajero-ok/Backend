@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Query, Req } from '@nestjs/common';
+import { Controller, Get, Post, Query, Req } from '@nestjs/common';
 import { PagosService } from './pagos.service';
 import { Public } from 'src/common/decorators/public/public.decorator';
 import { ApiBearerAuth } from '@nestjs/swagger';

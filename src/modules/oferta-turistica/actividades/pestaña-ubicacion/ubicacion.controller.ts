@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import {
+	Body,
+	Controller,
+	Get,
+	Param,
+	Post,
+	Req,
+	UseGuards,
+} from '@nestjs/common';
 import {
 	ApiBearerAuth,
 	ApiOperation,
@@ -42,6 +50,23 @@ export class UbicacionController {
 		return await this.ubicacionService.registrarUbicacionActividad(
 			req,
 			ubicacionDto,
+		);
+	}
+
+	@ApiOperation({ summary: 'OBTENER DATOS REGISTRADOS UBICACION' })
+	@ApiResponse({
+		status: 200,
+		description: 'Datos de registro de ubicacion',
+	})
+	@UseGuards(OfertaOwnerGuard)
+	@Get('obtener-datos-registrados-ubicacion/:id_oferta')
+	async obtenerDatosRegistradosUbicacion(
+		@Req() req,
+		@Param('id_oferta') id_oferta: string,
+	) {
+		return await this.ubicacionService.obtenerDatosRegistradosUbicacion(
+			req,
+			id_oferta,
 		);
 	}
 }

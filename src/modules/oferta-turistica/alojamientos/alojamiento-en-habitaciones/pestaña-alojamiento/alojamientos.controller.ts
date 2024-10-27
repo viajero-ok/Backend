@@ -353,6 +353,113 @@ export class AlojamientosController {
 		status: 200,
 		schema: {
 			type: 'object',
+			properties: {
+				datos: {
+					type: 'object',
+					properties: {
+						datos_basicos: {
+							type: 'object',
+							properties: {
+								id_oferta_turistica: { type: 'string' },
+								nombre: { type: 'string' },
+								descripcion: { type: 'string' },
+								id_tipo_oferta: { type: 'number' },
+								tipo_oferta: { type: 'string' },
+								id_sub_tipo_oferta: { type: 'number' },
+								sub_tipo_oferta: { type: 'string' },
+								id_politica_cancelacion: { type: 'number' },
+								plazo_dias_cancelacion: { type: 'number' },
+								bl_solicita_garantia: { type: 'number' },
+								monto_garantia: { type: 'string' },
+								id_tipo_pago_anticipado: { type: 'number' },
+								porcentaje_pago_anticipado: { type: 'string' },
+								min_dias_estadia: { type: 'number' },
+							},
+						},
+						metodos_pago: {
+							type: 'array',
+							items: {
+								type: 'object',
+								properties: {
+									id_metodo_pago_oferta: { type: 'number' },
+									id_metodo_pago: { type: 'number' },
+									metodo_pago: { type: 'string' },
+								},
+							},
+						},
+						caracteristicas: {
+							type: 'array',
+							items: {
+								type: 'object',
+								properties: {
+									id_caracteristica_oferta: {
+										type: 'number',
+									},
+									id_caracteristica: { type: 'number' },
+									caracteristica: { type: 'string' },
+									id_ambito: { type: 'number' },
+									ambito: { type: 'string' },
+								},
+							},
+						},
+						observaciones: {
+							type: 'array',
+							items: {
+								type: 'object',
+								properties: {
+									id_observacion_oferta: { type: 'number' },
+									observacion: { type: 'string' },
+									id_tipo_observacion: { type: 'number' },
+									tipo_observacion: { type: 'string' },
+								},
+							},
+						},
+						horarios_checkin_checkout: {
+							type: 'array',
+							items: {
+								type: 'object',
+								properties: {
+									id_horario: { type: 'number' },
+									check_in_hora: { type: 'number' },
+									check_in_minuto: { type: 'number' },
+									check_out_hora: { type: 'number' },
+									check_out_minuto: { type: 'number' },
+									aplica_lunes: { type: 'number' },
+									aplica_martes: { type: 'number' },
+									aplica_miercoles: { type: 'number' },
+									aplica_jueves: { type: 'number' },
+									aplica_viernes: { type: 'number' },
+									aplica_sabado: { type: 'number' },
+									aplica_domingo: { type: 'number' },
+									cupo_maximo: {
+										type: 'number',
+										nullable: true,
+									},
+									cupo_actual: {
+										type: 'number',
+										nullable: true,
+									},
+									sin_cupo: {
+										type: 'number',
+										nullable: true,
+									},
+								},
+							},
+						},
+					},
+				},
+				imagenes: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_imagen: { type: 'number' },
+							nombre: { type: 'string' },
+							datos: { type: 'string' },
+						},
+					},
+				},
+			},
 		},
 	})
 	@UseGuards(OfertaOwnerGuard)

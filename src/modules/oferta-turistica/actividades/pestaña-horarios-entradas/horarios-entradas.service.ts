@@ -125,4 +125,20 @@ export class HorariosEntradasService {
 			statusCode: 201,
 		};
 	}
+
+	async obtenerDatosRegistradosHorariosYEntradas(req, id_oferta: string) {
+		const result =
+			await this.horariosEntradasRepositoryService.obtenerDatosRegistradosHorariosYEntradas(
+				req.user.id_usuario,
+				id_oferta,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al obtener los datos registrados de horarios y entradas',
+			HttpStatus.CONFLICT,
+		);
+
+		return { datos_horarios_entradas: result };
+	}
 }

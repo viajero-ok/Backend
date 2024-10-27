@@ -241,14 +241,56 @@ export class HabitacionesController {
 		);
 	}
 
-	@ApiOperation({ summary: 'OBTENER DATOS REGISTRADOS' })
+	@ApiOperation({ summary: 'OBTENER DATOS REGISTRADOS HABITACIONES' })
 	@ApiResponse({
 		status: 200,
 		schema: {
 			type: 'object',
 			properties: {
 				datos: {
-					type: 'object',
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_tipo_detalle: { type: 'string' },
+							tipo_detalle: { type: 'string' },
+							cantidad: { type: 'number' },
+							cantidad_baños: { type: 'number' },
+							bl_baño_compartido: { type: 'boolean' },
+							bl_baño_adaptado: { type: 'boolean' },
+							plazas: {
+								type: 'array',
+								items: {
+									type: 'object',
+									properties: {
+										id_tipo_detalle: { type: 'string' },
+										id_plaza_x_tipo_detalle: {
+											type: 'number',
+										},
+										id_tipo_cama: { type: 'number' },
+										tipo_cama: { type: 'string' },
+										cantidad_camas: { type: 'number' },
+									},
+								},
+							},
+							caracteristicas: {
+								type: 'array',
+								items: {
+									type: 'object',
+									properties: {
+										id_tipo_detalle: { type: 'string' },
+										id_caracteristica_x_detalle: {
+											type: 'number',
+										},
+										id_caracteristica: { type: 'number' },
+										caracteristica: { type: 'string' },
+										ambito: { type: 'string' },
+									},
+								},
+							},
+							imagenes: { type: 'array' },
+						},
+					},
 				},
 			},
 		},

@@ -2,6 +2,7 @@ import {
 	Body,
 	Controller,
 	Delete,
+	Get,
 	Param,
 	Post,
 	Req,
@@ -140,6 +141,78 @@ export class HorariosEntradasController {
 		return await this.horariosEntradasService.finalizarRegistroActividad(
 			req,
 			finalizarRegistroDto,
+		);
+	}
+
+	@ApiOperation({ summary: 'OBTENER DATOS REGISTRADOS HORARIOS Y ENTRADAS' })
+	@ApiResponse({
+		status: 200,
+		description: 'Datos registrados de horarios y entradas',
+		schema: {
+			type: 'object',
+			properties: {
+				datos_horarios_entradas: {
+					type: 'object',
+					properties: {
+						horarios_turnos: {
+							type: 'array',
+							items: {
+								type: 'object',
+								properties: {
+									id_horario: { type: 'number' },
+									check_in_hora: { type: 'number' },
+									check_in_minuto: { type: 'number' },
+									check_out_hora: { type: 'number' },
+									check_out_minuto: { type: 'number' },
+									aplica_lunes: { type: 'number' },
+									aplica_martes: { type: 'number' },
+									aplica_miercoles: { type: 'number' },
+									aplica_jueves: { type: 'number' },
+									aplica_viernes: { type: 'number' },
+									aplica_sabado: { type: 'number' },
+									aplica_domingo: { type: 'number' },
+									cupo_maximo: {
+										type: 'number',
+										nullable: true,
+									},
+									cupo_actual: {
+										type: 'number',
+										nullable: true,
+									},
+									sin_cupo: {
+										type: 'number',
+										nullable: true,
+									},
+								},
+							},
+						},
+						entradas: {
+							type: 'array',
+							items: {
+								type: 'object',
+								properties: {
+									id_tipo_entrada: { type: 'number' },
+									nombre_tipo_entrada: { type: 'string' },
+									descripcion_tipo_entrada: {
+										type: 'string',
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+	@UseGuards(OfertaOwnerGuard)
+	@Get('obtener-datos-registrados-horarios-y-entradas/:id_oferta')
+	async obtenerDatosRegistradosHorariosYEntradas(
+		@Req() req: Request,
+		@Param('id_oferta') id_oferta: string,
+	) {
+		return await this.horariosEntradasService.obtenerDatosRegistradosHorariosYEntradas(
+			req,
+			id_oferta,
 		);
 	}
 }

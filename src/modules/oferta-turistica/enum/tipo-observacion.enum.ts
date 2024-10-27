@@ -5,4 +5,5 @@ export enum TipoObservacion {
 	REGISTRO_ACTIVIDADES = 4,
 	COMODIDADES_DETALLE_OFERTA = 5,
 	NORMAS = 6,
+	DOMICILIOS = 7,
 }

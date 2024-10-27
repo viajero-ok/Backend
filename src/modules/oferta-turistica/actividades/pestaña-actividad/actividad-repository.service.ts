@@ -29,7 +29,10 @@ export class ActividadRepositoryService {
 				`CALL SP_LISTAR_TIPOS_SUBTIPOS_OFERTA()`,
 			);
 			resultados.tipos_y_subtipos.tipos = tipos_subtipos[0];
-			resultados.tipos_y_subtipos.subtipos = tipos_subtipos[1];
+			const tipos_subtipos_actividades = tipos_subtipos[1].filter(
+				(subtipo) => subtipo.id_tipo_oferta === 2,
+			);
+			resultados.tipos_y_subtipos.subtipos = tipos_subtipos_actividades;
 
 			const sub_categorias_actividades = await manager.query(
 				`CALL SP_LISTAR_SUBCATEGORIAS_ACTIVIDADES()`,
@@ -156,5 +159,16 @@ export class ActividadRepositoryService {
 			],
 		);
 		return result[0];
+	}
+
+	async obtenerDatosRegistradosActividad(id_oferta: string) {
+		const result = await this.entityManager.query(
+			`CALL SP_OBT_INFO_ACTIVIDAD(?)`,
+			[id_oferta],
+		);
+		return {
+			datos_basicos: result[0][0],
+			metodos_pago: result[1],
+		};
 	}
 }
