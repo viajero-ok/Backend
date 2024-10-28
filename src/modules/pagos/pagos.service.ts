@@ -119,6 +119,7 @@ export class PagosService {
 			});
 
 			if (!response.ok) {
+				console.log(response);
 				throw new Error(`HTTP error! status: ${response.status}`);
 			}
 
