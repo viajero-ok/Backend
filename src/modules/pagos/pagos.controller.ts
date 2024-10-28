@@ -1,17 +1,8 @@
-import {
-	Controller,
-	Get,
-	Post,
-	Query,
-	Req,
-	Res,
-	UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Post, Query, Req, Res } from '@nestjs/common';
 import { PagosService } from './pagos.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/common/decorators/public/public.decorator';
 import { Response } from 'express';
-import { MercadoPagoOriginGuard } from 'src/common/guards/mercado-pago/mercado-pago-origin.guard';
 
 @ApiBearerAuth()
 @ApiTags('Mercado Pago')
@@ -33,7 +24,7 @@ export class PagosController {
 
 	@Public()
 	@Get('oauth')
-	@UseGuards(MercadoPagoOriginGuard)
+	/* @UseGuards(MercadoPagoOriginGuard) */
 	async oauthCallback(
 		@Query('code') code: string,
 		@Query('state') state: string,
