@@ -23,7 +23,7 @@ export class PagosRepositoryService {
 
 	async obtenerDatosUsuarioAutorizado(codigoRandom: string) {
 		const result = await this.entityManager.query(
-			'CALL SP_OBTENER_DATOS_USUARIO_AUTORIZADO(?)',
+			'CALL SP_OBT_DATOS_USUARIO_AUTORIZADO(?)',
 			[codigoRandom],
 		);
 		return result[0][0];
@@ -41,7 +41,7 @@ export class PagosRepositoryService {
 		scope: string,
 	) {
 		const result = await this.entityManager.query(
-			'CALL SP_GUARDAR_DATOS_MP(?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			'CALL SP_REGISTRAR_DATOS_MP(?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
 				id_usuario,
 				access_token,
