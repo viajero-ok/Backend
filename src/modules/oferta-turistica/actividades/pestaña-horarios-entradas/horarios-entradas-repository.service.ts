@@ -14,9 +14,10 @@ export class HorariosEntradasRepositoryService {
 
 	async registrarHorario(horarioVacioDto: HorarioVacioDto) {
 		const result = await this.entityManager.query(
-			'CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			'CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
 				horarioVacioDto.id_oferta,
+				null,
 				null,
 				null,
 				null,
@@ -39,7 +40,7 @@ export class HorariosEntradasRepositoryService {
 
 	async eliminarHorario(id_horario: string) {
 		const result = await this.entityManager.query(
-			'CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			'CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
 				null,
 				null,
@@ -54,6 +55,7 @@ export class HorariosEntradasRepositoryService {
 				null,
 				null,
 				id_horario,
+				null,
 				null,
 				null,
 				1,
@@ -99,6 +101,7 @@ export class HorariosEntradasRepositoryService {
 					dias_semana,
 					aplica_todos_los_dias,
 					cupo_maximo,
+					bl_sin_cupo,
 				} = horario;
 				if (aplica_todos_los_dias) {
 					dias_semana.aplica_lunes = true;
@@ -110,7 +113,7 @@ export class HorariosEntradasRepositoryService {
 					dias_semana.aplica_domingo = true;
 				}
 				const resultado = await manager.query(
-					`CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+					`CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 					[
 						id_oferta,
 						check_in.hora_check_in,
@@ -125,8 +128,9 @@ export class HorariosEntradasRepositoryService {
 						dias_semana.aplica_sabado,
 						dias_semana.aplica_domingo,
 						horario.id_horario,
-						cupo_maximo,
+						bl_sin_cupo ? null : cupo_maximo,
 						null,
+						bl_sin_cupo,
 						0,
 					],
 				);

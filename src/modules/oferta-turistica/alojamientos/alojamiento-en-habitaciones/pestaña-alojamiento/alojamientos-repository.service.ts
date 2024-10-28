@@ -152,7 +152,7 @@ export class AlojamientosRepositoryService {
 						dias_semana.aplica_domingo = true;
 					}
 					const resultado = await manager.query(
-						`CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+						`CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 						[
 							alojamientoDto.id_oferta,
 							check_in.hora_check_in,
@@ -167,6 +167,7 @@ export class AlojamientosRepositoryService {
 							dias_semana.aplica_sabado,
 							dias_semana.aplica_domingo,
 							horario.id_horario,
+							null,
 							null,
 							null,
 							0,
@@ -295,9 +296,10 @@ export class AlojamientosRepositoryService {
 
 	async registrarHorario(horarioVacioDto: HorarioVacioDto) {
 		const result = await this.entityManager.query(
-			'CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			'CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
 				horarioVacioDto.id_oferta,
+				null,
 				null,
 				null,
 				null,
@@ -320,7 +322,7 @@ export class AlojamientosRepositoryService {
 
 	async eliminarHorario(id_horario: string) {
 		const result = await this.entityManager.query(
-			'CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			'CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
 				null,
 				null,
@@ -335,6 +337,7 @@ export class AlojamientosRepositoryService {
 				null,
 				null,
 				id_horario,
+				null,
 				null,
 				null,
 				1,

@@ -187,12 +187,12 @@ export class PublicacionesAlojamientosController {
 		description: 'ACTIVIDAD PUBLICADA',
 	})
 	@UseGuards(OfertaOwnerGuard)
-	@Post('publicar-actividad/:id_oferta')
-	async publicarActividad(
+	@Post('publicar-alojamiento/:id_oferta')
+	async publicarAlojamiento(
 		@Req() req: Request,
 		@Param('id_oferta') id_oferta: string,
 	) {
-		return await this.publicacionesAlojamientosService.publicarActividad(
+		return await this.publicacionesAlojamientosService.publicarAlojamiento(
 			req,
 			id_oferta,
 		);

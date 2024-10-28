@@ -21,7 +21,7 @@ export class PublicacionesAlojamientosService {
 				id_oferta,
 			);
 
-		return { tipos_detalle: resultado };
+		return { tipos_entradas: resultado };
 	}
 
 	async registrarTarifa(req, registrarTarifasDto: RegistrarTarifasDto) {
@@ -138,15 +138,21 @@ export class PublicacionesAlojamientosService {
 		};
 	}
 
-	async publicarActividad(req, id_oferta: string) {
+	async publicarAlojamiento(req, id_oferta: string) {
 		const tarifasExistentes =
 			await this.publicacionesAlojamientosRepositoryService.obtenerTarifas(
+				id_oferta,
+			);
+
+		const tipos_entradas =
+			await this.publicacionesAlojamientosRepositoryService.obtenerDatosPublicacionAlojamiento(
 				id_oferta,
 			);
 
 		const errores =
 			await this.periodoSinTarifasValidator.validarPeriodoSinTarifas(
 				tarifasExistentes,
+				tipos_entradas,
 			);
 
 		if (errores.length > 0) {
@@ -160,14 +166,14 @@ export class PublicacionesAlojamientosService {
 		}
 
 		const result =
-			await this.publicacionesAlojamientosRepositoryService.publicarActividad(
+			await this.publicacionesAlojamientosRepositoryService.publicarAlojamiento(
 				req.user.id_usuario,
 				id_oferta,
 			);
 
 		this.exceptionHandlingService.handleError(
 			result,
-			'Error al publicar actividad',
+			'Error al publicar alojamiento',
 			HttpStatus.CONFLICT,
 		);
 

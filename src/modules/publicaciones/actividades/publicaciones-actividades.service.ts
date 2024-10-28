@@ -103,11 +103,11 @@ export class PublicacionesActividadesService {
 		};
 	}
 
-	async eliminarTarifa(req, id_tarifa: string) {
+	async eliminarTarifa(req, id_tarifa: number) {
 		const result =
 			await this.publicacionesActividadesRepositoryService.eliminarTarifa(
-				req.user.id_usuario,
 				id_tarifa,
+				req.user.id_usuario,
 			);
 
 		this.exceptionHandlingService.handleError(
@@ -145,9 +145,15 @@ export class PublicacionesActividadesService {
 				id_oferta,
 			);
 
+		const tipos_entradas =
+			await this.publicacionesActividadesRepositoryService.obtenerDatosPublicacionActividad(
+				id_oferta,
+			);
+
 		const errores =
 			await this.periodoSinTarifasValidator.validarPeriodoSinTarifas(
 				tarifasExistentes,
+				tipos_entradas,
 			);
 
 		if (errores.length > 0) {

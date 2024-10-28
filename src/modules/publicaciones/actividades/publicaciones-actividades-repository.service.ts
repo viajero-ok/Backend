@@ -38,7 +38,9 @@ export class PublicacionesActividadesRepositoryService {
 				registrarTarifasDto.id_oferta,
 				null,
 				registrarTarifasDto.id_tipo_entrada,
-				registrarTarifasDto.monto_tarifa,
+				registrarTarifasDto.bl_gratuito
+					? null
+					: registrarTarifasDto.monto_tarifa,
 				registrarTarifasDto.fecha_desde,
 				registrarTarifasDto.fecha_hasta,
 				registrarTarifasDto.bl_gratuito,
@@ -60,7 +62,9 @@ export class PublicacionesActividadesRepositoryService {
 				actualizarTarifasDto.id_oferta,
 				null,
 				actualizarTarifasDto.id_tipo_entrada,
-				actualizarTarifasDto.monto_tarifa,
+				actualizarTarifasDto.bl_gratuito
+					? null
+					: actualizarTarifasDto.monto_tarifa,
 				actualizarTarifasDto.fecha_desde,
 				actualizarTarifasDto.fecha_hasta,
 				actualizarTarifasDto.bl_gratuito,
@@ -71,7 +75,7 @@ export class PublicacionesActividadesRepositoryService {
 		return result;
 	}
 
-	async eliminarTarifa(id_tarifa: string, id_usuario: string) {
+	async eliminarTarifa(id_tarifa: number, id_usuario: string) {
 		const result = await this.entityManager.query(
 			'CALL SP_ABM_TARIFA_X_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[

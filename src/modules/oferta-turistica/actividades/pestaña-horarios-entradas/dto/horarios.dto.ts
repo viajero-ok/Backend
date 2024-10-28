@@ -7,6 +7,7 @@ import {
 	Min,
 	Max,
 	IsOptional,
+	ValidateIf,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -152,8 +153,17 @@ export class HorariosTurnosDto {
 		description: 'Cupo máximo',
 		example: 100,
 	})
-	@IsOptional()
+	@ValidateIf((o) => !o.bl_sin_cupo)
+	@IsNotEmpty()
 	@IsNumber()
 	@Min(0)
 	readonly cupo_maximo: number;
+
+	@ApiPropertyOptional({
+		description: 'Indica si aplica bloqueo de cupo',
+		example: false,
+	})
+	@IsOptional()
+	@IsBoolean()
+	readonly bl_sin_cupo: boolean;
 }

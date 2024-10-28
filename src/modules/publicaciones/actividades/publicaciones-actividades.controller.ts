@@ -148,11 +148,10 @@ export class PublicacionesActividadesController {
 			},
 		},
 	})
-	@UseGuards(OfertaOwnerGuard)
 	@Delete('eliminar-tarifa/:id_tarifa')
 	async eliminarTarifa(
 		@Req() req: Request,
-		@Param('id_tarifa') id_tarifa: string,
+		@Param('id_tarifa') id_tarifa: number,
 	) {
 		return await this.publicacionesActividadesService.eliminarTarifa(
 			req,

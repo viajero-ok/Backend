@@ -98,7 +98,7 @@ export class PublicacionesAlojamientosRepositoryService {
 		return result[0];
 	}
 
-	async publicarActividad(id_usuario: string, id_oferta: string) {
+	async publicarAlojamiento(id_usuario: string, id_oferta: string) {
 		const result = await this.entityManager.query(
 			'CALL SP_ABM_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[null, id_oferta, null, null, null, null, null, id_usuario, 0],
