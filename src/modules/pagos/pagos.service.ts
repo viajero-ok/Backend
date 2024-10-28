@@ -96,7 +96,8 @@ export class PagosService {
 		const url = 'https://api.mercadopago.com/oauth/token';
 		const client_id = process.env.MERCADO_PAGO_APP_ID;
 		const client_secret = process.env.MERCADO_PAGO_CLIENT_SECRET;
-		const redirect_uri = process.env.FRONT_REDIRECT_URI;
+		const redirect_uri = process.env.REDIRECT_URI;
+		const redirect_uri_front = process.env.FRONT_REDIRECT_URI;
 
 		const body = new URLSearchParams({
 			client_id: client_id,
@@ -145,7 +146,7 @@ export class PagosService {
 				HttpStatus.INTERNAL_SERVER_ERROR,
 			);
 
-			return res.redirect(redirect_uri);
+			return res.redirect(redirect_uri_front);
 		} catch (error) {
 			console.error('Error en la solicitud OAuth:', error);
 			throw error;
