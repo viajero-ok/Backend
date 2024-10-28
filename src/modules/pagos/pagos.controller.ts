@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Query, Req } from '@nestjs/common';
+import { Controller, Get, Post, Query, Req, Res } from '@nestjs/common';
 import { PagosService } from './pagos.service';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/common/decorators/public/public.decorator';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { Response } from 'express';
 
 @ApiBearerAuth()
+@ApiTags('Mercado Pago')
 @Controller('pagos')
 export class PagosController {
 	constructor(private readonly pagosService: PagosService) {}
@@ -13,18 +15,20 @@ export class PagosController {
 		return this.pagosService.generarOrden();
 	}
 
-	/* @Public() */
 	@Get('solicitar-autorizacion-prestador')
-	async solicitarAutorizacionPrestador(@Req() req) {
-		return this.pagosService.solicitarAutorizacionPrestador(req);
+	async solicitarAutorizacionPrestador(@Req() req, @Res() res: Response) {
+		return this.pagosService.solicitarAutorizacionPrestador(
+			req.user.id_usuario,
+			res,
+		);
 	}
 
 	@Public()
 	@Get('oauth')
-	async oauthCallback(@Query('code') code: string, @Req() req?) {
-		if (req.user) console.log('REQUEST', req.user);
-		console.log('CODE', code);
-		console.log('ID_USUARIO', req.user.id_usuario);
-		return this.pagosService.oauthCallback(code);
+	async oauthCallback(
+		@Query('code') code: string,
+		@Query('state') state: string,
+	) {
+		return this.pagosService.oauthCallback(code, state);
 	}
 }
