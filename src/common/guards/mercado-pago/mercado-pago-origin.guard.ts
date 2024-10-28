@@ -11,7 +11,15 @@ export class MercadoPagoOriginGuard implements CanActivate {
 		const request = context.switchToHttp().getRequest();
 		const referer = request.headers.referer || request.headers.origin;
 
-		if (!referer || !referer.includes('auth.mercadopago.com.ar')) {
+		const allowedDomains = [
+			'auth.mercadopago.com.ar',
+			'dev.viajeroturismo.com.ar',
+		];
+
+		if (
+			!referer ||
+			!allowedDomains.some((domain) => referer.includes(domain))
+		) {
 			throw new UnauthorizedException('Origen no autorizado');
 		}
 		return true;
