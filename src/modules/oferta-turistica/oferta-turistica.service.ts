@@ -3,9 +3,10 @@ import { OfertaTuristicaRepositoryService } from './oferta-turistica-repository.
 import { OfertaTuristicaDto } from './dto/oferta-turistica.dto';
 import { ExceptionHandlingService } from 'src/common/services/exception-handler.service';
 import { eliminarArchivo } from './utils/eliminar-archivo';
-import { ImagenProcesadaDto } from './dto/imagen-procesada.dto';
+import { ImagenProcesadaDto } from './dto/imagenes/imagen-procesada.dto';
 import { ConsultarOfertasDto } from './dto/consultar-ofertas.dto';
-import { RegistrarImagenOfertaDto } from './dto/registrar-imagen-oferta.dto';
+import { RegistrarImagenOfertaDto } from './dto/imagenes/registrar-imagen-oferta.dto';
+import { RegistrarOfertaGuardadaDto } from './dto/guardadas/registrar-oferta-guardada.dto';
 
 @Injectable()
 export class OfertaTuristicaService {
@@ -115,6 +116,45 @@ export class OfertaTuristicaService {
 			limite,
 			consultarOfertasDto,
 		);
+	}
+
+	async registrarOfertaTuristicaGuardada(
+		req,
+		registrarOfertaGuardadaDto: RegistrarOfertaGuardadaDto,
+	) {
+		const result =
+			await this.ofertaTuristicaRepositoryService.registrarOfertaTuristicaGuardada(
+				req.user.id_usuario,
+				registrarOfertaGuardadaDto,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al registrar oferta turística guardada',
+			HttpStatus.CONFLICT,
+		);
+
+		return {
+			resultado: 'ok',
+			statusCode: 201,
+			id_oferta_guardada: result.id_oferta_guardada,
+		};
+	}
+
+	async eliminarOfertaTuristicaGuardada(req, id_oferta_guardada: string) {
+		const result =
+			await this.ofertaTuristicaRepositoryService.eliminarOfertaTuristicaGuardada(
+				id_oferta_guardada,
+				req.user.id_usuario,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al eliminar oferta turística guardada',
+			HttpStatus.CONFLICT,
+		);
+
+		return { resultado: 'ok', statusCode: 200 };
 	}
 
 	async obtenerOfertasGuardadasPorUsuario(req) {

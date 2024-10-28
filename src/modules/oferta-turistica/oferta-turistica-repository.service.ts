@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 import { OfertaTuristicaDto } from './dto/oferta-turistica.dto';
-import { ImagenProcesadaDto } from './dto/imagen-procesada.dto';
+import { ImagenProcesadaDto } from './dto/imagenes/imagen-procesada.dto';
 import { ConsultarOfertasDto } from './dto/consultar-ofertas.dto';
-import { RegistrarImagenOfertaDto } from './dto/registrar-imagen-oferta.dto';
+import { RegistrarImagenOfertaDto } from './dto/imagenes/registrar-imagen-oferta.dto';
+import { RegistrarOfertaGuardadaDto } from './dto/guardadas/registrar-oferta-guardada.dto';
 
 @Injectable()
 export class OfertaTuristicaRepositoryService {
@@ -97,6 +98,28 @@ export class OfertaTuristicaRepositoryService {
 			],
 		);
 		return result[0];
+	}
+
+	async registrarOfertaTuristicaGuardada(
+		id_usuario: string,
+		registrarOfertaGuardadaDto: RegistrarOfertaGuardadaDto,
+	) {
+		const result = await this.entityManager.query(
+			'CALL SP_ABM_OFERTA_GUARDADA(?, ?, ?)',
+			[null, registrarOfertaGuardadaDto.id_oferta, id_usuario],
+		);
+		return result[0][0];
+	}
+
+	async eliminarOfertaTuristicaGuardada(
+		id_oferta_guardada: string,
+		id_usuario: string,
+	) {
+		const result = await this.entityManager.query(
+			'CALL SP_ABM_OFERTA_GUARDADA(?, ?, ?)',
+			[id_oferta_guardada, null, id_usuario],
+		);
+		return result[0][0];
 	}
 
 	async obtenerOfertasGuardadasPorUsuario(id_usuario: string) {

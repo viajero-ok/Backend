@@ -24,8 +24,9 @@ import { OfertaTuristicaDto } from './dto/oferta-turistica.dto';
 import { multerOfertaConfig } from './utils/multer-oferta.config';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ConsultarOfertasDto } from './dto/consultar-ofertas.dto';
-import { RegistrarImagenOfertaDto } from './dto/registrar-imagen-oferta.dto';
+import { RegistrarImagenOfertaDto } from './dto/imagenes/registrar-imagen-oferta.dto';
 import { Public } from 'src/common/decorators/public/public.decorator';
+import { RegistrarOfertaGuardadaDto } from './dto/guardadas/registrar-oferta-guardada.dto';
 
 @ApiTags('Ofertas Turísticas')
 @ApiBearerAuth()
@@ -245,24 +246,31 @@ export class OfertaTuristicaController {
 		);
 	}
 
-	/* @ApiOperation({ summary: 'GUARDAR OFERTA TURÍSTICA' })
+	@ApiOperation({ summary: 'GUARDAR OFERTA TURÍSTICA' })
 	@Post('guardar-oferta-turistica')
-	async guardarOfertaTuristica(@Req() req: Request) {
-		return await this.ofertaTuristicaService.guardarOfertaTuristica(req);
+	async guardarOfertaTuristica(
+		@Req() req: Request,
+		@Body() registrarOfertaGuardadaDto: RegistrarOfertaGuardadaDto,
+	) {
+		return await this.ofertaTuristicaService.registrarOfertaTuristicaGuardada(
+			req,
+			registrarOfertaGuardadaDto,
+		);
 	}
 
 	@ApiOperation({ summary: 'ELIMINAR OFERTA TURÍSTICA GUARDADA' })
 	@Delete('eliminar-oferta-turistica-guardada/:id_oferta')
 	async eliminarOfertaTuristicaGuardada(
 		@Req() req: Request,
-		@Param('id_oferta') id_oferta: string,
+		@Param('id_oferta_guardada') id_oferta_guardada: string,
 	) {
 		return await this.ofertaTuristicaService.eliminarOfertaTuristicaGuardada(
 			req,
-			id_oferta,
+			id_oferta_guardada,
 		);
-	} */
+	}
 
+	/*
 	@ApiOperation({ summary: 'OBTENER OFERTAS RESERVADAS POR USUARIO' })
 	@Get('obtener-ofertas-reservadas-por-usuario')
 	async obtenerOfertasReservadasPorUsuario(@Req() req: Request) {
