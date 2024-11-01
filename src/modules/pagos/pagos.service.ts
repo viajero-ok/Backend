@@ -159,7 +159,7 @@ export class PagosService {
 				data.live_mode,
 				data.user_id,
 				data.token_type,
-				data.expires_in + new Date().getTime(),
+				data.expires_in * 1000 + new Date().getTime(),
 				data.scope,
 			);
 
