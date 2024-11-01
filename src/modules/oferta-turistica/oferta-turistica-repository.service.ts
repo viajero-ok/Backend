@@ -129,12 +129,4 @@ export class OfertaTuristicaRepositoryService {
 		);
 		return result[0];
 	}
-
-	async obtenerOfertasReservadasPorUsuario(id_usuario: string) {
-		const result = await this.entityManager.query(
-			'CALL SP_OBT_OFERTAS_RESERVADAS_X_USUARIO(?)',
-			[id_usuario],
-		);
-		return result[0];
-	}
 }

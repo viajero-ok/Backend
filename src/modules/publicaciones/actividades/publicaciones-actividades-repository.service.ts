@@ -109,4 +109,12 @@ export class PublicacionesActividadesRepositoryService {
 		);
 		return result[0][0];
 	}
+
+	async obtenerIdTipoPagoAnticipado(id_usuario: string, id_oferta: string) {
+		const result = await this.entityManager.query(
+			'CALL SP_OBT_AUTH_TIPO_PAGO(?, ?)',
+			[id_usuario, id_oferta],
+		);
+		return result[0][0];
+	}
 }

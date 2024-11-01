@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { PagosRepositoryService } from './pagos-repository.service';
-import { MercadoPagoConfig, Preference } from 'mercadopago';
+import { MercadoPagoConfig, Preference, Payment } from 'mercadopago';
 import { v4 as uuidv4 } from 'uuid';
 import * as crypto from 'crypto';
 import { Response } from 'express';
@@ -13,9 +13,20 @@ export class PagosService {
 		private readonly exceptionHandlingService: ExceptionHandlingService,
 	) {}
 
-	async generarOrden() {
+	async generarOrden(id_reserva: string) {
+		const datos_preferencia =
+			await this.pagosRepositoryService.obtenerDatosPreferencia(
+				id_reserva,
+			);
+
+		this.exceptionHandlingService.handleError(
+			datos_preferencia,
+			'Error al obtener los datos de la preferencia',
+			HttpStatus.INTERNAL_SERVER_ERROR,
+		);
+
 		const client = new MercadoPagoConfig({
-			accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN,
+			accessToken: datos_preferencia.access_token,
 		});
 
 		const preference = new Preference(client);
@@ -24,16 +35,27 @@ export class PagosService {
 				items: [
 					{
 						id: uuidv4(),
-						title: 'Cabañas del Lago',
-						unit_price: 100,
-						quantity: 1,
+						title: datos_preferencia.title,
+						unit_price: datos_preferencia.unit_price,
+						quantity: datos_preferencia.quantity,
 						currency_id: 'ARS',
-						description: 'Cabañas del Lago',
+						description: datos_preferencia.description,
 					},
 				],
 				back_urls: {
-					success: 'http://localhost:8100',
+					success: process.env.SUCCESS_URL,
+					failure: process.env.FAILURE_URL,
 				},
+				expires: true,
+				expiration_date_from: new Date(Date.now()).toISOString(),
+				expiration_date_to: new Date(
+					Date.now() + 1000 * 60 * 60 * 24, // 24 horas para realizar el pago
+				).toISOString(),
+				marketplace_fee: datos_preferencia.marketplace_fee,
+				statement_descriptor: 'viajero',
+				marketplace: 'viajero',
+				notification_url: `${process.env.NOTIFICATION_URL}`,
+				external_reference: uuidv4(),
 			},
 		});
 
@@ -74,6 +96,12 @@ export class PagosService {
 		console.log('CODE MP', code);
 		console.log('CODIGO RANDOM OAUTH', codigoRandom);
 
+		const url = 'https://api.mercadopago.com/oauth/token';
+		const client_id = process.env.MERCADO_PAGO_APP_ID;
+		const client_secret = process.env.MERCADO_PAGO_CLIENT_SECRET;
+		const redirect_uri = process.env.REDIRECT_URI;
+		const redirect_uri_front = process.env.FRONT_REDIRECT_URI;
+
 		const datos_usuario_autorizado =
 			await this.pagosRepositoryService.obtenerDatosUsuarioAutorizado(
 				codigoRandom,
@@ -90,14 +118,8 @@ export class PagosService {
 			Date.now() - datos_usuario_autorizado.fecha_creacion >
 			QUINCE_MINUTOS_EN_MS
 		) {
-			throw new Error('El código random ha expirado');
+			return res.redirect(redirect_uri_front);
 		}
-
-		const url = 'https://api.mercadopago.com/oauth/token';
-		const client_id = process.env.MERCADO_PAGO_APP_ID;
-		const client_secret = process.env.MERCADO_PAGO_CLIENT_SECRET;
-		const redirect_uri = process.env.REDIRECT_URI;
-		const redirect_uri_front = process.env.FRONT_REDIRECT_URI;
 
 		const body = new URLSearchParams({
 			client_id: client_id,
@@ -136,7 +158,7 @@ export class PagosService {
 				data.live_mode,
 				data.user_id,
 				data.token_type,
-				data.expires_in,
+				data.expires_in + new Date().getTime(),
 				data.scope,
 			);
 
@@ -151,5 +173,16 @@ export class PagosService {
 			console.error('Error en la solicitud OAuth:', error);
 			throw error;
 		}
+	}
+
+	async notification(req) {
+		const id_pago = req.query.data.id;
+		console.log('REQUEST QUERY', req.query);
+		const client = new MercadoPagoConfig({
+			accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN,
+		});
+		const payment = new Payment(client);
+		const response = await payment.get(id_pago);
+		console.log('PAYMENT RESPONSE', response);
 	}
 }

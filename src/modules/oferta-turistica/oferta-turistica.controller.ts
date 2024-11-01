@@ -239,6 +239,64 @@ export class OfertaTuristicaController {
 	}
 
 	@ApiOperation({ summary: 'OBTENER OFERTAS GUARDADAS POR USUARIO' })
+	@ApiResponse({
+		status: 200,
+		description: 'Listado de ofertas guardadas por usuario',
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 200,
+				},
+				ofertas_guardadas: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_oferta_guardada: {
+								type: 'string',
+								example: '36932ba9-9571-11ef-a05a-0242ac140007',
+							},
+							id_oferta_turistica: {
+								type: 'string',
+								example: '9d999919-94cb-11ef-a05a-0242ac140007',
+							},
+							nombre_oferta: {
+								type: 'string',
+								example: 'Senderismo en la Sierra Nevada',
+							},
+							descripcion_oferta: {
+								type: 'string',
+								example:
+									'Disfruta de una emocionante caminata por los senderos de la Sierra Nevada, admirando la belleza natural y la diversidad de flora y fauna.',
+							},
+							id_tipo_oferta: {
+								type: 'number',
+								example: 2,
+							},
+							tipo_oferta: {
+								type: 'string',
+								example: 'Actividad',
+							},
+							id_sub_tipo_oferta: {
+								type: 'number',
+								example: 2,
+							},
+							sub_tipo_oferta: {
+								type: 'string',
+								example: 'En unidades de vivienda',
+							},
+						},
+					},
+				},
+			},
+		},
+	})
 	@Get('obtener-ofertas-guardadas-por-usuario')
 	async obtenerOfertasGuardadasPorUsuario(@Req() req: Request) {
 		return await this.ofertaTuristicaService.obtenerOfertasGuardadasPorUsuario(
@@ -247,6 +305,27 @@ export class OfertaTuristicaController {
 	}
 
 	@ApiOperation({ summary: 'GUARDAR OFERTA TURÍSTICA' })
+	@ApiResponse({
+		status: 201,
+		description: 'Oferta turística guardada correctamente',
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 201,
+				},
+				id_oferta_guardada: {
+					type: 'number',
+					example: 1,
+				},
+			},
+		},
+	})
 	@Post('guardar-oferta-turistica')
 	async guardarOfertaTuristica(
 		@Req() req: Request,
@@ -259,6 +338,23 @@ export class OfertaTuristicaController {
 	}
 
 	@ApiOperation({ summary: 'ELIMINAR OFERTA TURÍSTICA GUARDADA' })
+	@ApiResponse({
+		status: 200,
+		description: 'Oferta turística guardada eliminada correctamente',
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 200,
+				},
+			},
+		},
+	})
 	@Delete('eliminar-oferta-turistica-guardada/:id_oferta')
 	async eliminarOfertaTuristicaGuardada(
 		@Req() req: Request,
@@ -269,31 +365,4 @@ export class OfertaTuristicaController {
 			id_oferta_guardada,
 		);
 	}
-
-	/*
-	@ApiOperation({ summary: 'OBTENER OFERTAS RESERVADAS POR USUARIO' })
-	@Get('obtener-ofertas-reservadas-por-usuario')
-	async obtenerOfertasReservadasPorUsuario(@Req() req: Request) {
-		return await this.ofertaTuristicaService.obtenerOfertasReservadasPorUsuario(
-			req,
-		);
-	}
-
-	/* @ApiOperation({ summary: 'RESERVAR OFERTA TURÍSTICA' })
-	@Post('reservar-oferta-turistica')
-	async reservarOfertaTuristica(@Req() req: Request) {
-		return await this.ofertaTuristicaService.reservarOfertaTuristica(req);
-	}
-
-	@ApiOperation({ summary: 'ELIMINAR RESERVA DE OFERTA TURÍSTICA' })
-	@Delete('eliminar-reserva-oferta-turistica/:id_reserva')
-	async eliminarReservaOfertaTuristica(
-		@Req() req: Request,
-		@Param('id_reserva') id_reserva: string,
-	) {
-		return await this.ofertaTuristicaService.eliminarReservaOfertaTuristica(
-			req,
-			id_reserva,
-		);
-	} */
 }

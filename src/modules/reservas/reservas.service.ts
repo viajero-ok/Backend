@@ -1,4 +1,271 @@
-import { Injectable } from '@nestjs/common';
+import {
+	BadRequestException,
+	HttpException,
+	HttpStatus,
+	Injectable,
+} from '@nestjs/common';
+import { ReservasRepositoryService } from './reservas-repository.service';
+import { RegistrarReservaAlojamientoDto } from './dto/registrar-reserva-alojamiento.dto';
+import { TarifasOfertaDto } from './dto/tarifas-oferta.dto';
+import { RegistrarReservaActividadDto } from './dto/registrar-reserva-actividad.dto';
+import { ExceptionHandlingService } from 'src/common/services/exception-handler.service';
 
 @Injectable()
-export class ReservasService {}
+export class ReservasService {
+	constructor(
+		private readonly reservasRepositoryService: ReservasRepositoryService,
+		private readonly exceptionHandlingService: ExceptionHandlingService,
+	) {}
+
+	async obtenerOfertasReservadasPorUsuario(req) {
+		const result =
+			await this.reservasRepositoryService.obtenerOfertasReservadasPorUsuario(
+				req.user.id_usuario,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al obtener ofertas reservadas por usuario',
+			HttpStatus.CONFLICT,
+		);
+
+		return { resultado: 'ok', statusCode: 200, ofertas_reservadas: result };
+	}
+
+	async reservarAlojamiento(
+		req,
+		registrarReservaDto: RegistrarReservaAlojamientoDto,
+	) {
+		const resultado_tarifas =
+			await this.reservasRepositoryService.obtenerDatosRegistradosTarifa(
+				registrarReservaDto.id_oferta,
+			);
+
+		this.validarFechasInicioYFin(
+			registrarReservaDto.fecha_desde,
+			registrarReservaDto.fecha_hasta,
+			resultado_tarifas[0].fecha_desde,
+			resultado_tarifas[resultado_tarifas.length - 1].fecha_hasta,
+		);
+
+		console.log('RESULTADO TARIFAS', resultado_tarifas);
+
+		const { precio_total, subtotales } = this.obtenerPrecioTotalYSubtotales(
+			registrarReservaDto,
+			resultado_tarifas,
+		);
+
+		console.log('REGISTRAR RESERVA ALOJAMIENTO', registrarReservaDto);
+		console.log('PRECIO TOTAL', precio_total);
+		console.log('SUBTOTALES', subtotales);
+
+		const resultado_reserva =
+			await this.reservasRepositoryService.registrarReservaAlojamientos(
+				req.user.id_usuario,
+				precio_total,
+				subtotales,
+				registrarReservaDto,
+			);
+
+		this.exceptionHandlingService.handleError(
+			resultado_reserva.alta_reserva,
+			'Error al registrar reserva',
+			HttpStatus.CONFLICT,
+		);
+
+		for (const detalle of resultado_reserva.alta_detalles_reserva) {
+			this.exceptionHandlingService.handleError(
+				detalle,
+				'Error al registrar detalles reserva',
+				HttpStatus.CONFLICT,
+			);
+		}
+
+		return {
+			resultado: 'ok',
+			statusCode: 201,
+			id_reserva: resultado_reserva.alta_reserva.id_reserva,
+		};
+	}
+
+	async reservarActividad(
+		req,
+		registrarReservaActividadDto: RegistrarReservaActividadDto,
+	) {
+		const resultado_tarifas =
+			await this.reservasRepositoryService.obtenerDatosRegistradosTarifa(
+				registrarReservaActividadDto.id_oferta,
+			);
+
+		this.validarFechasInicioYFin(
+			registrarReservaActividadDto.fecha_desde,
+			registrarReservaActividadDto.fecha_hasta,
+			resultado_tarifas[0].fecha_desde,
+			resultado_tarifas[resultado_tarifas.length - 1].fecha_hasta,
+		);
+
+		console.log('RESULTADO TARIFAS', resultado_tarifas);
+
+		const { precio_total, subtotales } = this.obtenerPrecioTotalYSubtotales(
+			registrarReservaActividadDto,
+			resultado_tarifas,
+		);
+
+		console.log(
+			'REGISTRAR RESERVA ACTIVIDAD',
+			registrarReservaActividadDto,
+		);
+		console.log('PRECIO TOTAL', precio_total);
+		console.log('SUBTOTALES', subtotales);
+
+		const resultado_reserva =
+			await this.reservasRepositoryService.registrarReservaActividades(
+				req.user.id_usuario,
+				precio_total,
+				subtotales,
+				registrarReservaActividadDto,
+			);
+
+		this.exceptionHandlingService.handleError(
+			resultado_reserva.alta_reserva,
+			'Error al registrar reserva',
+			HttpStatus.CONFLICT,
+		);
+
+		for (const detalle of resultado_reserva.alta_detalles_reserva) {
+			this.exceptionHandlingService.handleError(
+				detalle,
+				'Error al registrar detalles reserva',
+				HttpStatus.CONFLICT,
+			);
+		}
+
+		return {
+			resultado: 'ok',
+			statusCode: 201,
+			id_reserva: resultado_reserva.alta_reserva.id_reserva,
+		};
+	}
+
+	validarFechasInicioYFin(
+		fecha_desde_reserva,
+		fecha_hasta_reserva,
+		fecha_desde_tarifas,
+		fecha_hasta_tarifas,
+	) {
+		const fecha_inicio = new Date(fecha_desde_reserva);
+		const fecha_fin = new Date(fecha_hasta_reserva);
+		const fecha_inicio_tarifas = new Date(fecha_desde_tarifas);
+		const fecha_fin_tarifas = new Date(fecha_hasta_tarifas);
+
+		if (
+			fecha_inicio < fecha_inicio_tarifas ||
+			fecha_fin > fecha_fin_tarifas
+		) {
+			throw new HttpException(
+				{
+					message:
+						'No hay tarifas disponibles para las fechas seleccionadas',
+					statusCode: HttpStatus.BAD_REQUEST,
+				},
+				HttpStatus.BAD_REQUEST,
+			);
+		}
+	}
+
+	obtenerPrecioTotalYSubtotales(
+		registrarReservaDto:
+			| RegistrarReservaAlojamientoDto
+			| RegistrarReservaActividadDto,
+		tarifas: TarifasOfertaDto[],
+	) {
+		const tarifas_por_detalle = new Map();
+		let precio_total = 0;
+		const subtotales_por_detalle = new Map();
+
+		for (const detalle of registrarReservaDto.detalles) {
+			const id_detalle =
+				(detalle as any).id_tipo_detalle ||
+				(detalle as any).id_tipo_entrada;
+			if (!tarifas_por_detalle.has(id_detalle)) {
+				const tarifas_encontradas = tarifas.filter(
+					(tarifa) =>
+						id_detalle === tarifa.id_tipo_detalle &&
+						new Date(registrarReservaDto.fecha_desde).getDate() >=
+							new Date(tarifa.fecha_desde).getDate() &&
+						new Date(registrarReservaDto.fecha_hasta).getDate() <=
+							new Date(tarifa.fecha_hasta).getDate(),
+				);
+
+				if (tarifas_encontradas.length > 0) {
+					tarifas_por_detalle.set(id_detalle, tarifas_encontradas);
+				}
+			}
+		}
+
+		const fecha_inicio = new Date(registrarReservaDto.fecha_desde);
+		const fecha_fin = new Date(registrarReservaDto.fecha_hasta);
+
+		for (const detalle of registrarReservaDto.detalles) {
+			const id_detalle =
+				(detalle as any).id_tipo_detalle ||
+				(detalle as any).id_tipo_entrada;
+			subtotales_por_detalle.set(id_detalle, 0);
+		}
+
+		for (
+			let fecha_actual = fecha_inicio;
+			fecha_actual <= fecha_fin;
+			fecha_actual.setDate(fecha_actual.getDate() + 1)
+		) {
+			for (const detalle of registrarReservaDto.detalles) {
+				const id_detalle =
+					(detalle as any).id_tipo_detalle ||
+					(detalle as any).id_tipo_entrada;
+				const tarifas_detalle = tarifas_por_detalle.get(id_detalle);
+
+				if (tarifas_detalle) {
+					const tarifa_del_dia = tarifas_detalle.find(
+						(tarifa) =>
+							fecha_actual >= new Date(tarifa.fecha_desde) &&
+							fecha_actual <= new Date(tarifa.fecha_hasta),
+					);
+
+					if (tarifa_del_dia) {
+						console.log('TARIFA DEL DÍA', tarifa_del_dia);
+						const subtotal_dia = tarifa_del_dia.monto_tarifa;
+						subtotales_por_detalle.set(
+							id_detalle,
+							subtotales_por_detalle.get(id_detalle) +
+								subtotal_dia,
+						);
+						precio_total += subtotal_dia * detalle.cantidad;
+					}
+				}
+			}
+		}
+
+		return {
+			precio_total,
+			subtotales: Object.fromEntries(subtotales_por_detalle),
+		};
+	}
+
+	async eliminarReservaOfertaTuristica(req, id_reserva: string) {
+		const result = await this.reservasRepositoryService.cancelarReserva(
+			req.user.id_usuario,
+			id_reserva,
+		);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al cancelar reserva',
+			HttpStatus.CONFLICT,
+		);
+
+		return {
+			resultado: 'ok',
+			statusCode: 200,
+		};
+	}
+}

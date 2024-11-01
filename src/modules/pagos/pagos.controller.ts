@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Query, Req, Res } from '@nestjs/common';
+import { Controller, Get, Param, Post, Query, Req, Res } from '@nestjs/common';
 import { PagosService } from './pagos.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/common/decorators/public/public.decorator';
@@ -10,9 +10,9 @@ import { Response } from 'express';
 export class PagosController {
 	constructor(private readonly pagosService: PagosService) {}
 
-	@Post('generar-orden')
-	async generarOrden() {
-		return this.pagosService.generarOrden();
+	@Post('generar-orden/:id_reserva')
+	async generarOrden(@Param('id_reserva') id_reserva: string) {
+		return this.pagosService.generarOrden(id_reserva);
 	}
 
 	@Get('solicitar-autorizacion-prestador')
@@ -31,5 +31,10 @@ export class PagosController {
 		@Res() res: Response,
 	) {
 		return this.pagosService.oauthCallback(code, state, res);
+	}
+
+	@Post('notification')
+	async notification(@Req() req) {
+		return this.pagosService.notification(req);
 	}
 }

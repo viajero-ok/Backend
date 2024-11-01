@@ -5,6 +5,7 @@ import { TarifasValidator } from './utils/tarifas.validator';
 import { RegistrarTarifasDto } from './dto/registrar-tarifa.dto';
 import { ActualizarTarifasDto } from './dto/actualizar-tarifa.dto';
 import { PeriodoSinTarifasValidator } from './utils/periodo-sin-tarifas.validator';
+import { TipoPagoAnticipado } from '../enum/tipo_pago_anticipado.enum';
 
 @Injectable()
 export class PublicacionesActividadesService {
@@ -140,6 +141,26 @@ export class PublicacionesActividadesService {
 	}
 
 	async publicarActividad(req, id_oferta: string) {
+		const resultado_tipo_pago_anticipado =
+			await this.publicacionesActividadesRepositoryService.obtenerIdTipoPagoAnticipado(
+				req.user.id_usuario,
+				id_oferta,
+			);
+
+		this.exceptionHandlingService.handleError(
+			resultado_tipo_pago_anticipado,
+			'Error al obtener el id del tipo de pago anticipado',
+			HttpStatus.CONFLICT,
+		);
+
+		const fecha_exp =
+			resultado_tipo_pago_anticipado.fecha_expiracion_autorizacion_mp +
+			new Date().getTime();
+		this.validarAutorizacionMercadoPago(
+			resultado_tipo_pago_anticipado.id_tipo_pago_anticipado,
+			fecha_exp,
+		);
+
 		const tarifasExistentes =
 			await this.publicacionesActividadesRepositoryService.obtenerTarifas(
 				id_oferta,
@@ -182,5 +203,28 @@ export class PublicacionesActividadesService {
 			resultado: 'ok',
 			statusCode: 201,
 		};
+	}
+
+	validarAutorizacionMercadoPago(
+		id_tipo_pago_anticipado: number,
+		fecha_exp: number,
+	) {
+		console.log(fecha_exp);
+		const fecha_actual = new Date().getTime();
+		if (
+			(id_tipo_pago_anticipado === TipoPagoAnticipado.MONTO_TOTAL ||
+				id_tipo_pago_anticipado === TipoPagoAnticipado.PORCENTAJE) &&
+			fecha_exp !== null &&
+			fecha_exp < fecha_actual
+		) {
+			throw new HttpException(
+				{
+					message:
+						'Primero debe autorizar que vendamos en su nombre en Mercado Pago',
+					statusCode: HttpStatus.BAD_REQUEST,
+				},
+				HttpStatus.BAD_REQUEST,
+			);
+		}
 	}
 }

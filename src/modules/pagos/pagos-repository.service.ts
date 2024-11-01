@@ -56,4 +56,12 @@ export class PagosRepositoryService {
 		);
 		return result[0][0];
 	}
+
+	async obtenerDatosPreferencia(id_reserva: string) {
+		const result = await this.entityManager.query(
+			'CALL SP_OBT_DATOS_PREFERENCIA(?)',
+			[id_reserva],
+		);
+		return result[0][0];
+	}
 }
