@@ -150,6 +150,7 @@ export class PagosService {
 
 			const data = await response.json();
 			console.log('DATA', data);
+			console.log('EXPIRES IN', data.expires_in + new Date().getTime());
 			const result = await this.pagosRepositoryService.guardarDatosMP(
 				datos_usuario_autorizado.id_usuario,
 				data.access_token,

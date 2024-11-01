@@ -153,12 +153,9 @@ export class PublicacionesActividadesService {
 			HttpStatus.CONFLICT,
 		);
 
-		const fecha_exp =
-			resultado_tipo_pago_anticipado.fecha_expiracion_autorizacion_mp +
-			new Date().getTime();
 		this.validarAutorizacionMercadoPago(
 			resultado_tipo_pago_anticipado.id_tipo_pago_anticipado,
-			fecha_exp,
+			resultado_tipo_pago_anticipado.fecha_expiracion_autorizacion_mp,
 		);
 
 		const tarifasExistentes =
@@ -207,15 +204,15 @@ export class PublicacionesActividadesService {
 
 	validarAutorizacionMercadoPago(
 		id_tipo_pago_anticipado: number,
-		fecha_exp: number,
+		fecha_expiracion_autorizacion_mp: number,
 	) {
-		console.log(fecha_exp);
+		console.log(fecha_expiracion_autorizacion_mp);
 		const fecha_actual = new Date().getTime();
 		if (
 			(id_tipo_pago_anticipado === TipoPagoAnticipado.MONTO_TOTAL ||
 				id_tipo_pago_anticipado === TipoPagoAnticipado.PORCENTAJE) &&
-			fecha_exp !== null &&
-			fecha_exp < fecha_actual
+			fecha_expiracion_autorizacion_mp !== null &&
+			fecha_expiracion_autorizacion_mp < fecha_actual
 		) {
 			throw new HttpException(
 				{
