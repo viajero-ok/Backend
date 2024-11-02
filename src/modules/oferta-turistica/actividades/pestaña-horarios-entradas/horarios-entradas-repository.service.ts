@@ -128,7 +128,7 @@ export class HorariosEntradasRepositoryService {
 						dias_semana.aplica_sabado,
 						dias_semana.aplica_domingo,
 						horario.id_horario,
-						bl_sin_cupo ? null : cupo_maximo,
+						bl_sin_cupo ? 0 : cupo_maximo,
 						null,
 						bl_sin_cupo,
 						0,

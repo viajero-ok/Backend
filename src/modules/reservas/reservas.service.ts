@@ -148,11 +148,22 @@ export class ReservasService {
 		fecha_desde_tarifas,
 		fecha_hasta_tarifas,
 	) {
+		const fecha_actual = new Date();
 		const fecha_inicio = new Date(fecha_desde_reserva);
 		const fecha_fin = new Date(fecha_hasta_reserva);
 		const fecha_inicio_tarifas = new Date(fecha_desde_tarifas);
 		const fecha_fin_tarifas = new Date(fecha_hasta_tarifas);
 
+		if (fecha_inicio < fecha_actual || fecha_fin < fecha_actual) {
+			throw new HttpException(
+				{
+					message:
+						'Las fechas de inicio y fin deben ser posteriores a la fecha actual',
+					statusCode: HttpStatus.BAD_REQUEST,
+				},
+				HttpStatus.BAD_REQUEST,
+			);
+		}
 		if (
 			fecha_inicio < fecha_inicio_tarifas ||
 			fecha_fin > fecha_fin_tarifas
@@ -183,14 +194,18 @@ export class ReservasService {
 				(detalle as any).id_tipo_detalle ||
 				(detalle as any).id_tipo_entrada;
 			if (!tarifas_por_detalle.has(id_detalle)) {
-				const tarifas_encontradas = tarifas.filter(
-					(tarifa) =>
-						id_detalle === tarifa.id_tipo_detalle &&
+				const tarifas_encontradas = tarifas.filter((tarifa) => {
+					const id_detalle_tarifa =
+						(tarifa as any).id_tipo_detalle ||
+						(tarifa as any).id_tipo_entrada;
+					return (
+						id_detalle === id_detalle_tarifa &&
 						new Date(registrarReservaDto.fecha_desde).getDate() >=
 							new Date(tarifa.fecha_desde).getDate() &&
 						new Date(registrarReservaDto.fecha_hasta).getDate() <=
-							new Date(tarifa.fecha_hasta).getDate(),
-				);
+							new Date(tarifa.fecha_hasta).getDate()
+					);
+				});
 
 				if (tarifas_encontradas.length > 0) {
 					tarifas_por_detalle.set(id_detalle, tarifas_encontradas);
@@ -227,8 +242,12 @@ export class ReservasService {
 					);
 
 					if (tarifa_del_dia) {
-						console.log('TARIFA DEL DÍA', tarifa_del_dia);
-						const subtotal_dia = tarifa_del_dia.monto_tarifa;
+						let subtotal_dia = parseFloat(
+							tarifa_del_dia.monto_tarifa,
+						);
+						if (isNaN(subtotal_dia)) {
+							subtotal_dia = 0;
+						}
 						subtotales_por_detalle.set(
 							id_detalle,
 							subtotales_por_detalle.get(id_detalle) +
@@ -246,7 +265,7 @@ export class ReservasService {
 		};
 	}
 
-	async eliminarReservaOfertaTuristica(req, id_reserva: string) {
+	async cancelarReservaOfertaTuristica(req, id_reserva: string) {
 		const result = await this.reservasRepositoryService.cancelarReserva(
 			req.user.id_usuario,
 			id_reserva,

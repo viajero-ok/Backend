@@ -10,6 +10,24 @@ export class TarifasValidator {
 	): Promise<string[]> {
 		const errores: string[] = [];
 
+		// verificar que las fechas sean requeridas
+		if (tarifaDto.fecha_desde === null || tarifaDto.fecha_hasta === null) {
+			errores.push('La fecha desde y hasta son requeridas');
+		}
+		// verificar que sean posteriores a la fecha actual
+		if (
+			tarifaDto.fecha_desde instanceof Date &&
+			tarifaDto.fecha_desde < new Date()
+		) {
+			errores.push('La fecha desde debe ser posterior a la fecha actual');
+		}
+		if (
+			tarifaDto.fecha_hasta instanceof Date &&
+			tarifaDto.fecha_hasta < new Date()
+		) {
+			errores.push('La fecha hasta debe ser posterior a la fecha actual');
+		}
+		// verificar que la fecha desde sea anterior a la fecha hasta
 		if (tarifaDto.fecha_desde >= tarifaDto.fecha_hasta) {
 			errores.push('La fecha desde debe ser anterior a la fecha hasta');
 		}

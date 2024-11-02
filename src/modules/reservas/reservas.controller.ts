@@ -97,13 +97,30 @@ export class ReservasController {
 		);
 	}
 
-	@ApiOperation({ summary: 'ELIMINAR RESERVA DE OFERTA TURÍSTICA' })
-	@Delete('eliminar-reserva-oferta-turistica/:id_reserva')
-	async eliminarReservaOfertaTuristica(
+	@ApiOperation({ summary: 'CANCELAR RESERVA DE OFERTA TURÍSTICA' })
+	@ApiResponse({
+		status: 200,
+		description: 'Reserva cancelada correctamente',
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 200,
+				},
+			},
+		},
+	})
+	@Delete('cancelar-reserva-oferta-turistica/:id_reserva')
+	async cancelarReservaOfertaTuristica(
 		@Req() req: Request,
 		@Param('id_reserva') id_reserva: string,
 	) {
-		return await this.reservasService.eliminarReservaOfertaTuristica(
+		return await this.reservasService.cancelarReservaOfertaTuristica(
 			req,
 			id_reserva,
 		);

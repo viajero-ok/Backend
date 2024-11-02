@@ -206,7 +206,6 @@ export class PublicacionesActividadesService {
 		id_tipo_pago_anticipado: number,
 		fecha_expiracion_autorizacion_mp: number,
 	) {
-		console.log(fecha_expiracion_autorizacion_mp);
 		const fecha_actual = new Date().getTime();
 		if (
 			(id_tipo_pago_anticipado === TipoPagoAnticipado.MONTO_TOTAL ||
