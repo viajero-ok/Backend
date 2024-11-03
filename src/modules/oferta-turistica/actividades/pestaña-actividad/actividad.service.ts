@@ -112,11 +112,13 @@ export class ActividadService {
 				id_oferta,
 			);
 
-		this.exceptionHandlingService.handleError(
+		console.log(result);
+
+		/* this.exceptionHandlingService.handleError(
 			result,
 			'Error al obtener los datos de registro de actividades',
 			HttpStatus.CONFLICT,
-		);
+		); */
 
 		return { datos_actividad: result };
 	}

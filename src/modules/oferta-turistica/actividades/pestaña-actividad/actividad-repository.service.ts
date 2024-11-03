@@ -162,13 +162,26 @@ export class ActividadRepositoryService {
 	}
 
 	async obtenerDatosRegistradosActividad(id_oferta: string) {
-		const result = await this.entityManager.query(
-			`CALL SP_OBT_INFO_ACTIVIDAD(?)`,
-			[id_oferta],
-		);
-		return {
-			datos_basicos: result[0][0],
-			metodos_pago: result[1],
+		const resultados = {
+			datos_basicos: null,
+			metodos_pago: null,
+			guias: null,
 		};
+		await this.entityManager.transaction(async (manager) => {
+			const resultado_actividad = await manager.query(
+				`CALL SP_OBT_INFO_ACTIVIDAD(?)`,
+				[id_oferta],
+			);
+			console.log(resultado_actividad);
+			const resultado_guias = await manager.query(
+				`CALL SP_OBT_GUIAS_X_ACTIVIDAD(?)`,
+				[id_oferta],
+			);
+			console.log(resultado_guias);
+			resultados.datos_basicos = resultado_actividad[0][0];
+			resultados.metodos_pago = resultado_actividad[1];
+			resultados.guias = resultado_guias[0];
+		});
+		return resultados;
 	}
 }

@@ -55,7 +55,7 @@ export class ReservasRepositoryService {
 			resultados.alta_reserva = resultado_alta_reserva[0][0];
 			for (const detalle of detalles) {
 				const resultado_alta_detalles_reserva = await manager.query(
-					'CALL SP_ALTA_DETALLES_RESERVA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+					'CALL SP_ALTA_DETALLE_RESERVA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 					[
 						resultado_alta_reserva[0][0].id_reserva,
 						detalle.id_tipo_detalle,

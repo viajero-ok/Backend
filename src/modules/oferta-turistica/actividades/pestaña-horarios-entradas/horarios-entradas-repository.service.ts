@@ -112,6 +112,8 @@ export class HorariosEntradasRepositoryService {
 					dias_semana.aplica_sabado = true;
 					dias_semana.aplica_domingo = true;
 				}
+				console.log('bl', bl_sin_cupo);
+				console.log('cupo', cupo_maximo);
 				const resultado = await manager.query(
 					`CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 					[
@@ -128,9 +130,13 @@ export class HorariosEntradasRepositoryService {
 						dias_semana.aplica_sabado,
 						dias_semana.aplica_domingo,
 						horario.id_horario,
-						bl_sin_cupo ? 0 : cupo_maximo,
+						bl_sin_cupo === undefined || bl_sin_cupo === false
+							? cupo_maximo
+							: 0,
 						null,
-						bl_sin_cupo,
+						bl_sin_cupo === undefined || bl_sin_cupo === false
+							? false
+							: bl_sin_cupo,
 						0,
 					],
 				);
