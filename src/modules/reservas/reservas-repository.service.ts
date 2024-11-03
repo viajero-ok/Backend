@@ -40,6 +40,20 @@ export class ReservasRepositoryService {
 			alta_detalles_reserva: [],
 		};
 		await this.entityManager.transaction(async (manager) => {
+			console.log('Parámetros SP_ALTA_RESERVA:');
+			console.log('1. ID Oferta:', registrarReservaDto.id_oferta);
+			console.log(
+				'2. Mail de contacto:',
+				registrarReservaDto.mail_contacto,
+			);
+			console.log(
+				'3. Teléfono de contacto:',
+				registrarReservaDto.telefono_contacto,
+			);
+			console.log('4. Fecha desde:', registrarReservaDto.fecha_desde);
+			console.log('5. Fecha hasta:', registrarReservaDto.fecha_hasta);
+			console.log('6. Monto total:', monto_total);
+			console.log('7. ID Usuario:', id_usuario);
 			const resultado_alta_reserva = await manager.query(
 				'CALL SP_ALTA_RESERVA(?, ?, ?, ?, ?, ?, ?)',
 				[
@@ -54,6 +68,24 @@ export class ReservasRepositoryService {
 			);
 			resultados.alta_reserva = resultado_alta_reserva[0][0];
 			for (const detalle of detalles) {
+				console.log('\nParámetros SP_ALTA_DETALLE_RESERVA:');
+				console.log(
+					'1. ID Reserva:',
+					resultado_alta_reserva[0][0].id_reserva,
+				);
+				console.log('2. ID Tipo Detalle:', detalle.id_tipo_detalle);
+				console.log('3. ID Tipo Entrada:', null);
+				console.log('4. ID Oferta:', registrarReservaDto.id_oferta);
+				console.log('5. Fecha desde:', registrarReservaDto.fecha_desde);
+				console.log('6. Fecha hasta:', registrarReservaDto.fecha_hasta);
+				console.log('7. ID Horario:', null);
+				console.log('8. Cantidad:', detalle.cantidad);
+				console.log(
+					'9. Subtotal:',
+					subtotales[detalle.id_tipo_detalle],
+				);
+				console.log('10. Monto total:', monto_total);
+				console.log('11. ID Usuario:', id_usuario);
 				const resultado_alta_detalles_reserva = await manager.query(
 					'CALL SP_ALTA_DETALLE_RESERVA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 					[
