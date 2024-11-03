@@ -60,6 +60,7 @@ export class ActividadService {
 		return {
 			resultado: 'ok',
 			statusCode: HttpStatus.OK,
+			id_guia: result.id_guia,
 		};
 	}
 
