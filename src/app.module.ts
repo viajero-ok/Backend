@@ -84,9 +84,9 @@ import { ReservasModule } from './modules/reservas/reservas.module';
 			},
 		}),
 		GlobalModule,
-		PagosModule,
 		PublicacionesModule,
 		ReservasModule,
+		PagosModule,
 	],
 	controllers: [AppController],
 	providers: [
