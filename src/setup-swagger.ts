@@ -51,6 +51,7 @@ export const setupSwagger = (app: INestApplication) => {
 			UbicacionesModule,
 			PublicacionesModule,
 			ReservasModule,
+			PagosModule,
 		],
 		extraModels: [],
 	};

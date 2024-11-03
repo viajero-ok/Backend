@@ -22,7 +22,7 @@ export class PublicacionesAlojamientosService {
 				id_oferta,
 			);
 
-		return { tipos_entradas: resultado };
+		return { tipos_detalles: resultado };
 	}
 
 	async registrarTarifa(req, registrarTarifasDto: RegistrarTarifasDto) {
