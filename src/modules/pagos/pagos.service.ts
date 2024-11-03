@@ -82,7 +82,7 @@ export class PagosService {
 
 		const authorizationUrl = `https://auth.mercadopago.com.ar/authorization?client_id=${app_id}&response_type=code&platform_id=mp&redirect_uri=${redirect_uri}&state=${codigoRandom}`;
 
-		return authorizationUrl;
+		return { url: authorizationUrl };
 	}
 
 	private generarCodigoRandomEncriptado(): string {

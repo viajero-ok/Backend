@@ -3,7 +3,8 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { ActividadRepositoryService } from './actividad-repository.service';
 import { ActividadDto } from './dto/actividad.dto';
 import { EliminarGuiaDto } from './dto/eliminar-guia.dto';
-import { GuiaDto } from './dto/guia.dto';
+import { RegistrarGuiaDto } from './dto/registrar-guia.dto';
+import { ModificarGuiaDto } from './dto/modificar-guia.dto';
 
 @Injectable()
 export class ActividadService {
@@ -25,7 +26,7 @@ export class ActividadService {
 		return result;
 	}
 
-	async registrarGuia(req, guiaDto: GuiaDto) {
+	async registrarGuia(req, guiaDto: RegistrarGuiaDto) {
 		const result = await this.actividadRepositoryService.registrarGuia(
 			req.user.id_usuario,
 			guiaDto,
@@ -41,6 +42,24 @@ export class ActividadService {
 			resultado: 'ok',
 			statusCode: HttpStatus.CREATED,
 			id_guia: result.id_guia,
+		};
+	}
+
+	async modificarGuia(req, guiaDto: ModificarGuiaDto) {
+		const result = await this.actividadRepositoryService.modificarGuia(
+			req.user.id_usuario,
+			guiaDto,
+		);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al modificar el guia',
+			HttpStatus.CONFLICT,
+		);
+
+		return {
+			resultado: 'ok',
+			statusCode: HttpStatus.OK,
 		};
 	}
 

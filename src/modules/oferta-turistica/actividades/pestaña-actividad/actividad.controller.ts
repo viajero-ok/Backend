@@ -19,7 +19,8 @@ import { ActividadService } from './actividad.service';
 import { ActividadDto } from './dto/actividad.dto';
 import { OfertaOwnerGuard } from 'src/common/guards/authorization/oferta-owner.guard';
 import { EliminarGuiaDto } from './dto/eliminar-guia.dto';
-import { GuiaDto } from './dto/guia.dto';
+import { RegistrarGuiaDto } from './dto/registrar-guia.dto';
+import { ModificarGuiaDto } from './dto/modificar-guia.dto';
 
 @ApiTags('Actividades/Actividad')
 @ApiBearerAuth()
@@ -192,8 +193,38 @@ export class ActividadController {
 	})
 	@UseGuards(OfertaOwnerGuard)
 	@Post('registrar-guia')
-	async registrarGuia(@Req() req: Request, @Body() guiaDto: GuiaDto) {
+	async registrarGuia(
+		@Req() req: Request,
+		@Body() guiaDto: RegistrarGuiaDto,
+	) {
 		return await this.actividadService.registrarGuia(req, guiaDto);
+	}
+
+	@ApiOperation({ summary: 'MODIFICAR GUIA' })
+	@ApiResponse({
+		status: 201,
+		description: 'Guia modificado',
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 201,
+				},
+			},
+		},
+	})
+	@UseGuards(OfertaOwnerGuard)
+	@Patch('modificar-guia')
+	async modificarGuia(
+		@Req() req: Request,
+		@Body() guiaDto: ModificarGuiaDto,
+	) {
+		return await this.actividadService.modificarGuia(req, guiaDto);
 	}
 
 	@ApiOperation({ summary: 'ELIMINAR GUIA' })
@@ -389,6 +420,26 @@ export class ActividadController {
 									metodo_pago: {
 										type: 'string',
 										example: 'Transferencia',
+									},
+								},
+							},
+						},
+						guias: {
+							type: 'array',
+							items: {
+								type: 'object',
+								properties: {
+									id_guia: {
+										type: 'number',
+										example: 1,
+									},
+									nro_resolucion: {
+										type: 'string',
+										example: '1234567890',
+									},
+									nombre_y_apellido: {
+										type: 'string',
+										example: 'Juan Pérez',
 									},
 								},
 							},

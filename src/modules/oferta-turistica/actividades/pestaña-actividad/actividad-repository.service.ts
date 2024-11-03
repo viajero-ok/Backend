@@ -3,7 +3,8 @@ import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 import { ActividadDto } from './dto/actividad.dto';
 import { EliminarGuiaDto } from './dto/eliminar-guia.dto';
-import { GuiaDto } from './dto/guia.dto';
+import { RegistrarGuiaDto } from './dto/registrar-guia.dto';
+import { ModificarGuiaDto } from './dto/modificar-guia.dto';
 
 @Injectable()
 export class ActividadRepositoryService {
@@ -63,7 +64,7 @@ export class ActividadRepositoryService {
 		return resultados;
 	}
 
-	async registrarGuia(id_usuario: string, guiaDto: GuiaDto) {
+	async registrarGuia(id_usuario: string, guiaDto: RegistrarGuiaDto) {
 		const result = await this.entityManager.query(
 			`CALL SP_ABM_GUIAS_X_ACTIVIDAD(?, ?, ?, ?, ?, ?)`,
 			[
@@ -72,6 +73,21 @@ export class ActividadRepositoryService {
 				guiaDto.nombre_y_apellido,
 				id_usuario,
 				null,
+				0,
+			],
+		);
+		return result[0][0];
+	}
+
+	async modificarGuia(id_usuario: string, guiaDto: ModificarGuiaDto) {
+		const result = await this.entityManager.query(
+			`CALL SP_ABM_GUIAS_X_ACTIVIDAD(?, ?, ?, ?, ?, ?)`,
+			[
+				guiaDto.id_oferta,
+				guiaDto.nro_resolucion,
+				guiaDto.nombre_y_apellido,
+				id_usuario,
+				guiaDto.id_guia,
 				0,
 			],
 		);
