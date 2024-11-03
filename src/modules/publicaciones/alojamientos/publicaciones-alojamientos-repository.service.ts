@@ -23,6 +23,7 @@ export class PublicacionesAlojamientosRepositoryService {
 		id_usuario: string,
 		registrarTarifasDto: RegistrarTarifasDto,
 	) {
+		console.log('registrarTarifasDto', registrarTarifasDto);
 		const result = await this.entityManager.query(
 			'CALL SP_ABM_TARIFA_X_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
+import { access } from 'fs';
 import { EntityManager } from 'typeorm';
 
 @Injectable()
@@ -58,10 +59,16 @@ export class PagosRepositoryService {
 	}
 
 	async obtenerDatosPreferencia(id_reserva: string) {
+		const resultados = {
+			items: [],
+			access_token: '',
+		};
 		const result = await this.entityManager.query(
 			'CALL SP_OBT_DATOS_PREFERENCIA(?)',
 			[id_reserva],
 		);
-		return result[0][0];
+		resultados.items = result[0];
+		resultados.access_token = result[1][0].access_token;
+		return resultados;
 	}
 }

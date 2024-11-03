@@ -18,6 +18,7 @@ export class PagosService {
 			await this.pagosRepositoryService.obtenerDatosPreferencia(
 				id_reserva,
 			);
+		console.log('DATOS PREFERENCIA', datos_preferencia);
 
 		this.exceptionHandlingService.handleError(
 			datos_preferencia,
@@ -32,16 +33,14 @@ export class PagosService {
 		const preference = new Preference(client);
 		const response = await preference.create({
 			body: {
-				items: [
-					{
-						id: uuidv4(),
-						title: datos_preferencia.title,
-						unit_price: datos_preferencia.unit_price,
-						quantity: datos_preferencia.quantity,
-						currency_id: 'ARS',
-						description: datos_preferencia.description,
-					},
-				],
+				items: datos_preferencia.items.map((item) => ({
+					id: uuidv4(),
+					title: item.titulo,
+					description: item.descripcion,
+					unit_price: parseFloat(item.precio_unitario),
+					quantity: item.cantidad,
+					currency_id: 'ARS',
+				})),
 				back_urls: {
 					success: process.env.SUCCESS_URL,
 					failure: process.env.FAILURE_URL,
@@ -51,7 +50,7 @@ export class PagosService {
 				expiration_date_to: new Date(
 					Date.now() + 1000 * 60 * 60 * 24, // 24 horas para realizar el pago
 				).toISOString(),
-				marketplace_fee: datos_preferencia.marketplace_fee,
+				/* marketplace_fee: datos_preferencia.marketplace_fee, */
 				statement_descriptor: 'viajero',
 				marketplace: 'viajero',
 				notification_url: `${process.env.NOTIFICATION_URL}`,
