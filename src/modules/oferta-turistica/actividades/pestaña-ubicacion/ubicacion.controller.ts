@@ -57,6 +57,88 @@ export class UbicacionController {
 	@ApiResponse({
 		status: 200,
 		description: 'Datos de registro de ubicacion',
+		schema: {
+			type: 'object',
+			properties: {
+				datos_ubicacion: {
+					type: 'object',
+					properties: {
+						id_domicilio: {
+							type: 'null',
+							example: null,
+						},
+						calle: {
+							type: 'null',
+							example: null,
+						},
+						sin_numero: {
+							type: 'string',
+							example: '0',
+						},
+						numero: {
+							type: 'null',
+							example: null,
+						},
+						codigo_postal: {
+							type: 'null',
+							example: null,
+						},
+						lote: {
+							type: 'null',
+							example: null,
+						},
+						manzana: {
+							type: 'null',
+							example: null,
+						},
+						piso: {
+							type: 'null',
+							example: null,
+						},
+						torre: {
+							type: 'null',
+							example: null,
+						},
+						id_localidad: {
+							type: 'null',
+							example: null,
+						},
+						id_departamento: {
+							type: 'null',
+							example: null,
+						},
+						id_provincia: {
+							type: 'null',
+							example: null,
+						},
+						id_pais: {
+							type: 'null',
+							example: null,
+						},
+						barrio: {
+							type: 'null',
+							example: null,
+						},
+						latitud: {
+							type: 'null',
+							example: null,
+						},
+						longitud: {
+							type: 'null',
+							example: null,
+						},
+						id_observacion_oferta: {
+							type: 'null',
+							example: null,
+						},
+						observacion: {
+							type: 'null',
+							example: null,
+						},
+					},
+				},
+			},
+		},
 	})
 	@UseGuards(OfertaOwnerGuard)
 	@Get('obtener-datos-registrados-ubicacion/:id_oferta')

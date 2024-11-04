@@ -114,4 +114,12 @@ export class PublicacionesAlojamientosRepositoryService {
 		);
 		return result[0][0];
 	}
+
+	async obtenerDatosAlojamiento(id_oferta: string) {
+		const result = await this.entityManager.query(
+			'CALL SP_OBT_INFO_OFERTA_PUBLICACION(?)',
+			[id_oferta],
+		);
+		return result[0][0];
+	}
 }

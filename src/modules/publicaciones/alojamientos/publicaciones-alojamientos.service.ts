@@ -6,6 +6,8 @@ import { ActualizarTarifasDto } from './dto/actualizar-tarifa.dto';
 import { TarifasValidator } from './utils/tarifas.validator';
 import { PeriodoSinTarifasValidator } from './utils/periodo-sin-tarifas.validator';
 import { TipoPagoAnticipado } from '../enum/tipo_pago_anticipado.enum';
+import * as fs from 'fs/promises';
+import * as path from 'path';
 
 @Injectable()
 export class PublicacionesAlojamientosService {
@@ -123,20 +125,57 @@ export class PublicacionesAlojamientosService {
 	}
 
 	async obtenerDatosRegistradosTarifa(req, id_oferta: string) {
-		const result =
+		const resultado_tarifas =
 			await this.publicacionesAlojamientosRepositoryService.obtenerDatosRegistradosTarifa(
 				id_oferta,
 			);
 
 		this.exceptionHandlingService.handleError(
-			result,
+			resultado_tarifas,
 			'Error al obtener datos registrados de tarifa',
 			HttpStatus.CONFLICT,
 		);
 
+		const resultado_datos_oferta =
+			await this.publicacionesAlojamientosRepositoryService.obtenerDatosAlojamiento(
+				id_oferta,
+			);
+
+		const imagenes = await this.obtenerImagenesOferta(
+			resultado_datos_oferta.imagenes,
+		);
+		resultado_datos_oferta.imagenes = imagenes;
+
 		return {
-			datos: result,
+			datos_tarifas: resultado_tarifas,
+			datos_oferta: resultado_datos_oferta,
 		};
+	}
+
+	private async obtenerImagenesOferta(
+		datosImagenes: any[],
+	): Promise<{ id_imagen: number; nombre: string; datos: string }[]> {
+		const directorio = path.join(process.cwd(), 'uploads');
+		const archivos = await fs.readdir(directorio);
+
+		const imagenesPromesas = archivos.map(async (archivo) => {
+			const rutaCompleta = path.join(directorio, archivo);
+			const imagenCorrespondiente = datosImagenes.find(
+				(img) => img.nombre_unico === archivo,
+			);
+			if (imagenCorrespondiente) {
+				const datos = await fs.readFile(rutaCompleta);
+				return {
+					id_imagen: imagenCorrespondiente.id_imagen_x_tipo_detalle,
+					nombre: imagenCorrespondiente.nombre_original,
+					datos: datos.toString('base64'),
+				};
+			}
+			return null;
+		});
+
+		const imagenes = await Promise.all(imagenesPromesas);
+		return imagenes.filter((imagen) => imagen !== null);
 	}
 
 	async publicarAlojamiento(req, id_oferta: string) {
