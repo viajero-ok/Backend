@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
-import { access } from 'fs';
 import { EntityManager } from 'typeorm';
 
 @Injectable()

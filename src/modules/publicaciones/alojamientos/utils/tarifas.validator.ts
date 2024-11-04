@@ -28,7 +28,7 @@ export class TarifasValidator {
 			errores.push('La fecha hasta debe ser posterior a la fecha actual');
 		}
 		// verificar que la fecha desde sea anterior a la fecha hasta
-		if (tarifaDto.fecha_desde >= tarifaDto.fecha_hasta) {
+		if (tarifaDto.fecha_desde > tarifaDto.fecha_hasta) {
 			errores.push('La fecha desde debe ser anterior a la fecha hasta');
 		}
 		let tarifasSolapadas = [];
