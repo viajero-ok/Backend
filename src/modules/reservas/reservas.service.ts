@@ -193,19 +193,37 @@ export class ReservasService {
 			const id_detalle =
 				(detalle as any).id_tipo_detalle ||
 				(detalle as any).id_tipo_entrada;
+			console.log('ID DETALLE', id_detalle);
 			if (!tarifas_por_detalle.has(id_detalle)) {
 				const tarifas_encontradas = tarifas.filter((tarifa) => {
 					const id_detalle_tarifa =
 						(tarifa as any).id_tipo_detalle ||
 						(tarifa as any).id_tipo_entrada;
+					console.log(
+						'FECHA DESDE',
+						new Date(registrarReservaDto.fecha_desde).getDate(),
+					);
+					console.log(
+						'FECHA HASTA',
+						new Date(registrarReservaDto.fecha_hasta).getDate(),
+					);
+					console.log(
+						'TARIFA FECHA DESDE',
+						new Date(tarifa.fecha_desde).getDate(),
+					);
+					console.log(
+						'TARIFA FECHA HASTA',
+						new Date(tarifa.fecha_hasta).getDate(),
+					);
 					return (
 						id_detalle === id_detalle_tarifa &&
-						new Date(registrarReservaDto.fecha_desde).getDate() >=
-							new Date(tarifa.fecha_desde).getDate() &&
-						new Date(registrarReservaDto.fecha_hasta).getDate() <=
-							new Date(tarifa.fecha_hasta).getDate()
+						new Date(registrarReservaDto.fecha_desde).getTime() >=
+							new Date(tarifa.fecha_desde).getTime() &&
+						new Date(registrarReservaDto.fecha_hasta).getTime() <=
+							new Date(tarifa.fecha_hasta).getTime()
 					);
 				});
+				console.log('TARIFAS ENCONTRADAS', tarifas_encontradas);
 
 				if (tarifas_encontradas.length > 0) {
 					tarifas_por_detalle.set(id_detalle, tarifas_encontradas);
@@ -233,7 +251,7 @@ export class ReservasService {
 					(detalle as any).id_tipo_detalle ||
 					(detalle as any).id_tipo_entrada;
 				const tarifas_detalle = tarifas_por_detalle.get(id_detalle);
-
+				console.log('TARIFAS DETALLE', tarifas_por_detalle);
 				if (tarifas_detalle) {
 					const tarifa_del_dia = tarifas_detalle.find(
 						(tarifa) =>
@@ -242,6 +260,7 @@ export class ReservasService {
 					);
 
 					if (tarifa_del_dia) {
+						console.log('TARIFA DEL DÍA', tarifa_del_dia);
 						let subtotal_dia = parseFloat(
 							tarifa_del_dia.monto_tarifa,
 						);

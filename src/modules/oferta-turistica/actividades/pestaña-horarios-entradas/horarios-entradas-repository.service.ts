@@ -143,7 +143,7 @@ export class HorariosEntradasRepositoryService {
 				resultados.horarios.push(resultado[0][0]);
 			}
 			const resultado_actividad = await manager.query(
-				`CALL SP_REGISTRAR_ACTIVIDAD(?, ?)`,
+				`CALL SP_REGISTRAR_OFERTA(?, ?)`,
 				[id_oferta, id_usuario],
 			);
 			for (const entrada of entradas) {

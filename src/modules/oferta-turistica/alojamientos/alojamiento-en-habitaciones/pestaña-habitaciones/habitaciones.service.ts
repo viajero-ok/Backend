@@ -223,4 +223,23 @@ export class HabitacionesService {
 		const imagenes = await Promise.all(imagenesPromesas);
 		return imagenes.filter((imagen) => imagen !== null);
 	}
+
+	async finalizarRegistroAlojamiento(req, id_oferta: string) {
+		const result =
+			await this.habitacionesRepositoryService.finalizarRegistroAlojamiento(
+				req.user.id_usuario,
+				id_oferta,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al finalizar registro de alojamiento',
+			HttpStatus.CONFLICT,
+		);
+
+		return {
+			resultado: 'ok',
+			statusCode: 200,
+		};
+	}
 }

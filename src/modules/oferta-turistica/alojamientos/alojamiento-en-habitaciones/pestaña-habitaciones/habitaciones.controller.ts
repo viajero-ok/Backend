@@ -306,4 +306,17 @@ export class HabitacionesController {
 			id_oferta,
 		);
 	}
+
+	@ApiOperation({ summary: 'FINALIZAR REGISTRO ALOJAMIENTO' })
+	@ApiResponse({})
+	@Post('finalizar-registro-alojamiento/:id_oferta')
+	async finalizarRegistroAlojamiento(
+		@Req() req: Request,
+		@Param('id_oferta') id_oferta: string,
+	) {
+		return await this.habitacionesService.finalizarRegistroAlojamiento(
+			req,
+			id_oferta,
+		);
+	}
 }
