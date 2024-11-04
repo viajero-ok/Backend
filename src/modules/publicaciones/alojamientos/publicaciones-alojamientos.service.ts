@@ -141,10 +141,14 @@ export class PublicacionesAlojamientosService {
 				id_oferta,
 			);
 
-		const imagenes = await this.obtenerImagenesOferta(
-			resultado_datos_oferta.imagenes,
-		);
-		resultado_datos_oferta.imagenes = imagenes;
+		if (resultado_datos_oferta?.imagenes) {
+			const imagenesArray = Array.isArray(resultado_datos_oferta.imagenes)
+				? resultado_datos_oferta.imagenes
+				: [resultado_datos_oferta.imagenes];
+
+			const imagenes = await this.obtenerImagenesOferta(imagenesArray);
+			resultado_datos_oferta.imagenes = imagenes;
+		}
 
 		return {
 			datos_tarifas: resultado_tarifas,
@@ -155,6 +159,10 @@ export class PublicacionesAlojamientosService {
 	private async obtenerImagenesOferta(
 		datosImagenes: any[],
 	): Promise<{ id_imagen: number; nombre: string; datos: string }[]> {
+		if (!datosImagenes || !Array.isArray(datosImagenes)) {
+			return [];
+		}
+
 		const directorio = path.join(process.cwd(), 'uploads');
 		const archivos = await fs.readdir(directorio);
 

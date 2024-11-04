@@ -116,10 +116,16 @@ export class PublicacionesAlojamientosRepositoryService {
 	}
 
 	async obtenerDatosAlojamiento(id_oferta: string) {
+		const resultados = {
+			datos_oferta: null,
+			imagenes: null,
+		};
 		const result = await this.entityManager.query(
 			'CALL SP_OBT_INFO_OFERTA_PUBLICACION(?)',
 			[id_oferta],
 		);
-		return result[0][0];
+		resultados.datos_oferta = result[0][0];
+		resultados.imagenes = result[1][0];
+		return resultados;
 	}
 }
