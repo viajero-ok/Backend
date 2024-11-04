@@ -92,6 +92,8 @@ export class PeriodoSinTarifasValidator {
 			for (let i = 0; i < tarifasOrdenadas.length - 1; i++) {
 				const tarifaActual = tarifasOrdenadas[i];
 				const tarifaSiguiente = tarifasOrdenadas[i + 1];
+				console.log('TARIFA ACTUAL', tarifaActual);
+				console.log('TARIFA SIGUIENTE', tarifaSiguiente);
 
 				const fechaHastaActual = tarifaActual.fecha_hasta.setDate(
 					tarifaActual.fecha_hasta.getDate(),
@@ -99,6 +101,8 @@ export class PeriodoSinTarifasValidator {
 				const fechaDesdeSiguiente = tarifaSiguiente.fecha_desde.setDate(
 					tarifaSiguiente.fecha_desde.getDate() - 1,
 				);
+				console.log('FECHA HASTA ACTUAL', fechaHastaActual);
+				console.log('FECHA DESDE SIGUIENTE', fechaDesdeSiguiente);
 
 				if (fechaHastaActual < fechaDesdeSiguiente) {
 					errores.push(
@@ -110,6 +114,7 @@ export class PeriodoSinTarifasValidator {
 								.split('T')[0]
 						}`,
 					);
+					console.log('ERRORES', errores);
 				}
 			}
 		});

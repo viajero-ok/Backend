@@ -103,6 +103,7 @@ export class PublicacionesAlojamientosRepositoryService {
 			'CALL SP_PUBLICAR_OFERTA(?, ?)',
 			[id_oferta, id_usuario],
 		);
+		console.log(result);
 		return result[0][0];
 	}
 
