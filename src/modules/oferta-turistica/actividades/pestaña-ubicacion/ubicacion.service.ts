@@ -26,11 +26,13 @@ export class UbicacionService {
 			HttpStatus.CONFLICT,
 		);
 
-		this.exceptionHandlingService.handleError(
-			result.observacion,
-			'Error al registrar la ubicación de la actividad',
-			HttpStatus.CONFLICT,
-		);
+		if (result.observacion) {
+			this.exceptionHandlingService.handleError(
+				result.observacion,
+				'Error al registrar la ubicación de la actividad',
+				HttpStatus.CONFLICT,
+			);
+		}
 
 		return {
 			resultado: 'ok',

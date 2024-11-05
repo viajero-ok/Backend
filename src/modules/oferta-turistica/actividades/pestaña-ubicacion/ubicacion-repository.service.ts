@@ -17,34 +17,58 @@ export class UbicacionRepositoryService {
 	) {
 		const resultados = { ubicacion: null, observacion: null };
 		await this.entityManager.transaction(async (manager) => {
-			const resultado_ubicacion = await manager.query(
-				'CALL SP_ABM_DOMICILIO_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-				[
-					ubicacionDto.id_oferta,
-					ubicacionDto.calle,
-					ubicacionDto.numero,
-					ubicacionDto.id_localidad,
-					ubicacionDto.id_departamento,
-					ubicacionDto.id_provincia,
-					1,
-					ubicacionDto.sin_numero,
-					ubicacionDto.latitud,
-					ubicacionDto.longitud,
-					0,
-				],
-			);
-			resultados.ubicacion = resultado_ubicacion[0][0];
-			const resultado_observacion = await manager.query(
-				'CALL SP_ABM_OBSERVACIONES_X_OFERTA(?, ?, ?, ?, ?)',
-				[
-					ubicacionDto.id_oferta,
-					TipoObservacion.DOMICILIOS,
-					ubicacionDto.observaciones,
-					id_usuario,
-					0,
-				],
-			);
-			resultados.observacion = resultado_observacion[0][0];
+			if (!ubicacionDto.id_establecimiento) {
+				const resultado_ubicacion = await manager.query(
+					'CALL SP_ABM_DOMICILIO_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+					[
+						ubicacionDto.id_oferta,
+						ubicacionDto.calle,
+						ubicacionDto.numero,
+						ubicacionDto.id_localidad,
+						ubicacionDto.id_departamento,
+						ubicacionDto.id_provincia,
+						1,
+						ubicacionDto.sin_numero,
+						ubicacionDto.latitud,
+						ubicacionDto.longitud,
+						0,
+						null,
+					],
+				);
+				resultados.ubicacion = resultado_ubicacion[0][0];
+			} else {
+				const resultado_ubicacion = await manager.query(
+					'CALL SP_ABM_DOMICILIO_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+					[
+						ubicacionDto.id_oferta,
+						null,
+						null,
+						null,
+						null,
+						null,
+						null,
+						null,
+						null,
+						null,
+						0,
+						ubicacionDto.id_establecimiento,
+					],
+				);
+				resultados.ubicacion = resultado_ubicacion[0][0];
+			}
+			if (ubicacionDto.observaciones) {
+				const resultado_observacion = await manager.query(
+					'CALL SP_ABM_OBSERVACIONES_X_OFERTA(?, ?, ?, ?, ?)',
+					[
+						ubicacionDto.id_oferta,
+						TipoObservacion.DOMICILIOS,
+						ubicacionDto.observaciones,
+						id_usuario,
+						0,
+					],
+				);
+				resultados.observacion = resultado_observacion[0][0];
+			}
 		});
 		return resultados;
 	}
