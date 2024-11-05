@@ -55,9 +55,29 @@ export class PagosController {
 		return this.pagosService.oauthCallback(code, state, res);
 	}
 
+	@Public()
 	@ApiOperation({ summary: 'NOTIFICACIÓN DE PAGO (WEBHOOK)' })
 	@Post('notification')
 	async notification(@Req() req) {
 		return this.pagosService.notification(req);
+	}
+
+	/* @ApiOperation({ summary: 'NOTIFICACIÓN DE PAGO (WEBHOOK) SUCCESS' })
+	@Post('success')
+	async success(@Req() req) {
+		return this.pagosService.success(req);
+	}
+
+	@ApiOperation({ summary: 'NOTIFICACIÓN DE PAGO (WEBHOOK) FAILURE' })
+	@Post('failure')
+	async failure(@Req() req) {
+		return this.pagosService.failure(req);
+	} */
+
+	@Get('external-reference/:external_reference')
+	async externalReference(
+		@Param('external_reference') external_reference: string,
+	) {
+		return this.pagosService.externalReference(external_reference);
 	}
 }

@@ -185,4 +185,18 @@ export class PagosService {
 		const response = await payment.get(id_pago);
 		console.log('PAYMENT RESPONSE', response);
 	}
+
+	async externalReference(external_reference: string) {
+		console.log('EXTERNAL REFERENCE', external_reference);
+		const client = new MercadoPagoConfig({
+			accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN,
+		});
+		const payment = new Payment(client);
+		const response = await payment.search({
+			options: {
+				external_reference: external_reference,
+			},
+		});
+		console.log('RESPONSE', response);
+	}
 }
