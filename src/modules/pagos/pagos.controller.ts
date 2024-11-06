@@ -59,9 +59,6 @@ export class PagosController {
 	@ApiOperation({ summary: 'NOTIFICACIÓN DE PAGO (WEBHOOK)' })
 	@Post('notification')
 	async notification(@Req() req) {
-		console.log('NOTIFICATION');
-		console.log('REQUEST QUERY', req.query);
-		console.log('REQUEST', req);
 		return this.pagosService.notification(req);
 	}
 

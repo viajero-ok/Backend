@@ -180,6 +180,7 @@ export class PagosService {
 
 		// Determinar el tipo de notificación
 		if (req.query.type === 'payment') {
+			console.log('PAYMENT NOTIFICATION');
 			const id_pago = req.query.data.id;
 			const client = new MercadoPagoConfig({
 				accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN,
@@ -188,6 +189,7 @@ export class PagosService {
 			const response = await payment.get(id_pago);
 			console.log('PAYMENT RESPONSE', response);
 		} else if (req.query.type === 'merchant_order') {
+			console.log('MERCHANT ORDER NOTIFICATION');
 			const merchant_order_id = req.query.data.id;
 			// Aquí puedes agregar la lógica para manejar merchant_orders
 			console.log('MERCHANT ORDER ID', merchant_order_id);
