@@ -355,7 +355,7 @@ export class OfertaTuristicaController {
 			},
 		},
 	})
-	@Delete('eliminar-oferta-turistica-guardada/:id_oferta')
+	@Delete('eliminar-oferta-turistica-guardada/:id_oferta_guardada')
 	async eliminarOfertaTuristicaGuardada(
 		@Req() req: Request,
 		@Param('id_oferta_guardada') id_oferta_guardada: string,
