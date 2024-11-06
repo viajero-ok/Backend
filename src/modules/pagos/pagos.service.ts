@@ -181,7 +181,9 @@ export class PagosService {
 		// Determinar el tipo de notificación
 		if (req.query.type === 'payment') {
 			console.log('PAYMENT NOTIFICATION');
+			console.log('REQUEST QUERY DATA', req.query.data);
 			const id_pago = req.query.data.id;
+			console.log('ID PAGO', id_pago);
 			const client = new MercadoPagoConfig({
 				accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN,
 			});
