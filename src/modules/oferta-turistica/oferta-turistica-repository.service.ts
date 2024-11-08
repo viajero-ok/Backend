@@ -98,10 +98,11 @@ export class OfertaTuristicaRepositoryService {
 			);
 		}
 		const result = await this.entityManager.query(
-			'CALL SP_OBT_OFERTAS_X_FILTRO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			'CALL SP_OBT_OFERTAS_X_FILTRO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
 				consultarOfertasDto.pagina,
 				consultarOfertasDto.limite,
+				consultarOfertasDto.id_tipo_oferta,
 				consultarOfertasDto.id_sub_tipo_oferta,
 				consultarOfertasDto.id_localidad,
 				consultarOfertasDto.min_monto,

@@ -31,7 +31,7 @@ export class ConsultarOfertasDto {
 	@Type(() => Number)
 	readonly limite: number;
 
-	@ApiPropertyOptional({
+	@ApiProperty({
 		description: 'ID del tipo de oferta',
 		example: 1,
 	})
@@ -104,23 +104,25 @@ export class ConsultarOfertasDto {
 	@Type(() => Number)
 	radio: number;
 
-	@ApiPropertyOptional({
+	@ApiProperty({
 		description: 'Fecha de desde de la oferta',
 		example: '2024-01-01',
 	})
 	@IsNotEmpty()
 	@IsDate()
+	@Type(() => Date)
 	fecha_desde: Date;
 
-	@ApiPropertyOptional({
+	@ApiProperty({
 		description: 'Fecha de hasta de la oferta',
 		example: '2024-01-01',
 	})
 	@IsNotEmpty()
 	@IsDate()
+	@Type(() => Date)
 	fecha_hasta: Date;
 
-	@ApiPropertyOptional({
+	@ApiProperty({
 		description: 'Cantidad de personas',
 		example: 1,
 	})
