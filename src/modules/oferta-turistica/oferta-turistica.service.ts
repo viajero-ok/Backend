@@ -107,13 +107,9 @@ export class OfertaTuristicaService {
 
 	async obtenerOfertasTuristicas(
 		req,
-		pagina: number,
-		limite: number,
 		consultarOfertasDto: ConsultarOfertasDto,
 	) {
 		return await this.ofertaTuristicaRepositoryService.obtenerOfertasTuristicas(
-			pagina,
-			limite,
 			consultarOfertasDto,
 		);
 	}

@@ -1,16 +1,44 @@
-import { IsOptional, IsInt, IsString, Min, MaxLength } from 'class-validator';
+import {
+	IsNotEmpty,
+	IsOptional,
+	IsInt,
+	IsString,
+	Min,
+	Max,
+	ValidateIf,
+	IsDate,
+} from 'class-validator';
 import { Type } from 'class-transformer';
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class ConsultarOfertasDto {
+	@ApiProperty({
+		description: 'Número de página',
+		example: 1,
+	})
+	@IsNotEmpty()
+	@IsInt()
+	@Type(() => Number)
+	readonly pagina: number;
+
+	@ApiProperty({
+		description: 'Número de registros por página',
+		example: 10,
+	})
+	@IsNotEmpty()
+	@Max(100)
+	@IsInt()
+	@Type(() => Number)
+	readonly limite: number;
+
 	@ApiPropertyOptional({
 		description: 'ID del tipo de oferta',
 		example: 1,
 	})
-	@IsOptional()
+	@IsNotEmpty()
 	@IsInt()
 	@Type(() => Number)
-	id_tipo_oferta?: number;
+	id_tipo_oferta: number;
 
 	@ApiPropertyOptional({
 		description: 'ID del subtipo de oferta',
@@ -22,42 +50,6 @@ export class ConsultarOfertasDto {
 	id_sub_tipo_oferta?: number;
 
 	@ApiPropertyOptional({
-		description: 'ID del establecimiento',
-		example: 2,
-	})
-	@IsOptional()
-	@IsInt()
-	@Type(() => Number)
-	id_establecimiento?: number;
-
-	@ApiPropertyOptional({
-		description: 'Texto de la oferta',
-		example: 'Oferta especial',
-	})
-	@IsOptional()
-	@IsString()
-	@MaxLength(100)
-	nombre_oferta?: string;
-
-	@ApiPropertyOptional({
-		description: 'ID de la provincia',
-		example: 3,
-	})
-	@IsOptional()
-	@IsInt()
-	@Type(() => Number)
-	id_provincia?: number;
-
-	@ApiPropertyOptional({
-		description: 'ID del departamento',
-		example: 4,
-	})
-	@IsOptional()
-	@IsInt()
-	@Type(() => Number)
-	id_departamento?: number;
-
-	@ApiPropertyOptional({
 		description: 'ID de la localidad',
 		example: 5,
 	})
@@ -67,30 +59,73 @@ export class ConsultarOfertasDto {
 	id_localidad?: number;
 
 	@ApiPropertyOptional({
-		description: 'Monto mínimo de garantía',
+		description: 'Monto mínimo de la oferta',
 		example: 100.0,
 	})
 	@IsOptional()
 	@Type(() => Number)
 	@Min(0)
-	min_monto_garantia?: number;
+	min_monto?: number;
 
 	@ApiPropertyOptional({
-		description: 'Monto máximo de garantía',
+		description: 'Monto máximo de la oferta',
 		example: 500.0,
 	})
 	@IsOptional()
 	@Type(() => Number)
 	@Min(0)
-	max_monto_garantia?: number;
+	max_monto?: number;
 
 	@ApiPropertyOptional({
-		description: 'Mínimo de días de estancia',
-		example: 1,
+		description: 'Latitud',
+		example: '-31.123456',
 	})
-	@IsOptional()
+	@ValidateIf((o) => o.longitud)
+	@IsNotEmpty()
+	@IsString()
+	latitud?: string;
+
+	@ApiPropertyOptional({
+		description: 'Longitud',
+		example: '-64.123456',
+	})
+	@ValidateIf((o) => o.latitud)
+	@IsNotEmpty()
+	@IsString()
+	longitud?: string;
+
+	@ApiPropertyOptional({
+		description: 'Radio de búsqueda en kilómetros',
+		example: 10,
+	})
+	@ValidateIf((o) => o.latitud && o.longitud)
+	@IsNotEmpty()
 	@IsInt()
 	@Type(() => Number)
-	@Min(1)
-	min_dias_estadia?: number;
+	radio: number;
+
+	@ApiPropertyOptional({
+		description: 'Fecha de desde de la oferta',
+		example: '2024-01-01',
+	})
+	@IsNotEmpty()
+	@IsDate()
+	fecha_desde: Date;
+
+	@ApiPropertyOptional({
+		description: 'Fecha de hasta de la oferta',
+		example: '2024-01-01',
+	})
+	@IsNotEmpty()
+	@IsDate()
+	fecha_hasta: Date;
+
+	@ApiPropertyOptional({
+		description: 'Cantidad de personas',
+		example: 1,
+	})
+	@IsNotEmpty()
+	@IsInt()
+	@Type(() => Number)
+	cantidad_personas: number;
 }

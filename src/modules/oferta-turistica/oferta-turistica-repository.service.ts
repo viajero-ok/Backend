@@ -75,26 +75,44 @@ export class OfertaTuristicaRepositoryService {
 		return result[0][0];
 	}
 
-	async obtenerOfertasTuristicas(
-		pagina: number,
-		limite: number,
-		consultarOfertasDto: ConsultarOfertasDto,
-	) {
+	async obtenerOfertasTuristicas(consultarOfertasDto: ConsultarOfertasDto) {
+		let diasEstadia = null;
+		if (
+			consultarOfertasDto.fecha_desde &&
+			consultarOfertasDto.fecha_hasta
+		) {
+			consultarOfertasDto.fecha_desde = new Date(
+				consultarOfertasDto.fecha_desde,
+			);
+			consultarOfertasDto.fecha_desde.setHours(0, 0, 0, 0);
+			consultarOfertasDto.fecha_hasta = new Date(
+				consultarOfertasDto.fecha_hasta,
+			);
+			consultarOfertasDto.fecha_hasta.setHours(0, 0, 0, 0);
+
+			// Calcular días de estadía
+			diasEstadia = Math.ceil(
+				(consultarOfertasDto.fecha_hasta.getTime() -
+					consultarOfertasDto.fecha_desde.getTime()) /
+					(1000 * 60 * 60 * 24),
+			);
+		}
 		const result = await this.entityManager.query(
-			'CALL SP_OBT_ALOJAMIENTOS_X_FILTRO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			'CALL SP_OBT_OFERTAS_X_FILTRO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
-				pagina,
-				limite,
+				consultarOfertasDto.pagina,
+				consultarOfertasDto.limite,
 				consultarOfertasDto.id_sub_tipo_oferta,
-				consultarOfertasDto.id_establecimiento,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
+				consultarOfertasDto.id_localidad,
+				consultarOfertasDto.min_monto,
+				consultarOfertasDto.max_monto,
+				diasEstadia,
+				consultarOfertasDto.latitud,
+				consultarOfertasDto.longitud,
+				consultarOfertasDto.radio,
+				consultarOfertasDto.fecha_desde,
+				consultarOfertasDto.fecha_hasta,
+				consultarOfertasDto.cantidad_personas,
 			],
 		);
 		return result[0];

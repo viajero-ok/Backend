@@ -30,8 +30,8 @@ export class EstablecimientosRepositoryService {
 				establecimientoDto.id_departamento,
 				establecimientoDto.id_provincia,
 				establecimientoDto.sin_numero,
-				establecimientoDto.latitud,
-				establecimientoDto.longitud,
+				parseFloat(establecimientoDto.latitud),
+				parseFloat(establecimientoDto.longitud),
 				0,
 			],
 		);
@@ -58,8 +58,8 @@ export class EstablecimientosRepositoryService {
 				establecimientoDto.id_departamento,
 				establecimientoDto.id_provincia,
 				establecimientoDto.sin_numero,
-				establecimientoDto.latitud,
-				establecimientoDto.longitud,
+				parseFloat(establecimientoDto.latitud),
+				parseFloat(establecimientoDto.longitud),
 				0,
 			],
 		);

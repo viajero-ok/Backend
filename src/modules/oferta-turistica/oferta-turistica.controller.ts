@@ -226,14 +226,10 @@ export class OfertaTuristicaController {
 	@Get('obtener-ofertas-turisticas')
 	async obtenerOfertasTuristicas(
 		@Req() req: Request,
-		@Query('pagina') pagina: number,
-		@Query('limite') limite: number,
 		@Query() consultarOfertasDto: ConsultarOfertasDto,
 	) {
 		return await this.ofertaTuristicaService.obtenerOfertasTuristicas(
 			req,
-			pagina,
-			limite,
 			consultarOfertasDto,
 		);
 	}

@@ -14,6 +14,7 @@ export class UbicacionService {
 		req,
 		ubicacionDto: UbicacionActividadDto,
 	) {
+		console.log(ubicacionDto);
 		const result =
 			await this.ubicacionRepositoryService.registrarUbicacionActividad(
 				req.user.id_usuario,
