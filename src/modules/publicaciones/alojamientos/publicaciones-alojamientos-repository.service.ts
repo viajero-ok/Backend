@@ -23,6 +23,12 @@ export class PublicacionesAlojamientosRepositoryService {
 		id_usuario: string,
 		registrarTarifasDto: RegistrarTarifasDto,
 	) {
+		const fechaDesde = new Date(registrarTarifasDto.fecha_desde);
+		fechaDesde.setHours(0, 0, 0, 0);
+
+		const fechaHasta = new Date(registrarTarifasDto.fecha_hasta);
+		fechaHasta.setHours(0, 0, 0, 0);
+
 		const result = await this.entityManager.query(
 			'CALL SP_ABM_TARIFA_X_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
@@ -31,8 +37,8 @@ export class PublicacionesAlojamientosRepositoryService {
 				registrarTarifasDto.id_tipo_detalle,
 				null,
 				registrarTarifasDto.monto_tarifa,
-				registrarTarifasDto.fecha_desde,
-				registrarTarifasDto.fecha_hasta,
+				fechaDesde,
+				fechaHasta,
 				null,
 				id_usuario,
 				0,
@@ -53,6 +59,12 @@ export class PublicacionesAlojamientosRepositoryService {
 		id_usuario: string,
 		actualizarTarifasDto: ActualizarTarifasDto,
 	) {
+		const fechaDesde = new Date(actualizarTarifasDto.fecha_desde);
+		fechaDesde.setHours(0, 0, 0, 0);
+
+		const fechaHasta = new Date(actualizarTarifasDto.fecha_hasta);
+		fechaHasta.setHours(0, 0, 0, 0);
+
 		const result = await this.entityManager.query(
 			'CALL SP_ABM_TARIFA_X_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
@@ -61,8 +73,8 @@ export class PublicacionesAlojamientosRepositoryService {
 				actualizarTarifasDto.id_tipo_detalle,
 				null,
 				actualizarTarifasDto.monto_tarifa,
-				actualizarTarifasDto.fecha_desde,
-				actualizarTarifasDto.fecha_hasta,
+				fechaDesde,
+				fechaHasta,
 				null,
 				id_usuario,
 				0,
