@@ -81,7 +81,7 @@ export class OfertaTuristicaRepositoryService {
 		consultarOfertasDto: ConsultarOfertasDto,
 	) {
 		const result = await this.entityManager.query(
-			'CALL SP_OBTENER_ALOJAMIENTOS_X_FILTRO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			'CALL SP_OBT_ALOJAMIENTOS_X_FILTRO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
 				pagina,
 				limite,
