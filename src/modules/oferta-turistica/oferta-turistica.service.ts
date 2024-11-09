@@ -109,9 +109,18 @@ export class OfertaTuristicaService {
 		req,
 		consultarOfertasDto: ConsultarOfertasDto,
 	) {
-		return await this.ofertaTuristicaRepositoryService.obtenerOfertasTuristicas(
-			consultarOfertasDto,
+		const result =
+			await this.ofertaTuristicaRepositoryService.obtenerOfertasTuristicas(
+				consultarOfertasDto,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al obtener ofertas turísticas',
+			HttpStatus.CONFLICT,
 		);
+
+		return result;
 	}
 
 	async registrarOfertaTuristicaGuardada(
