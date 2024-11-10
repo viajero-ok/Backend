@@ -143,7 +143,7 @@ export class OfertaTuristicaService {
 						const datos = await fs.readFile(oferta.ruta_imagen);
 						return {
 							...ofertaModificada,
-							imagen: datos.toString('base64'),
+							ruta_imagen: datos.toString('base64'),
 						};
 					} catch (error) {
 						return ofertaModificada;
