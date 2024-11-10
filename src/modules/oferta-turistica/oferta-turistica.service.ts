@@ -7,6 +7,7 @@ import { ImagenProcesadaDto } from './dto/imagenes/imagen-procesada.dto';
 import { ConsultarOfertasDto } from './dto/consultar-ofertas.dto';
 import { RegistrarImagenOfertaDto } from './dto/imagenes/registrar-imagen-oferta.dto';
 import { RegistrarOfertaGuardadaDto } from './dto/guardadas/registrar-oferta-guardada.dto';
+import * as fs from 'fs/promises';
 
 @Injectable()
 export class OfertaTuristicaService {
@@ -120,7 +121,26 @@ export class OfertaTuristicaService {
 			HttpStatus.CONFLICT,
 		);
 
-		return result;
+		// Procesar las imágenes de cada oferta
+		const ofertasConImagenes = await Promise.all(
+			result.map(async (oferta) => {
+				if (oferta.ruta_imagen) {
+					try {
+						const datos = await fs.readFile(oferta.ruta_imagen);
+						return {
+							...oferta,
+							imagen: datos.toString('base64'),
+						};
+					} catch (error) {
+						// Si hay error al leer la imagen, devolver la oferta sin imagen
+						return oferta;
+					}
+				}
+				return oferta;
+			}),
+		);
+
+		return ofertasConImagenes;
 	}
 
 	async registrarOfertaTuristicaGuardada(

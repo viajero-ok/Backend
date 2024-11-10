@@ -177,6 +177,14 @@ export class ActividadRepositoryService {
 		return result[0];
 	}
 
+	async obtenerImagenes(id_oferta: string) {
+		const result = await this.entityManager.query(
+			`CALL SP_OBT_IMAGENES_X_OFERTA(?)`,
+			[id_oferta],
+		);
+		return result[0];
+	}
+
 	async obtenerDatosRegistradosActividad(id_oferta: string) {
 		const resultados = {
 			datos_basicos: null,
@@ -188,12 +196,10 @@ export class ActividadRepositoryService {
 				`CALL SP_OBT_INFO_ACTIVIDAD(?)`,
 				[id_oferta],
 			);
-			console.log(resultado_actividad);
 			const resultado_guias = await manager.query(
 				`CALL SP_OBT_GUIAS_X_ACTIVIDAD(?)`,
 				[id_oferta],
 			);
-			console.log(resultado_guias);
 			resultados.datos_basicos = resultado_actividad[0][0];
 			resultados.metodos_pago = resultado_actividad[1];
 			resultados.guias = resultado_guias[0];

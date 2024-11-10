@@ -5,6 +5,8 @@ import { ActividadDto } from './dto/actividad.dto';
 import { EliminarGuiaDto } from './dto/eliminar-guia.dto';
 import { RegistrarGuiaDto } from './dto/registrar-guia.dto';
 import { ModificarGuiaDto } from './dto/modificar-guia.dto';
+import * as fs from 'fs/promises';
+import * as path from 'path';
 
 @Injectable()
 export class ActividadService {
@@ -132,14 +134,39 @@ export class ActividadService {
 				id_oferta,
 			);
 
-		console.log(result);
+		const datosImagenes =
+			await this.actividadRepositoryService.obtenerImagenes(id_oferta);
+		const imagenes = await this.obtenerImagenesOferta(datosImagenes);
 
-		/* this.exceptionHandlingService.handleError(
-			result,
-			'Error al obtener los datos de registro de actividades',
-			HttpStatus.CONFLICT,
-		); */
+		return {
+			datos_actividad: result,
+			imagenes,
+		};
+	}
 
-		return { datos_actividad: result };
+	async obtenerImagenesOferta(
+		datosImagenes: any[],
+	): Promise<{ id_imagen: number; nombre: string; datos: string }[]> {
+		const directorio = path.join(process.cwd(), 'uploads');
+		const archivos = await fs.readdir(directorio);
+
+		const imagenesPromesas = archivos.map(async (archivo) => {
+			const rutaCompleta = path.join(directorio, archivo);
+			const imagenCorrespondiente = datosImagenes.find(
+				(img) => img.nombre_unico === archivo,
+			);
+			if (imagenCorrespondiente) {
+				const datos = await fs.readFile(rutaCompleta);
+				return {
+					id_imagen: imagenCorrespondiente.id_imagen,
+					nombre: imagenCorrespondiente.nombre_original,
+					datos: datos.toString('base64'),
+				};
+			}
+			return null;
+		});
+
+		const imagenes = await Promise.all(imagenesPromesas);
+		return imagenes.filter((imagen) => imagen !== null);
 	}
 }

@@ -168,11 +168,21 @@ export class PublicacionesActividadesService {
 				id_oferta,
 			);
 
-		const errores =
+		let errores = [];
+		errores =
 			await this.periodoSinTarifasValidator.validarPeriodoSinTarifas(
 				tarifasExistentes,
 				tipos_entradas,
 			);
+
+		const imagenes_oferta =
+			await this.publicacionesActividadesRepositoryService.obtenerImagenesOferta(
+				id_oferta,
+			);
+
+		if (imagenes_oferta.length === 0) {
+			errores.push('Debe registrar al menos una imagen de la oferta');
+		}
 
 		if (errores.length > 0) {
 			throw new HttpException(

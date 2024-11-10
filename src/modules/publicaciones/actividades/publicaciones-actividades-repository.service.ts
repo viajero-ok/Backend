@@ -114,6 +114,14 @@ export class PublicacionesActividadesRepositoryService {
 		return result[0];
 	}
 
+	async obtenerImagenesOferta(id_oferta: string) {
+		const result = await this.entityManager.query(
+			'CALL SP_OBT_IMAGENES_X_OFERTA(?)',
+			[id_oferta],
+		);
+		return result[0];
+	}
+
 	async publicarActividad(id_usuario: string, id_oferta: string) {
 		const result = await this.entityManager.query(
 			'CALL SP_PUBLICAR_OFERTA(?, ?)',
