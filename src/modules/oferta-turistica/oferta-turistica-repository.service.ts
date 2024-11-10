@@ -96,9 +96,7 @@ export class OfertaTuristicaRepositoryService {
 					consultarOfertasDto.fecha_desde.getTime()) /
 					(1000 * 60 * 60 * 24),
 			);
-			console.log('DIAS ESTADIA', diasEstadia);
 		}
-		console.log(consultarOfertasDto);
 		const result = await this.entityManager.query(
 			'CALL SP_OBT_OFERTAS_X_FILTRO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
@@ -118,6 +116,7 @@ export class OfertaTuristicaRepositoryService {
 				consultarOfertasDto.cantidad_personas,
 			],
 		);
+		console.log(result[0]);
 		return result[0];
 	}
 

@@ -357,6 +357,139 @@ export class OfertaTuristicaController {
 		);
 	}
 
+	/* @Public()
+	@ApiOperation({ summary: 'OBTENER DETALLES DE UNA OFERTA TURÍSTICA' })
+	@ApiResponse({
+		status: 200,
+		description: 'Listado de ofertas turísticas',
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 200,
+				},
+				ofertas: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_oferta: {
+								type: 'string',
+								example: '67710514-9cb6-11ef-a123-0242ac140007',
+							},
+							nombre_oferta: {
+								type: 'string',
+								example: 'Hotel Paraíso 2',
+							},
+							descripcion: {
+								type: 'string',
+								example: 'Un hermoso hotel con vista al mar',
+							},
+							fecha_alta: {
+								type: 'string',
+								example: '2024-11-07T06:14:30.000Z',
+							},
+							fecha_baja: {
+								type: 'string',
+								nullable: true,
+								example: null,
+							},
+							id_establecimiento: {
+								type: 'number',
+								example: 21,
+							},
+							nombre_establecimiento: {
+								type: 'string',
+								example: 'La Aldea18',
+							},
+							razon_social_prestador: {
+								type: 'string',
+								example: 'La mejor razon social',
+							},
+							id_tipo_oferta: {
+								type: 'number',
+								example: 1,
+							},
+							id_subtipo_oferta: {
+								type: 'number',
+								example: 1,
+							},
+							subtipo_oferta: {
+								type: 'string',
+								example: 'En habitaciones',
+							},
+							garantia_alojamiento: {
+								type: 'string',
+								example: '100.00',
+							},
+							pago_anticipado: {
+								type: 'string',
+								nullable: true,
+								example: null,
+							},
+							porcentaje_pago_anticipado: {
+								type: 'string',
+								example: '10.00',
+							},
+							minimo_dias_estadia: {
+								type: 'number',
+								example: 4,
+							},
+							nombre_calle: {
+								type: 'string',
+								example: 'Punta del Oeste',
+							},
+							nombre_barrio: {
+								type: 'string',
+								nullable: true,
+								example: null,
+							},
+							id_localidad: {
+								type: 'string',
+								example: '1',
+							},
+							localidad: {
+								type: 'string',
+								example: 'Villa Santos Tesei',
+							},
+							id_departamento: {
+								type: 'string',
+								example: '1',
+							},
+							id_provincia: {
+								type: 'string',
+								example: '1',
+							},
+							precios_desde: {
+								type: 'string',
+								example: '34.50',
+							},
+							id_tipo_detalle: {
+								type: 'string',
+								example: '9a41791b-9cb6-11ef-a123-0242ac140007',
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+	@Get('obtener-ofertas-turisticas/:id_oferta')
+	async obtenerOfertaTuristica(
+		@Req() req: Request,
+		@Query() consultarOfertasDto: ConsultarOfertasDto,
+	) {
+		return await this.ofertaTuristicaService.obtenerOfertasTuristicas(
+			req,
+			consultarOfertasDto,
+		);
+	} */
+
 	@ApiOperation({ summary: 'OBTENER OFERTAS GUARDADAS POR USUARIO' })
 	@ApiResponse({
 		status: 200,
