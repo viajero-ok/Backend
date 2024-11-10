@@ -56,7 +56,10 @@ export class UbicacionRepositoryService {
 				);
 				resultados.ubicacion = resultado_ubicacion[0][0];
 			}
-			if (ubicacionDto.observaciones) {
+			if (
+				ubicacionDto.observaciones !== null &&
+				ubicacionDto.observaciones !== ''
+			) {
 				const resultado_observacion = await manager.query(
 					'CALL SP_ABM_OBSERVACIONES_X_OFERTA(?, ?, ?, ?, ?)',
 					[
