@@ -138,9 +138,12 @@ export class OfertaTuristicaService {
 					camas_cantidad: camas_array,
 				};
 
+				console.log(ofertaModificada);
 				if (oferta.ruta_imagen) {
 					try {
-						const datos = await fs.readFile(oferta.ruta_imagen);
+						const datos = await fs.readFile(
+							oferta.ruta_imagen.replace(/\\/g, '/'),
+						);
 						return {
 							...ofertaModificada,
 							ruta_imagen: datos.toString('base64'),
