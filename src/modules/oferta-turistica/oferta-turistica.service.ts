@@ -145,6 +145,7 @@ export class OfertaTuristicaService {
 					...oferta,
 					camas_cantidad: camas_array,
 					noches_estadia: noches_estadia,
+					cantidad_personas: consultarOfertasDto.cantidad_personas,
 				};
 
 				console.log(ofertaModificada);
