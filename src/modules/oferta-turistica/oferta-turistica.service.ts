@@ -110,9 +110,17 @@ export class OfertaTuristicaService {
 		req,
 		consultarOfertasDto: ConsultarOfertasDto,
 	) {
+		// Calcular días de estadía
+		const noches_estadia = Math.ceil(
+			(consultarOfertasDto.fecha_hasta.getTime() -
+				consultarOfertasDto.fecha_desde.getTime()) /
+				(1000 * 60 * 60 * 24),
+		);
+
 		const result =
 			await this.ofertaTuristicaRepositoryService.obtenerOfertasTuristicas(
 				consultarOfertasDto,
+				noches_estadia,
 			);
 
 		this.exceptionHandlingService.handleError(
@@ -136,6 +144,7 @@ export class OfertaTuristicaService {
 				const ofertaModificada = {
 					...oferta,
 					camas_cantidad: camas_array,
+					noches_estadia: noches_estadia,
 				};
 
 				console.log(ofertaModificada);
