@@ -183,14 +183,17 @@ export class OfertaTuristicaController {
 	@Post('registrar-imagen-oferta-turistica')
 	async registrarImagenOfertaTuristica(
 		@Req() req: Request,
-		@UploadedFile() imagen: Express.Multer.File,
 		@Body() registrarImagenOfertaDto: RegistrarImagenOfertaDto,
+		@UploadedFile() imagen: Express.Multer.File,
 	) {
-		return await this.ofertaTuristicaService.registrarImagenOfertaTuristica(
-			req,
-			imagen,
-			registrarImagenOfertaDto,
-		);
+		const resultado =
+			await this.ofertaTuristicaService.registrarImagenOfertaTuristica(
+				req,
+				imagen,
+				registrarImagenOfertaDto,
+			);
+
+		return resultado;
 	}
 
 	@ApiOperation({ summary: 'ELIMINAR IMAGEN OFERTA TURÍSTICA' })

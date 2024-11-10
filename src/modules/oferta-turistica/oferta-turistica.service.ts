@@ -121,22 +121,35 @@ export class OfertaTuristicaService {
 			HttpStatus.CONFLICT,
 		);
 
-		// Procesar las imágenes de cada oferta
 		const ofertasConImagenes = await Promise.all(
 			result.map(async (oferta) => {
+				const camas_array = oferta.camas_cantidad
+					.split(',')
+					.map((item) => {
+						const [nombre_cama, cantidad] = item.trim().split(':');
+						return {
+							nombre_cama: nombre_cama.trim(),
+							cantidad: parseInt(cantidad.trim()),
+						};
+					});
+
+				const ofertaModificada = {
+					...oferta,
+					camas_cantidad: camas_array,
+				};
+
 				if (oferta.ruta_imagen) {
 					try {
 						const datos = await fs.readFile(oferta.ruta_imagen);
 						return {
-							...oferta,
+							...ofertaModificada,
 							imagen: datos.toString('base64'),
 						};
 					} catch (error) {
-						// Si hay error al leer la imagen, devolver la oferta sin imagen
-						return oferta;
+						return ofertaModificada;
 					}
 				}
-				return oferta;
+				return ofertaModificada;
 			}),
 		);
 
