@@ -15,6 +15,7 @@ import { UbicacionesModule } from './modules/tipificados/ubicaciones/ubicaciones
 import { PublicacionesModule } from './modules/publicaciones/publicaciones.module';
 import { ReservasModule } from './modules/reservas/reservas.module';
 import { PagosModule } from './modules/pagos/pagos.module';
+import { ReportesModule } from './modules/reportes/reportes.module';
 
 /**
  * Sets up password-protected swagger documentation for the application
@@ -52,6 +53,7 @@ export const setupSwagger = (app: INestApplication) => {
 			PublicacionesModule,
 			ReservasModule,
 			PagosModule,
+			ReportesModule,
 		],
 		extraModels: [],
 	};

@@ -21,6 +21,7 @@ import { GlobalModule } from './common/services/global.module';
 import { PagosModule } from './modules/pagos/pagos.module';
 import { PublicacionesModule } from './modules/publicaciones/publicaciones.module';
 import { ReservasModule } from './modules/reservas/reservas.module';
+import { ReportesModule } from './modules/reportes/reportes.module';
 
 @Module({
 	imports: [
@@ -87,6 +88,7 @@ import { ReservasModule } from './modules/reservas/reservas.module';
 		PublicacionesModule,
 		ReservasModule,
 		PagosModule,
+		ReportesModule,
 	],
 	controllers: [AppController],
 	providers: [
