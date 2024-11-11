@@ -188,7 +188,7 @@ export class PagosService {
 				accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN,
 			});
 			const payment = new Payment(client);
-			const response = await payment.search(id_pago);
+			const response = await payment.get({ id: id_pago });
 			console.log('PAYMENT RESPONSE', response);
 		} else if (req.query.type === 'merchant_order') {
 			console.log('MERCHANT ORDER NOTIFICATION');
