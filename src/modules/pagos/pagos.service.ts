@@ -50,7 +50,7 @@ export class PagosService {
 				expiration_date_to: new Date(
 					Date.now() + 1000 * 60 * 60 * 24, // 24 horas para realizar el pago
 				).toISOString(),
-				/* marketplace_fee: datos_preferencia.marketplace_fee, */
+				marketplace_fee: 2,
 				statement_descriptor: 'viajero',
 				marketplace: 'viajero',
 				notification_url: `${process.env.NOTIFICATION_URL}`,
@@ -190,6 +190,33 @@ export class PagosService {
 			const payment = new Payment(client);
 			const response = await payment.get({ id: req.query.id });
 			console.log('PAYMENT RESPONSE', response);
+
+			try {
+				const response = await fetch(
+					`https://api.mercadopago.com/v1/payments/${id_pago}`,
+					{
+						method: 'GET',
+						headers: {
+							Authorization: `Bearer ${process.env.MERCADO_PAGO_ACCESS_TOKEN}`,
+							'Content-Type': 'application/json',
+						},
+					},
+				);
+
+				if (!response.ok) {
+					throw new Error(
+						`Error al obtener el pago: ${response.status}`,
+					);
+				}
+
+				const paymentData = await response.json();
+				console.log('PAYMENT DATA:', paymentData);
+
+				// Aquí puedes procesar los datos del pago
+			} catch (error) {
+				console.error('Error al obtener los detalles del pago:', error);
+				throw error;
+			}
 		} else if (req.query.type === 'merchant_order') {
 			console.log('MERCHANT ORDER NOTIFICATION');
 			const merchant_order_id = req.query.data.id;
