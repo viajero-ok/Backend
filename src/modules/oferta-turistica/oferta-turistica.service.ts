@@ -200,6 +200,11 @@ export class OfertaTuristicaService {
 								caract.id_tipo_detalle ===
 								tipoDetalle.id_tipo_detalle,
 						),
+					imagenes: resultado.imagenes_x_tipo_detalle.filter(
+						(imagen) =>
+							imagen.id_tipo_detalle ===
+							tipoDetalle.id_tipo_detalle,
+					),
 				};
 			},
 		);

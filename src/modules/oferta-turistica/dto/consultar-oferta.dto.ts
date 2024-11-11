@@ -1,11 +1,4 @@
-import {
-	IsNotEmpty,
-	IsOptional,
-	IsInt,
-	IsString,
-	Min,
-	IsDate,
-} from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, Min, IsDate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -17,15 +10,6 @@ export class ConsultarOfertaDto {
 	@IsNotEmpty()
 	@IsString()
 	readonly id_oferta: string;
-
-	@ApiPropertyOptional({
-		description: 'ID de la localidad',
-		example: 5,
-	})
-	@IsOptional()
-	@IsInt()
-	@Type(() => Number)
-	id_localidad?: number;
 
 	@ApiPropertyOptional({
 		description: 'Monto mínimo de la oferta',
@@ -68,7 +52,6 @@ export class ConsultarOfertaDto {
 		example: 1,
 	})
 	@IsNotEmpty()
-	@IsInt()
-	@Type(() => Number)
-	cantidad_personas: number;
+	@IsString()
+	cantidad_personas: string;
 }

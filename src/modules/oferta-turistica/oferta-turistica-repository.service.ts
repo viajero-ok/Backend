@@ -126,10 +126,11 @@ export class OfertaTuristicaRepositoryService {
 			caracteristicas: [],
 			observaciones: [],
 			horarios_check_in_out: [],
-			imagenes: [],
+			imagenes_oferta: [],
 			tipos_detalles: [],
 			plazas_x_tipo_detalle: [],
 			caracteristicas_x_tipo_detalle: [],
+			imagenes_x_tipo_detalle: [],
 		};
 		const result = await this.entityManager.query(
 			'CALL SP_OBT_DETALLE_OFERTA_X_FILTRO(?, ?, ?, ?, ?, ?, ?)',
@@ -140,7 +141,7 @@ export class OfertaTuristicaRepositoryService {
 				noches_estadia,
 				consultarOfertaDto.fecha_desde,
 				consultarOfertaDto.fecha_hasta,
-				consultarOfertaDto.cantidad_personas,
+				parseInt(consultarOfertaDto.cantidad_personas),
 			],
 		);
 		console.log('result', result);
@@ -149,9 +150,11 @@ export class OfertaTuristicaRepositoryService {
 		resultados.caracteristicas = result[2];
 		resultados.observaciones = result[3];
 		resultados.horarios_check_in_out = result[4];
-		resultados.tipos_detalles = result[5];
-		resultados.plazas_x_tipo_detalle = result[6];
-		resultados.caracteristicas_x_tipo_detalle = result[7];
+		resultados.imagenes_oferta = result[5];
+		resultados.tipos_detalles = result[6];
+		resultados.plazas_x_tipo_detalle = result[7];
+		resultados.caracteristicas_x_tipo_detalle = result[8];
+		resultados.imagenes_x_tipo_detalle = result[9];
 		return resultados;
 	}
 
