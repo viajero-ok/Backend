@@ -171,6 +171,14 @@ export class OfertaTuristicaService {
 	}
 
 	async obtenerOfertaTuristica(req, consultarOfertaDto: ConsultarOfertaDto) {
+		consultarOfertaDto.fecha_desde = new Date(
+			consultarOfertaDto.fecha_desde,
+		);
+		consultarOfertaDto.fecha_hasta = new Date(
+			consultarOfertaDto.fecha_hasta,
+		);
+		consultarOfertaDto.fecha_desde.setHours(0, 0, 0, 0);
+		consultarOfertaDto.fecha_hasta.setHours(0, 0, 0, 0);
 		// Calcular noches de estadía
 		const noches_estadia = Math.ceil(
 			(consultarOfertaDto.fecha_hasta.getTime() -
