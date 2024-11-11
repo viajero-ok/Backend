@@ -220,11 +220,12 @@ export class OfertaTuristicaService {
 					};
 
 					if (resultado.plazas_x_tipo_detalle.length > 0) {
-						detalle.plazas = resultado.plazas_x_tipo_detalle.filter(
-							(plaza) =>
-								plaza.id_tipo_detalle ===
-								tipoDetalle.id_tipo_detalle,
-						);
+						detalle.camas_cantidad =
+							resultado.plazas_x_tipo_detalle.filter(
+								(plaza) =>
+									plaza.id_tipo_detalle ===
+									tipoDetalle.id_tipo_detalle,
+							);
 					}
 
 					if (resultado.caracteristicas_x_tipo_detalle.length > 0) {
