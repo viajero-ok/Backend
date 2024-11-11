@@ -213,7 +213,7 @@ export class OfertaTuristicaService {
 				resultado.tipos_detalles.map(async (tipoDetalle) => {
 					const detalle = {
 						...tipoDetalle,
-						plazas: [],
+						camas_cantidad: [],
 						caracteristicas: [],
 						imagenes: [],
 						tarifas: [],
@@ -268,12 +268,17 @@ export class OfertaTuristicaService {
 					}
 
 					if (resultado.tarifas_x_tipo_detalle.length > 0) {
-						detalle.tarifas =
-							resultado.tarifas_x_tipo_detalle.filter(
+						detalle.tarifas = resultado.tarifas_x_tipo_detalle
+							.filter(
 								(tarifa) =>
 									tarifa.id_tipo_detalle ===
 									tipoDetalle.id_tipo_detalle,
-							);
+							)
+							.map((tarifa) => ({
+								...tarifa,
+								monto_tarifa:
+									tarifa.monto_tarifa * noches_estadia,
+							}));
 					}
 
 					return detalle;
