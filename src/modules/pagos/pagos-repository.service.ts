@@ -71,5 +71,37 @@ export class PagosRepositoryService {
 		return resultados;
 	}
 
-	async registrarDatosReserva() {}
+	async registrarDatosReserva(datos_reserva: any) {
+		const result = await this.entityManager.query(
+			'CALL SP_REGISTRAR_DATOS_RESERVA(?, ?, ?, ?, ?, ?, ?)',
+			[
+				datos_reserva.id_reserva,
+				datos_reserva.preference_id,
+				datos_reserva.external_reference,
+				datos_reserva.init_point,
+				new Date(datos_reserva.fecha_expiracion_desde)
+					.toISOString()
+					.slice(0, 19)
+					.replace('T', ' '),
+				new Date(datos_reserva.fecha_expiracion_hasta)
+					.toISOString()
+					.slice(0, 19)
+					.replace('T', ' '),
+				datos_reserva.id_usuario,
+			],
+		);
+		return result[0][0];
+	}
+
+	async registrarPago(datos_pago: any) {
+		const result = await this.entityManager.query(
+			'CALL SP_REGISTRAR_PAGO_RESERVA(?, ?, ?)',
+			[
+				datos_pago.payment_id,
+				datos_pago.external_reference,
+				datos_pago.preference_id,
+			],
+		);
+		return result[0][0];
+	}
 }

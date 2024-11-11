@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as crypto from 'crypto';
 import { Response } from 'express';
 import { ExceptionHandlingService } from 'src/common/services/exception-handler.service';
+import { RegistrarPagoDto } from './dto/registrar-pago.dto';
 
 @Injectable()
 export class PagosService {
@@ -13,7 +14,7 @@ export class PagosService {
 		private readonly exceptionHandlingService: ExceptionHandlingService,
 	) {}
 
-	async generarOrden(id_reserva: string) {
+	async generarOrden(req, id_reserva: string) {
 		const datos_preferencia =
 			await this.pagosRepositoryService.obtenerDatosPreferencia(
 				id_reserva,
@@ -61,7 +62,17 @@ export class PagosService {
 			},
 		});
 
-		return { url: response.init_point };
+		await this.pagosRepositoryService.registrarDatosReserva({
+			id_reserva: id_reserva,
+			preference_id: response.id,
+			external_reference: response.external_reference,
+			init_point: response.init_point,
+			fecha_expiracion_desde: expiration_date_from,
+			fecha_expiracion_hasta: expiration_date_to,
+			id_usuario: req.user.id_usuario,
+		});
+
+		return /* { url: */ response /* .init_point } */;
 	}
 
 	async solicitarAutorizacionPrestador(id_usuario: string) {
@@ -213,5 +224,15 @@ export class PagosService {
 			},
 		});
 		console.log('RESPONSE', response);
+	}
+
+	async registrarPago(registrarPagoDto: RegistrarPagoDto) {
+		console.log('REGISTRAR PAGO', registrarPagoDto);
+		if (registrarPagoDto.status === 'approved') {
+			await this.pagosRepositoryService.registrarPago(registrarPagoDto);
+			//redirigir a mis reservas con status = true
+		} else {
+			//redirigir a mis reservas con status = false
+		}
 	}
 }

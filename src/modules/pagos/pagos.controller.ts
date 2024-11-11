@@ -8,6 +8,7 @@ import {
 } from '@nestjs/swagger';
 import { Public } from 'src/common/decorators/public/public.decorator';
 import { Response } from 'express';
+import { RegistrarPagoDto } from './dto/registrar-pago.dto';
 
 @ApiBearerAuth()
 @ApiTags('Mercado Pago')
@@ -17,8 +18,8 @@ export class PagosController {
 
 	@ApiOperation({ summary: 'GENERAR ORDEN DE PAGO' })
 	@Post('generar-orden/:id_reserva')
-	async generarOrden(@Param('id_reserva') id_reserva: string) {
-		return this.pagosService.generarOrden(id_reserva);
+	async generarOrden(@Param('id_reserva') id_reserva: string, @Req() req) {
+		return this.pagosService.generarOrden(req, id_reserva);
 	}
 
 	@ApiOperation({ summary: 'SOLICITAR AUTORIZACIÓN PRESTADOR' })
@@ -74,10 +75,8 @@ export class PagosController {
 		return this.pagosService.failure(req);
 	} */
 
-	@Get('external-reference/:external_reference')
-	async externalReference(
-		@Param('external_reference') external_reference: string,
-	) {
-		return this.pagosService.externalReference(external_reference);
+	@Get('registrar-pago')
+	async registrarPago(@Query() registrarPagoDto: RegistrarPagoDto) {
+		return this.pagosService.registrarPago(registrarPagoDto);
 	}
 }
