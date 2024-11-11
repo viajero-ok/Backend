@@ -141,7 +141,7 @@ export class OfertaTuristicaRepositoryService {
 				noches_estadia,
 				consultarOfertaDto.fecha_desde,
 				consultarOfertaDto.fecha_hasta,
-				parseInt(consultarOfertaDto.cantidad_personas),
+				consultarOfertaDto.cantidad_personas,
 			],
 		);
 		console.log('result', result);

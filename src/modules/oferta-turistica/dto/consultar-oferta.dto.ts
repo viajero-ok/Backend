@@ -1,4 +1,11 @@
-import { IsNotEmpty, IsOptional, IsString, Min, IsDate } from 'class-validator';
+import {
+	IsNotEmpty,
+	IsOptional,
+	IsString,
+	Min,
+	IsDate,
+	IsNumber,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -52,6 +59,7 @@ export class ConsultarOfertaDto {
 		example: 1,
 	})
 	@IsNotEmpty()
-	@IsString()
-	cantidad_personas: string;
+	@IsNumber()
+	@Type(() => Number)
+	cantidad_personas: number;
 }
