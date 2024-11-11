@@ -184,7 +184,12 @@ export class OfertaTuristicaService {
 				noches_estadia,
 			);
 
-		// Procesar imágenes_oferta
+		// Agregar verificación de null/undefined
+		if (!resultado?.imagenes_oferta) {
+			resultado.imagenes_oferta = [];
+		}
+
+		// Ahora es seguro verificar length
 		if (resultado.imagenes_oferta && resultado.imagenes_oferta.length > 0) {
 			resultado.imagenes_oferta = await Promise.all(
 				resultado.imagenes_oferta.map(async (imagen) => {
