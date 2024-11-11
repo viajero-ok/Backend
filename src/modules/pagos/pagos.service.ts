@@ -226,13 +226,17 @@ export class PagosService {
 		console.log('RESPONSE', response);
 	}
 
-	async registrarPago(registrarPagoDto: RegistrarPagoDto) {
+	async registrarPago(registrarPagoDto: RegistrarPagoDto, res: Response) {
 		console.log('REGISTRAR PAGO', registrarPagoDto);
 		if (registrarPagoDto.status === 'approved') {
 			await this.pagosRepositoryService.registrarPago(registrarPagoDto);
-			//redirigir a mis reservas con status = true
+			return res.redirect(
+				`https://dev.viajeroturismo.com.ar/home?status=success`,
+			);
 		} else {
-			//redirigir a mis reservas con status = false
+			return res.redirect(
+				`${process.env.FRONT_MIS_RESERVAS_URL}?status=failure`,
+			);
 		}
 	}
 }

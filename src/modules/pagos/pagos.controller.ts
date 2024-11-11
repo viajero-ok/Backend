@@ -76,7 +76,10 @@ export class PagosController {
 	} */
 
 	@Get('registrar-pago')
-	async registrarPago(@Query() registrarPagoDto: RegistrarPagoDto) {
-		return this.pagosService.registrarPago(registrarPagoDto);
+	async registrarPago(
+		@Query() registrarPagoDto: RegistrarPagoDto,
+		@Res() res: Response,
+	) {
+		return this.pagosService.registrarPago(registrarPagoDto, res);
 	}
 }
