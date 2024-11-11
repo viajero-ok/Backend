@@ -70,4 +70,6 @@ export class PagosRepositoryService {
 		resultados.access_token = result[1][0].access_token;
 		return resultados;
 	}
+
+	async registrarDatosReserva() {}
 }

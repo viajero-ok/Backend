@@ -192,6 +192,8 @@ export class OfertaTuristicaService {
 				noches_estadia,
 			);
 
+		resultado.datos_basicos.noches_estadia = noches_estadia;
+
 		// Agregar verificación de null/undefined
 		if (!resultado?.imagenes_oferta) {
 			resultado.imagenes_oferta = [];

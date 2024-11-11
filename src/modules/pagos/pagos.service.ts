@@ -30,6 +30,11 @@ export class PagosService {
 			accessToken: datos_preferencia.access_token,
 		});
 
+		const expiration_date_from = new Date(Date.now()).toISOString();
+		const expiration_date_to = new Date(
+			Date.now() + 1000 * 60 * 60 * 24, // 24 horas para realizar el pago
+		).toISOString();
+
 		const preference = new Preference(client);
 		const response = await preference.create({
 			body: {
@@ -46,10 +51,8 @@ export class PagosService {
 					failure: process.env.FAILURE_URL,
 				},
 				expires: true,
-				expiration_date_from: new Date(Date.now()).toISOString(),
-				expiration_date_to: new Date(
-					Date.now() + 1000 * 60 * 60 * 24, // 24 horas para realizar el pago
-				).toISOString(),
+				expiration_date_from: expiration_date_from,
+				expiration_date_to: expiration_date_to,
 				marketplace_fee: 2,
 				statement_descriptor: 'viajero',
 				marketplace: 'viajero',
@@ -58,7 +61,7 @@ export class PagosService {
 			},
 		});
 
-		return response;
+		return { url: response.init_point };
 	}
 
 	async solicitarAutorizacionPrestador(id_usuario: string) {
