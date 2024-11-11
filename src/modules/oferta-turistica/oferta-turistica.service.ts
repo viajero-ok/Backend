@@ -184,52 +184,108 @@ export class OfertaTuristicaService {
 				noches_estadia,
 			);
 
+		// Procesar imágenes_oferta
+		if (resultado.imagenes_oferta && resultado.imagenes_oferta.length > 0) {
+			resultado.imagenes_oferta = await Promise.all(
+				resultado.imagenes_oferta.map(async (imagen) => {
+					if (imagen.ruta) {
+						try {
+							const datos = await fs.readFile(
+								imagen.ruta.replace(/\\/g, '/'),
+							);
+							return {
+								...imagen,
+								ruta: datos.toString('base64'),
+							};
+						} catch (error) {
+							return imagen;
+						}
+					}
+					return imagen;
+				}),
+			);
+		}
+
 		// Agrupar los detalles por tipo
 		let detallesAgrupados = [];
 		if (resultado.tipos_detalles.length > 0) {
-			detallesAgrupados = resultado.tipos_detalles.map((tipoDetalle) => {
-				const detalle = {
-					...tipoDetalle,
-					plazas: [],
-					caracteristicas: [],
-					imagenes: [],
-				};
+			detallesAgrupados = await Promise.all(
+				resultado.tipos_detalles.map(async (tipoDetalle) => {
+					const detalle = {
+						...tipoDetalle,
+						plazas: [],
+						caracteristicas: [],
+						imagenes: [],
+						tarifas: [],
+					};
 
-				if (resultado.plazas_x_tipo_detalle.length > 0) {
-					detalle.plazas = resultado.plazas_x_tipo_detalle.filter(
-						(plaza) =>
-							plaza.id_tipo_detalle ===
-							tipoDetalle.id_tipo_detalle,
-					);
-				}
-
-				if (resultado.caracteristicas_x_tipo_detalle.length > 0) {
-					detalle.caracteristicas =
-						resultado.caracteristicas_x_tipo_detalle.filter(
-							(caract) =>
-								caract.id_tipo_detalle ===
+					if (resultado.plazas_x_tipo_detalle.length > 0) {
+						detalle.plazas = resultado.plazas_x_tipo_detalle.filter(
+							(plaza) =>
+								plaza.id_tipo_detalle ===
 								tipoDetalle.id_tipo_detalle,
 						);
-				}
+					}
 
-				if (resultado.imagenes_x_tipo_detalle.length > 0) {
-					detalle.imagenes = resultado.imagenes_x_tipo_detalle.filter(
-						(imagen) =>
-							imagen.id_tipo_detalle ===
-							tipoDetalle.id_tipo_detalle,
-					);
-				}
+					if (resultado.caracteristicas_x_tipo_detalle.length > 0) {
+						detalle.caracteristicas =
+							resultado.caracteristicas_x_tipo_detalle.filter(
+								(caract) =>
+									caract.id_tipo_detalle ===
+									tipoDetalle.id_tipo_detalle,
+							);
+					}
 
-				return detalle;
-			});
+					if (resultado.imagenes_x_tipo_detalle.length > 0) {
+						const imagenesFiltradas =
+							resultado.imagenes_x_tipo_detalle.filter(
+								(imagen) =>
+									imagen.id_tipo_detalle ===
+									tipoDetalle.id_tipo_detalle,
+							);
+
+						detalle.imagenes = await Promise.all(
+							imagenesFiltradas.map(async (imagen) => {
+								if (imagen.ruta) {
+									try {
+										const datos = await fs.readFile(
+											imagen.ruta.replace(/\\/g, '/'),
+										);
+										return {
+											...imagen,
+											ruta: datos.toString('base64'),
+										};
+									} catch (error) {
+										return imagen;
+									}
+								}
+								return imagen;
+							}),
+						);
+					}
+
+					if (resultado.tarifas_x_tipo_detalle.length > 0) {
+						detalle.tarifas =
+							resultado.tarifas_x_tipo_detalle.filter(
+								(tarifa) =>
+									tarifa.id_tipo_detalle ===
+									tipoDetalle.id_tipo_detalle,
+							);
+					}
+
+					return detalle;
+				}),
+			);
 		}
 
 		return {
 			...resultado,
+			imagenes_oferta: resultado.imagenes_oferta,
 			tipos_detalles: detallesAgrupados,
-			// Removemos los arrays originales ya que ahora están agrupados
 			plazas_x_tipo_detalle: undefined,
 			caracteristicas_x_tipo_detalle: undefined,
+			imagenes_x_tipo_detalle: undefined,
+			tarifas_x_tipo_detalle: undefined,
 		};
 	}
 
