@@ -138,8 +138,12 @@ export class OfertaTuristicaRepositoryService {
 			'CALL SP_OBT_DETALLE_OFERTA_X_FILTRO(?, ?, ?, ?, ?, ?, ?)',
 			[
 				consultarOfertaDto.id_oferta,
-				consultarOfertaDto.min_monto,
-				consultarOfertaDto.max_monto,
+				consultarOfertaDto.min_monto
+					? consultarOfertaDto.min_monto
+					: null,
+				consultarOfertaDto.max_monto
+					? consultarOfertaDto.max_monto
+					: null,
 				noches_estadia,
 				consultarOfertaDto.fecha_desde,
 				consultarOfertaDto.fecha_hasta,

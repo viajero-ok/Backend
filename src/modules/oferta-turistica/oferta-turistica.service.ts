@@ -233,6 +233,7 @@ export class OfertaTuristicaService {
 						caracteristicas: [],
 						imagenes: [],
 						tarifas: [],
+						precio_total: 0,
 					};
 
 					if (resultado.plazas_x_tipo_detalle.length > 0) {
@@ -291,6 +292,33 @@ export class OfertaTuristicaService {
 									tarifa.id_tipo_detalle ===
 									tipoDetalle.id_tipo_detalle,
 							);
+
+						const fechaDesde = consultarOfertaDto.fecha_desde;
+						const fechaHasta = consultarOfertaDto.fecha_hasta;
+
+						detalle.precio_total = detalle.tarifas.reduce(
+							(total, tarifa) => {
+								const tarifaDesde = new Date(
+									tarifa.fecha_desde,
+								);
+								const tarifaHasta = new Date(
+									tarifa.fecha_hasta,
+								);
+
+								if (
+									fechaDesde <= tarifaHasta &&
+									fechaHasta >= tarifaDesde
+								) {
+									return (
+										total +
+										parseFloat(tarifa.monto_tarifa) *
+											noches_estadia
+									);
+								}
+								return total;
+							},
+							0,
+						);
 					}
 
 					return detalle;
