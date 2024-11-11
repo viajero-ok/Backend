@@ -126,6 +126,7 @@ export class OfertaTuristicaRepositoryService {
 			caracteristicas: [],
 			observaciones: [],
 			horarios_check_in_out: [],
+			imagenes: [],
 			tipos_detalles: [],
 			plazas_x_tipo_detalle: [],
 			caracteristicas_x_tipo_detalle: [],
@@ -142,6 +143,7 @@ export class OfertaTuristicaRepositoryService {
 				consultarOfertaDto.cantidad_personas,
 			],
 		);
+		console.log('result', result);
 		resultados.datos_basicos = result[0];
 		resultados.metodos_pago = result[1];
 		resultados.caracteristicas = result[2];
