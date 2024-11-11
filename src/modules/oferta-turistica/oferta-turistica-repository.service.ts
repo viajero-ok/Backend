@@ -135,6 +135,7 @@ export class OfertaTuristicaRepositoryService {
 			tarifas_x_tipo_detalle: [],
 		};
 		console.log('consultarOfertaDto', consultarOfertaDto);
+		console.log('noches_estadia', noches_estadia);
 		const result = await this.entityManager.query(
 			'CALL SP_OBT_DETALLE_OFERTA_X_FILTRO(?, ?, ?, ?, ?, ?, ?)',
 			[
