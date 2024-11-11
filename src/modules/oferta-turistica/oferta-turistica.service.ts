@@ -185,8 +185,9 @@ export class OfertaTuristicaService {
 			);
 
 		// Agrupar los detalles por tipo
-		const detallesAgrupados = resultado.tipos_detalles.map(
-			(tipoDetalle) => {
+		let detallesAgrupados = [];
+		if (resultado.tipos_detalles.length > 0) {
+			detallesAgrupados = resultado.tipos_detalles.map((tipoDetalle) => {
 				const detalle = {
 					...tipoDetalle,
 					plazas: [],
@@ -220,8 +221,8 @@ export class OfertaTuristicaService {
 				}
 
 				return detalle;
-			},
-		);
+			});
+		}
 
 		return {
 			...resultado,
