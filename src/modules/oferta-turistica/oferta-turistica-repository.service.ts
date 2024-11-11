@@ -134,6 +134,7 @@ export class OfertaTuristicaRepositoryService {
 			imagenes_x_tipo_detalle: [],
 			tarifas_x_tipo_detalle: [],
 		};
+		console.log('consultarOfertaDto', consultarOfertaDto);
 		const result = await this.entityManager.query(
 			'CALL SP_OBT_DETALLE_OFERTA_X_FILTRO(?, ?, ?, ?, ?, ?, ?)',
 			[
