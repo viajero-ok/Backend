@@ -145,7 +145,7 @@ export class OfertaTuristicaRepositoryService {
 			],
 		);
 		console.log('result', result);
-		resultados.datos_basicos = result[0];
+		resultados.datos_basicos = result[0][0];
 		resultados.metodos_pago = result[1];
 		resultados.caracteristicas = result[2];
 		resultados.observaciones = result[3];
