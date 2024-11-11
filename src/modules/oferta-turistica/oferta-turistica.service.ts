@@ -206,6 +206,9 @@ export class OfertaTuristicaService {
 			);
 		}
 
+		resultado.domicilio.sin_numero =
+			resultado.domicilio.sin_numero === 1 ? true : false;
+
 		// Agrupar los detalles por tipo
 		let detallesAgrupados = [];
 		if (resultado.tipos_detalles.length > 0) {
@@ -269,17 +272,12 @@ export class OfertaTuristicaService {
 					}
 
 					if (resultado.tarifas_x_tipo_detalle.length > 0) {
-						detalle.tarifas = resultado.tarifas_x_tipo_detalle
-							.filter(
+						detalle.tarifas =
+							resultado.tarifas_x_tipo_detalle.filter(
 								(tarifa) =>
 									tarifa.id_tipo_detalle ===
 									tipoDetalle.id_tipo_detalle,
-							)
-							.map((tarifa) => ({
-								...tarifa,
-								monto_tarifa:
-									tarifa.monto_tarifa * noches_estadia,
-							}));
+							);
 					}
 
 					return detalle;

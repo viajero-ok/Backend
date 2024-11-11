@@ -152,7 +152,7 @@ export class OfertaTuristicaRepositoryService {
 		resultados.caracteristicas = result[2];
 		resultados.observaciones = result[3];
 		resultados.horarios_check_in_out = result[4];
-		resultados.domicilio = result[5];
+		resultados.domicilio = result[5][0];
 		resultados.imagenes_oferta = result[6];
 		resultados.tipos_detalles = result[7];
 		resultados.plazas_x_tipo_detalle = result[8];
