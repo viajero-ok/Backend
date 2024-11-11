@@ -177,6 +177,7 @@ export class PagosService {
 
 	async notification(req) {
 		console.log('REQUEST QUERY', req.query);
+		console.log('REQ QUERY ID', req.query.id);
 
 		// Determinar el tipo de notificación
 		if (req.query.type === 'payment') {
@@ -189,33 +190,6 @@ export class PagosService {
 			const payment = new Payment(client);
 			const response = await payment.get({ id: id_pago });
 			console.log('PAYMENT RESPONSE', response);
-
-			try {
-				const response = await fetch(
-					`https://api.mercadopago.com/v1/payments/${id_pago}`,
-					{
-						method: 'GET',
-						headers: {
-							Authorization: `Bearer ${process.env.MERCADO_PAGO_ACCESS_TOKEN}`,
-							'Content-Type': 'application/json',
-						},
-					},
-				);
-
-				if (!response.ok) {
-					throw new Error(
-						`Error al obtener el pago: ${response.status}`,
-					);
-				}
-
-				const paymentData = await response.json();
-				console.log('PAYMENT DATA:', paymentData);
-
-				// Aquí puedes procesar los datos del pago
-			} catch (error) {
-				console.error('Error al obtener los detalles del pago:', error);
-				throw error;
-			}
 		} else if (req.query.type === 'merchant_order') {
 			console.log('MERCHANT ORDER NOTIFICATION');
 			const merchant_order_id = req.query.data.id;
