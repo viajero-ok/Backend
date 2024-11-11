@@ -8,6 +8,7 @@ import { ConsultarOfertasDto } from './dto/consultar-ofertas.dto';
 import { RegistrarImagenOfertaDto } from './dto/imagenes/registrar-imagen-oferta.dto';
 import { RegistrarOfertaGuardadaDto } from './dto/guardadas/registrar-oferta-guardada.dto';
 import * as fs from 'fs/promises';
+import { ConsultarOfertaDto } from './dto/consultar-oferta.dto';
 
 @Injectable()
 export class OfertaTuristicaService {
@@ -110,7 +111,7 @@ export class OfertaTuristicaService {
 		req,
 		consultarOfertasDto: ConsultarOfertasDto,
 	) {
-		// Calcular días de estadía
+		// Calcular noches de estadía
 		const noches_estadia = Math.ceil(
 			(consultarOfertasDto.fecha_hasta.getTime() -
 				consultarOfertasDto.fecha_desde.getTime()) /
@@ -167,6 +168,49 @@ export class OfertaTuristicaService {
 		);
 
 		return ofertasConImagenes;
+	}
+
+	async obtenerOfertaTuristica(req, consultarOfertaDto: ConsultarOfertaDto) {
+		// Calcular noches de estadía
+		const noches_estadia = Math.ceil(
+			(consultarOfertaDto.fecha_hasta.getTime() -
+				consultarOfertaDto.fecha_desde.getTime()) /
+				(1000 * 60 * 60 * 24),
+		);
+
+		const resultado =
+			await this.ofertaTuristicaRepositoryService.obtenerOfertaTuristica(
+				consultarOfertaDto,
+				noches_estadia,
+			);
+
+		// Agrupar los detalles por tipo
+		const detallesAgrupados = resultado.tipos_detalles.map(
+			(tipoDetalle) => {
+				return {
+					...tipoDetalle,
+					plazas: resultado.plazas_x_tipo_detalle.filter(
+						(plaza) =>
+							plaza.id_tipo_detalle ===
+							tipoDetalle.id_tipo_detalle,
+					),
+					caracteristicas:
+						resultado.caracteristicas_x_tipo_detalle.filter(
+							(caract) =>
+								caract.id_tipo_detalle ===
+								tipoDetalle.id_tipo_detalle,
+						),
+				};
+			},
+		);
+
+		return {
+			...resultado,
+			tipos_detalles: detallesAgrupados,
+			// Removemos los arrays originales ya que ahora están agrupados
+			plazas_x_tipo_detalle: undefined,
+			caracteristicas_x_tipo_detalle: undefined,
+		};
 	}
 
 	async registrarOfertaTuristicaGuardada(
