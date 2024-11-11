@@ -98,6 +98,22 @@ export class AlojamientosService {
 			HttpStatus.CONFLICT,
 		);
 
+		result.horarios_checkin_checkout.forEach((horario) => {
+			if (
+				horario.aplica_lunes === 1 &&
+				horario.aplica_martes === 1 &&
+				horario.aplica_miercoles === 1 &&
+				horario.aplica_jueves === 1 &&
+				horario.aplica_viernes === 1 &&
+				horario.aplica_sabado === 1 &&
+				horario.aplica_domingo === 1
+			) {
+				horario.aplica_todos_dias = true;
+			} else {
+				horario.aplica_todos_dias = false;
+			}
+		});
+
 		const datosImagenes =
 			await this.alojamientosRepositoryService.obtenerImagenes(id_oferta);
 		const imagenes = await this.obtenerImagenesOferta(datosImagenes);
