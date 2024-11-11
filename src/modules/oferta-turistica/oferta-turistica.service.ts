@@ -188,14 +188,14 @@ export class OfertaTuristicaService {
 		if (resultado.imagenes_oferta && resultado.imagenes_oferta.length > 0) {
 			resultado.imagenes_oferta = await Promise.all(
 				resultado.imagenes_oferta.map(async (imagen) => {
-					if (imagen.ruta) {
+					if (imagen.ruta_imagen) {
 						try {
 							const datos = await fs.readFile(
-								imagen.ruta.replace(/\\/g, '/'),
+								imagen.ruta_imagen.replace(/\\/g, '/'),
 							);
 							return {
 								...imagen,
-								ruta: datos.toString('base64'),
+								imagen: datos.toString('base64'),
 							};
 						} catch (error) {
 							return imagen;
@@ -246,14 +246,17 @@ export class OfertaTuristicaService {
 
 						detalle.imagenes = await Promise.all(
 							imagenesFiltradas.map(async (imagen) => {
-								if (imagen.ruta) {
+								if (imagen.ruta_imagen) {
 									try {
 										const datos = await fs.readFile(
-											imagen.ruta.replace(/\\/g, '/'),
+											imagen.ruta_imagen.replace(
+												/\\/g,
+												'/',
+											),
 										);
 										return {
 											...imagen,
-											ruta: datos.toString('base64'),
+											imagen: datos.toString('base64'),
 										};
 									} catch (error) {
 										return imagen;
