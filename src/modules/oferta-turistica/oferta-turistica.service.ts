@@ -187,25 +187,39 @@ export class OfertaTuristicaService {
 		// Agrupar los detalles por tipo
 		const detallesAgrupados = resultado.tipos_detalles.map(
 			(tipoDetalle) => {
-				return {
+				const detalle = {
 					...tipoDetalle,
-					plazas: resultado.plazas_x_tipo_detalle.filter(
+					plazas: [],
+					caracteristicas: [],
+					imagenes: [],
+				};
+
+				if (resultado.plazas_x_tipo_detalle.length > 0) {
+					detalle.plazas = resultado.plazas_x_tipo_detalle.filter(
 						(plaza) =>
 							plaza.id_tipo_detalle ===
 							tipoDetalle.id_tipo_detalle,
-					),
-					caracteristicas:
+					);
+				}
+
+				if (resultado.caracteristicas_x_tipo_detalle.length > 0) {
+					detalle.caracteristicas =
 						resultado.caracteristicas_x_tipo_detalle.filter(
 							(caract) =>
 								caract.id_tipo_detalle ===
 								tipoDetalle.id_tipo_detalle,
-						),
-					imagenes: resultado.imagenes_x_tipo_detalle.filter(
+						);
+				}
+
+				if (resultado.imagenes_x_tipo_detalle.length > 0) {
+					detalle.imagenes = resultado.imagenes_x_tipo_detalle.filter(
 						(imagen) =>
 							imagen.id_tipo_detalle ===
 							tipoDetalle.id_tipo_detalle,
-					),
-				};
+					);
+				}
+
+				return detalle;
 			},
 		);
 
