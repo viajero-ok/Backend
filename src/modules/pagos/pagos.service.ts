@@ -187,8 +187,8 @@ export class PagosService {
 				accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN,
 			});
 			const payment = new Payment(client);
-			const response = await payment.get({ id: id_pago });
-			console.log('PAYMENT RESPONSE', response);
+			/* const response = await payment.get({ id: id_pago });
+			console.log('PAYMENT RESPONSE', response); */
 
 			try {
 				const response = await fetch(
