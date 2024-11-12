@@ -39,6 +39,21 @@ export class ReservasService {
 			HttpStatus.CONFLICT,
 		);
 
+		for (const reserva of result.reservas) {
+			const detalles_reserva = result.detalles_reserva
+				.filter((detalle) => detalle.id_reserva === reserva.id_reserva)
+				.map((detalle) => ({
+					id_tipo_detalle: detalle.id_tipo_detalle,
+					nombre_tipo_detalle: detalle.nombre_tipo_detalle,
+					id_tipo_entrada: detalle.id_tipo_entrada,
+					nombre_tipo_entrada: detalle.nombre_tipo_entrada,
+					cantidad: detalle.cantidad,
+					precio_unitario: detalle.precio_unitario,
+					monto_total_detalle: detalle.monto_total_detalle,
+				}));
+			reserva.detalles_reserva = detalles_reserva;
+		}
+
 		result.detalles_reserva = result.detalles_reserva.map((detalle) => ({
 			id_oferta_turistica: detalle.id_oferta_turistica,
 			id_tipo_detalle: detalle.id_tipo_detalle,
