@@ -699,7 +699,7 @@ export class OfertaTuristicaController {
 	@ApiOperation({ summary: 'OBTENER UBICACIONES POR COINCIDENCIA' })
 	@Get('obtener-ubicaciones-por-coincidencia')
 	async obtenerUbicacionesPorCoincidencia(
-		@Query() texto_coincidencia: string,
+		@Query('texto_coincidencia') texto_coincidencia: string,
 	) {
 		return await this.ofertaTuristicaService.obtenerUbicacionesPorCoincidencia(
 			texto_coincidencia,
