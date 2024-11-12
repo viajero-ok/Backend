@@ -44,6 +44,13 @@ export class PagosService {
 		const expiration_date_to = new Date(
 			Date.now() + 1000 * 60 * 60 * 24, // 24 horas para realizar el pago
 		).toISOString();
+		const datos_comprador = datos_preferencia.datos_comprador;
+		let category_id = '';
+		if (datos_comprador.id_tipo_oferta === 1) {
+			category_id = 'travel';
+		} else if (datos_comprador.id_tipo_oferta === 2) {
+			category_id = 'tickets';
+		}
 
 		const preference = new Preference(client);
 		const response = await preference.create({
@@ -55,10 +62,20 @@ export class PagosService {
 					unit_price: parseFloat(item.precio_unitario),
 					quantity: item.cantidad,
 					currency_id: 'ARS',
+					category_id: category_id,
 				})),
 				back_urls: {
 					success: process.env.SUCCESS_URL,
 					failure: process.env.FAILURE_URL,
+				},
+				payer: {
+					name: datos_comprador.nombre_comprador,
+					email: datos_comprador.mail,
+					surname: datos_comprador.apellido_comprador,
+					identification: {
+						type: datos_comprador.tipo_documento,
+						number: datos_comprador.documento,
+					},
 				},
 				expires: true,
 				expiration_date_from: expiration_date_from,
