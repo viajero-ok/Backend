@@ -7,6 +7,7 @@ import { ConsultarOfertasDto } from './dto/consultar-ofertas.dto';
 import { RegistrarImagenOfertaDto } from './dto/imagenes/registrar-imagen-oferta.dto';
 import { RegistrarOfertaGuardadaDto } from './dto/guardadas/registrar-oferta-guardada.dto';
 import { ConsultarOfertaDto } from './dto/consultar-oferta.dto';
+import { ConsultarResumenOfertaDto } from './dto/consultar-resumen-oferta.dto';
 
 @Injectable()
 export class OfertaTuristicaRepositoryService {
@@ -165,6 +166,34 @@ export class OfertaTuristicaRepositoryService {
 		resultados.caracteristicas_x_tipo_detalle = result[9];
 		resultados.imagenes_x_tipo_detalle = result[10];
 		resultados.tarifas_x_tipo_detalle = result[11];
+		return resultados;
+	}
+
+	async obtenerResumenOfertaTuristica(
+		consultarResumenOfertaDto: ConsultarResumenOfertaDto,
+	) {
+		const resultados = {
+			datos_basicos_oferta: null,
+			horarios_check_in_out: [],
+			domicilio: null,
+			datos_basicos_detalle: null,
+			tarifas: [],
+		};
+		const result = await this.entityManager.query(
+			'CALL SP_OBT_RESUMEN_RESERVA(?, ?, ?, ?)',
+			[
+				consultarResumenOfertaDto.id_oferta,
+				consultarResumenOfertaDto.id_detalle,
+				consultarResumenOfertaDto.fecha_desde,
+				consultarResumenOfertaDto.fecha_hasta,
+			],
+		);
+		console.log('result', result);
+		resultados.datos_basicos_oferta = result[0][0];
+		resultados.horarios_check_in_out = result[1];
+		resultados.domicilio = result[2][0];
+		resultados.datos_basicos_detalle = result[3][0];
+		resultados.tarifas = result[4];
 		return resultados;
 	}
 

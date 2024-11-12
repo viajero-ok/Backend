@@ -9,6 +9,7 @@ import { RegistrarImagenOfertaDto } from './dto/imagenes/registrar-imagen-oferta
 import { RegistrarOfertaGuardadaDto } from './dto/guardadas/registrar-oferta-guardada.dto';
 import * as fs from 'fs/promises';
 import { ConsultarOfertaDto } from './dto/consultar-oferta.dto';
+import { ConsultarResumenOfertaDto } from './dto/consultar-resumen-oferta.dto';
 
 @Injectable()
 export class OfertaTuristicaService {
@@ -311,11 +312,22 @@ export class OfertaTuristicaService {
 									fechaDesde <= tarifaHasta &&
 									fechaHasta >= tarifaDesde
 								) {
-									return (
-										total +
-										parseFloat(tarifa.monto_tarifa) *
-											noches_estadia
-									);
+									if (
+										resultado.datos_basicos
+											.id_tipo_oferta === 1
+									) {
+										return (
+											total +
+											parseFloat(tarifa.monto_tarifa) *
+												noches_estadia
+										);
+									} else {
+										return (
+											total +
+											parseFloat(tarifa.monto_tarifa) *
+												consultarOfertaDto.cantidad_personas
+										);
+									}
 								}
 								return total;
 							},
@@ -336,6 +348,69 @@ export class OfertaTuristicaService {
 			caracteristicas_x_tipo_detalle: undefined,
 			imagenes_x_tipo_detalle: undefined,
 			tarifas_x_tipo_detalle: undefined,
+		};
+	}
+
+	async obtenerResumenOfertaTuristica(
+		consultarResumenOfertaDto: ConsultarResumenOfertaDto,
+	) {
+		const result =
+			await this.ofertaTuristicaRepositoryService.obtenerResumenOfertaTuristica(
+				consultarResumenOfertaDto,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al obtener resumen de la oferta turística',
+			HttpStatus.CONFLICT,
+		);
+
+		// Calcular noches de estadía
+		const noches_estadia = Math.ceil(
+			(consultarResumenOfertaDto.fecha_hasta.getTime() -
+				consultarResumenOfertaDto.fecha_desde.getTime()) /
+				(1000 * 60 * 60 * 24),
+		);
+
+		// Calcular precio total
+		let precio_total = 0;
+		result.tarifas.forEach((tarifa) => {
+			const tarifaDesde = new Date(tarifa.fecha_desde);
+			const tarifaHasta = new Date(tarifa.fecha_hasta);
+
+			if (
+				consultarResumenOfertaDto.fecha_desde <= tarifaHasta &&
+				consultarResumenOfertaDto.fecha_hasta >= tarifaDesde
+			) {
+				if (result.datos_basicos_oferta.id_tipo_oferta === 1) {
+					// Para alojamientos, multiplicar por noches
+					precio_total +=
+						parseFloat(tarifa.monto_tarifa) * noches_estadia;
+				} else {
+					// Para otros tipos, multiplicar por cantidad de personas
+					precio_total +=
+						parseFloat(tarifa.monto_tarifa) *
+						consultarResumenOfertaDto.cantidad_personas;
+				}
+			}
+		});
+
+		// Calcular pago anticipado
+		const pago_anticipado =
+			precio_total *
+			(parseFloat(
+				result.datos_basicos_oferta.porcentaje_pago_anticipado,
+			) /
+				100);
+
+		return {
+			...result,
+			resumen_pago: {
+				precio_total,
+				pago_anticipado,
+				noches_estadia,
+				cantidad_personas: consultarResumenOfertaDto.cantidad_personas,
+			},
 		};
 	}
 

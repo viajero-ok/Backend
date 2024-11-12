@@ -28,6 +28,7 @@ import { RegistrarImagenOfertaDto } from './dto/imagenes/registrar-imagen-oferta
 import { Public } from 'src/common/decorators/public/public.decorator';
 import { RegistrarOfertaGuardadaDto } from './dto/guardadas/registrar-oferta-guardada.dto';
 import { ConsultarOfertaDto } from './dto/consultar-oferta.dto';
+import { ConsultarResumenOfertaDto } from './dto/consultar-resumen-oferta.dto';
 
 @ApiTags('Ofertas Turísticas')
 @ApiBearerAuth()
@@ -520,6 +521,17 @@ export class OfertaTuristicaController {
 		return await this.ofertaTuristicaService.obtenerOfertaTuristica(
 			req,
 			consultarOfertaDto,
+		);
+	}
+
+	//obtener resumen de una oferta turistica
+	@ApiOperation({ summary: 'OBTENER RESUMEN DE UNA OFERTA TURÍSTICA' })
+	@Get('obtener-resumen-oferta-turistica')
+	async obtenerResumenOfertaTuristica(
+		@Query() consultarResumenOfertaDto: ConsultarResumenOfertaDto,
+	) {
+		return await this.ofertaTuristicaService.obtenerResumenOfertaTuristica(
+			consultarResumenOfertaDto,
 		);
 	}
 
