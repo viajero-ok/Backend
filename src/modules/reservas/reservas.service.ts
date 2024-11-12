@@ -154,11 +154,12 @@ export class ReservasService {
 		const fecha_inicio_tarifas = new Date(fecha_desde_tarifas);
 		const fecha_fin_tarifas = new Date(fecha_hasta_tarifas);
 
-		console.log('FECHA ACTUAL', fecha_actual);
-		console.log('FECHA INICIO', fecha_inicio);
-		console.log('FECHA FIN', fecha_fin);
-		console.log('FECHA INICIO TARIFA', fecha_inicio_tarifas);
-		console.log('FECHA FIN TARIFA', fecha_fin_tarifas);
+		//setear horas a 0
+		fecha_actual.setHours(0, 0, 0, 0);
+		fecha_inicio.setHours(0, 0, 0, 0);
+		fecha_fin.setHours(0, 0, 0, 0);
+		fecha_inicio_tarifas.setHours(0, 0, 0, 0);
+		fecha_fin_tarifas.setHours(0, 0, 0, 0);
 
 		if (fecha_inicio < fecha_actual || fecha_fin < fecha_actual) {
 			throw new HttpException(
