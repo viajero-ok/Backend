@@ -39,6 +39,12 @@ export class ReservasService {
 			HttpStatus.CONFLICT,
 		);
 
+		result.detalles_reserva = result.detalles_reserva.map((detalle) => ({
+			id_oferta_turistica: detalle.id_oferta_turistica,
+			id_tipo_detalle: detalle.id_tipo_detalle,
+			nombre_tipo_detalle: detalle.nombre_tipo_detalle,
+		}));
+
 		return result;
 	}
 
