@@ -61,6 +61,7 @@ export class PagosRepositoryService {
 		const resultados = {
 			items: [],
 			access_token: '',
+			pk_mp: '',
 		};
 		const result = await this.entityManager.query(
 			'CALL SP_OBT_DATOS_PREFERENCIA(?)',
@@ -74,6 +75,10 @@ export class PagosRepositoryService {
 
 		if (result[1]?.length > 0 && result[1][0]?.access_token) {
 			resultados.access_token = result[1][0].access_token;
+		}
+
+		if (result[1]?.length > 0 && result[1][0]?.pk_mp) {
+			resultados.pk_mp = result[1][0].pk_mp;
 		}
 
 		return resultados;

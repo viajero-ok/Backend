@@ -81,7 +81,7 @@ export class PagosService {
 			id_usuario: req.user.id_usuario,
 		});
 
-		const pk_mp = process.env.MERCADO_PAGO_PUBLIC_KEY;
+		const pk_mp = datos_preferencia.pk_mp;
 
 		return {
 			url: response.init_point,
