@@ -94,6 +94,14 @@ export class EstablecimientosRepositoryService {
 		return result[0][0];
 	}
 
+	async obtenerDatosRegistradosEstablecimiento(id_establecimiento: number) {
+		const result = await this.entityManager.query(
+			'CALL SP_OBT_INFO_ESTABLECIMIENTO(?)',
+			[id_establecimiento],
+		);
+		return result[0][0];
+	}
+
 	async obtenerEstablecimientosPorPrestador(id_usuario: number) {
 		const result = await this.entityManager.query(
 			'CALL SP_OBT_DATOS_ESTABLECIMIENTO_X_USUARIO(?)',

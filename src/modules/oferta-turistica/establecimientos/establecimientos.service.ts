@@ -67,6 +67,19 @@ export class EstablecimientosService {
 		};
 	}
 
+	async obtenerDatosRegistradosEstablecimiento(id_establecimiento: number) {
+		const result =
+			await this.establecimientosRepositoryService.obtenerDatosRegistradosEstablecimiento(
+				id_establecimiento,
+			);
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al obtener datos registrados de establecimiento',
+			HttpStatus.CONFLICT,
+		);
+		return result;
+	}
+
 	async obtenerEstablecimientosPorPrestador(req) {
 		const result =
 			await this.establecimientosRepositoryService.obtenerEstablecimientosPorPrestador(

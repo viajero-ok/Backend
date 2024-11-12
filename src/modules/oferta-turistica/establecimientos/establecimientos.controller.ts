@@ -127,6 +127,18 @@ export class EstablecimientosController {
 		);
 	}
 
+	@ApiOperation({
+		summary: 'OBTENER DATOS REGISTRADOS DE UN ESTABLECIMIENTO',
+	})
+	@Get('obtener-datos-registrados-establecimiento/:id_establecimiento')
+	async obtenerDatosRegistradosEstablecimiento(
+		@Param('id_establecimiento') id_establecimiento: number,
+	) {
+		return await this.establecimientosService.obtenerDatosRegistradosEstablecimiento(
+			id_establecimiento,
+		);
+	}
+
 	@ApiOperation({ summary: 'OBTENER ESTABLECIMIENTOS DE UN PRESTADOR' })
 	@ApiResponse({
 		status: 200,
