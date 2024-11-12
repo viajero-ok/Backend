@@ -50,6 +50,10 @@ export class ReservasController {
 							},
 						},
 					},
+					example: [
+						{ id_estado: 7, nombre_estado: 'Pendiente de pago' },
+						{ id_estado: 8, nombre_estado: 'Reservada' },
+					],
 				},
 				reservas: {
 					type: 'array',
@@ -115,36 +119,54 @@ export class ReservasController {
 								items: {
 									type: 'object',
 									properties: {
-										id_tipo_detalle: {
+										id_oferta: {
 											type: 'string',
-											nullable: true,
+											example:
+												'2b1f6c72-9fb9-11ef-b3ca-0242ac140003',
 										},
-										nombre_tipo_detalle: {
+										nombre_oferta: {
 											type: 'string',
-											nullable: true,
+											example: 'Hotel Paraíso 2',
 										},
-										id_tipo_entrada: {
-											type: 'string',
-											nullable: true,
-										},
-										nombre_tipo_entrada: {
-											type: 'string',
-											nullable: true,
-										},
-										cantidad: {
-											type: 'number',
-											nullable: true,
-										},
-										precio_unitario: {
-											type: 'string',
-											nullable: true,
-										},
-										monto_total_detalle: {
-											type: 'string',
-											nullable: true,
+										detalles: {
+											type: 'array',
+											items: {
+												type: 'object',
+												properties: {
+													id_tipo_detalle: {
+														type: 'string',
+														nullable: true,
+													},
+													nombre_tipo_detalle: {
+														type: 'string',
+														nullable: true,
+													},
+												},
+											},
 										},
 									},
 								},
+								example: [
+									{
+										id_oferta:
+											'2b1f6c72-9fb9-11ef-b3ca-0242ac140003',
+										nombre_oferta: 'Hotel Paraíso 2',
+										detalles: [
+											{
+												id_tipo_detalle:
+													'e4a9a9ef-9a3b-11ef-9129-0242ac140007',
+												nombre_tipo_detalle:
+													'Habitación triple',
+											},
+											{
+												id_tipo_detalle:
+													'90d79d56-9fb9-11ef-b3ca-0242ac140003',
+												nombre_tipo_detalle:
+													'Habitación simple',
+											},
+										],
+									},
+								],
 							},
 						},
 					},
