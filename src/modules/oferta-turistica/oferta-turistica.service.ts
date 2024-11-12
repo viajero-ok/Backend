@@ -485,4 +485,10 @@ export class OfertaTuristicaService {
 
 		return { resultado: 'ok', statusCode: 200, ofertas_guardadas: result };
 	}
+
+	async obtenerUbicacionesPorCoincidencia(texto: string) {
+		return await this.ofertaTuristicaRepositoryService.obtenerUbicacionesPorCoincidencia(
+			texto,
+		);
+	}
 }

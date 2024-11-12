@@ -279,4 +279,12 @@ export class OfertaTuristicaRepositoryService {
 		);
 		return result[0];
 	}
+
+	async obtenerUbicacionesPorCoincidencia(texto: string) {
+		const result = await this.entityManager.query(
+			'CALL SP_BUSCAR_UBICACIONES(?)',
+			[texto],
+		);
+		return result[0];
+	}
 }

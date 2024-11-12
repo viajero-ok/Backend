@@ -29,8 +29,8 @@ export class ReservasRepositoryService {
 			ofertas: [],
 		};
 		const result = await this.entityManager.query(
-			'CALL SP_OBT_RESERVAS_PRESTADOR(?)',
-			[id_usuario],
+			'CALL SP_OBT_RESERVAS_PRESTADOR(?, ?)',
+			[id_usuario, 1],
 		);
 		resultados.estados_reserva = result[0];
 		resultados.reservas = result[1];
