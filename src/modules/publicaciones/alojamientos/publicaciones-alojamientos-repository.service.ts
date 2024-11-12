@@ -28,6 +28,7 @@ export class PublicacionesAlojamientosRepositoryService {
 
 		const fechaHasta = new Date(registrarTarifasDto.fecha_hasta);
 		fechaHasta.setHours(0, 0, 0, 0);
+		console.log(fechaDesde, fechaHasta);
 
 		const result = await this.entityManager.query(
 			'CALL SP_ABM_TARIFA_X_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',

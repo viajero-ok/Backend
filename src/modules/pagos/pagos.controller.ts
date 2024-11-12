@@ -8,7 +8,6 @@ import {
 } from '@nestjs/swagger';
 import { Public } from 'src/common/decorators/public/public.decorator';
 import { Response } from 'express';
-import { RegistrarPagoDto } from './dto/registrar-pago.dto';
 
 @ApiBearerAuth()
 @ApiTags('Mercado Pago')
@@ -74,12 +73,4 @@ export class PagosController {
 	async failure(@Req() req) {
 		return this.pagosService.failure(req);
 	} */
-
-	@Get('registrar-pago')
-	async registrarPago(
-		@Query() registrarPagoDto: RegistrarPagoDto,
-		@Res() res: Response,
-	) {
-		return this.pagosService.registrarPago(registrarPagoDto, res);
-	}
 }

@@ -5,7 +5,6 @@ import { v4 as uuidv4 } from 'uuid';
 import * as crypto from 'crypto';
 import { Response } from 'express';
 import { ExceptionHandlingService } from 'src/common/services/exception-handler.service';
-import { RegistrarPagoDto } from './dto/registrar-pago.dto';
 
 @Injectable()
 export class PagosService {
@@ -222,9 +221,6 @@ export class PagosService {
 	}
 
 	async notification(req) {
-		console.log('REQUEST QUERY', req.query);
-		console.log('****REQUEST****', req);
-
 		// Determinar el tipo de notificación
 		if (req.query.type === 'payment') {
 			console.log('PAYMENT NOTIFICATION');
@@ -240,34 +236,6 @@ export class PagosService {
 			const merchant_order_id = req.query.data.id;
 			// Aquí puedes agregar la lógica para manejar merchant_orders
 			console.log('MERCHANT ORDER ID', merchant_order_id);
-		}
-	}
-
-	async externalReference(external_reference: string) {
-		console.log('EXTERNAL REFERENCE', external_reference);
-		const client = new MercadoPagoConfig({
-			accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN,
-		});
-		const payment = new Payment(client);
-		const response = await payment.search({
-			options: {
-				external_reference: external_reference,
-			},
-		});
-		console.log('RESPONSE', response);
-	}
-
-	async registrarPago(registrarPagoDto: RegistrarPagoDto, res: Response) {
-		console.log('REGISTRAR PAGO', registrarPagoDto);
-		if (registrarPagoDto.status === 'approved') {
-			await this.pagosRepositoryService.registrarPago(registrarPagoDto);
-			return res.redirect(
-				`https://dev.viajeroturismo.com.ar/home?status=success`,
-			);
-		} else {
-			return res.redirect(
-				`${process.env.FRONT_MIS_RESERVAS_URL}?status=failure`,
-			);
 		}
 	}
 }
