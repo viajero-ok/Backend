@@ -81,7 +81,13 @@ export class PagosService {
 			id_usuario: req.user.id_usuario,
 		});
 
-		return { url: response.init_point, preference_id: response.id };
+		const pk_mp = process.env.MERCADO_PAGO_PUBLIC_KEY;
+
+		return {
+			url: response.init_point,
+			preference_id: response.id,
+			pk_mp: pk_mp,
+		};
 	}
 
 	async solicitarAutorizacionPrestador(id_usuario: string) {
