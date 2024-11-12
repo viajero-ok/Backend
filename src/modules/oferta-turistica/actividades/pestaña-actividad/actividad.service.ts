@@ -110,24 +110,6 @@ export class ActividadService {
 		};
 	}
 
-	async eliminarActividad(req, id_oferta: string) {
-		const result = await this.actividadRepositoryService.eliminarActividad(
-			req.user.id_usuario,
-			id_oferta,
-		);
-
-		this.exceptionHandlingService.handleError(
-			result,
-			'Error al eliminar la actividad',
-			HttpStatus.CONFLICT,
-		);
-
-		return {
-			resultado: 'ok',
-			statusCode: HttpStatus.OK,
-		};
-	}
-
 	async obtenerDatosRegistradosActividad(id_oferta: string) {
 		const result =
 			await this.actividadRepositoryService.obtenerDatosRegistradosActividad(

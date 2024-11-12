@@ -288,33 +288,6 @@ export class ActividadController {
 		);
 	}
 
-	@ApiOperation({ summary: 'ELIMINAR ACTIVIDAD' })
-	@ApiResponse({
-		status: 200,
-		description: 'Actividad eliminada',
-		schema: {
-			type: 'object',
-			properties: {
-				resultado: {
-					type: 'string',
-					example: 'ok',
-				},
-				statusCode: {
-					type: 'number',
-					example: 200,
-				},
-			},
-		},
-	})
-	@UseGuards(OfertaOwnerGuard)
-	@Delete('eliminar-actividad/:id_oferta')
-	async eliminarActividad(
-		@Req() req: Request,
-		@Param('id_oferta') id_oferta: string,
-	) {
-		return await this.actividadService.eliminarActividad(req, id_oferta);
-	}
-
 	@ApiOperation({ summary: 'OBTENER DATOS REGISTRADOS ACTIVIDAD' })
 	@ApiResponse({
 		status: 200,

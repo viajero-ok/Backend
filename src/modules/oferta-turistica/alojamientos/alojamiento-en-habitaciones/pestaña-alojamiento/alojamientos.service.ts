@@ -67,25 +67,6 @@ export class AlojamientosService {
 		return await this.alojamientosRepositoryService.obtenerDatosRegistroAlojamiento();
 	}
 
-	async eliminarAlojamiento(req, id_oferta: string) {
-		const result =
-			await this.alojamientosRepositoryService.eliminarAlojamiento(
-				req.user.id_usuario,
-				id_oferta,
-			);
-
-		this.exceptionHandlingService.handleError(
-			result,
-			'Error al eliminar alojamiento',
-			HttpStatus.CONFLICT,
-		);
-
-		return {
-			resultado: 'ok',
-			statusCode: 200,
-		};
-	}
-
 	async obtenerDatosRegistradosAlojamiento(req, id_oferta: string) {
 		const result =
 			await this.alojamientosRepositoryService.obtenerDatosRegistradosAlojamiento(

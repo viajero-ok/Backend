@@ -10,6 +10,7 @@ import { RegistrarOfertaGuardadaDto } from './dto/guardadas/registrar-oferta-gua
 import * as fs from 'fs/promises';
 import { ConsultarOfertaDto } from './dto/consultar-oferta.dto';
 import { ConsultarResumenOfertaDto } from './dto/consultar-resumen-oferta.dto';
+import { EliminarOfertaDto } from './dto/eliminar-oferta.dto';
 
 @Injectable()
 export class OfertaTuristicaService {
@@ -51,6 +52,22 @@ export class OfertaTuristicaService {
 			statusCode: 201,
 			id_oferta: result.id_oferta,
 		};
+	}
+
+	async eliminarOfertaTuristica(req, eliminarOfertaDto: EliminarOfertaDto) {
+		const result =
+			await this.ofertaTuristicaRepositoryService.eliminarOfertaTuristica(
+				req.user.id_usuario,
+				eliminarOfertaDto,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al eliminar oferta turística',
+			HttpStatus.CONFLICT,
+		);
+
+		return { resultado: 'ok', statusCode: 200 };
 	}
 
 	async registrarImagenOfertaTuristica(

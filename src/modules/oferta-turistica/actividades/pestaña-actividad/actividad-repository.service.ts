@@ -151,32 +151,6 @@ export class ActividadRepositoryService {
 		return resultados;
 	}
 
-	async eliminarActividad(id_usuario: string, id_oferta: string) {
-		const result = await this.entityManager.query(
-			'CALL SP_ABM_ACTIVIDAD(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-			[
-				id_oferta,
-				null,
-				null,
-				null,
-				null,
-				null,
-				id_usuario,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				1,
-			],
-		);
-		return result[0];
-	}
-
 	async obtenerImagenes(id_oferta: string) {
 		const result = await this.entityManager.query(
 			`CALL SP_OBT_IMAGENES_X_OFERTA(?)`,

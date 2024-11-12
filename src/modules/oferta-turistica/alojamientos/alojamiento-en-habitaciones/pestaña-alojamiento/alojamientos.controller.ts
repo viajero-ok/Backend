@@ -261,35 +261,6 @@ export class AlojamientosController {
 		);
 	}
 
-	@ApiOperation({ summary: 'ELIMINAR ALOJAMIENTO' })
-	@ApiResponse({
-		status: 200,
-		schema: {
-			type: 'object',
-			properties: {
-				resultado: {
-					type: 'string',
-					example: 'ok',
-				},
-				statusCode: {
-					type: 'number',
-					example: 200,
-				},
-			},
-		},
-	})
-	@UseGuards(OfertaOwnerGuard)
-	@Delete('eliminar-alojamiento/:id_oferta')
-	async eliminarAlojamiento(
-		@Req() req: Request,
-		@Param('id_oferta') id_oferta: string,
-	) {
-		return await this.alojamientosService.eliminarAlojamiento(
-			req,
-			id_oferta,
-		);
-	}
-
 	@ApiOperation({ summary: 'REGISTRAR HORARIO' })
 	@ApiResponse({
 		status: 200,

@@ -192,29 +192,6 @@ export class AlojamientosRepositoryService {
 		);
 	}
 
-	async eliminarAlojamiento(id_usuario: string, id_oferta: string) {
-		const result = await this.entityManager.query(
-			'CALL SP_ABM_ALOJAMIENTO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-			[
-				id_oferta,
-				null,
-				null,
-				null,
-				null,
-				id_usuario,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				1,
-			],
-		);
-		return result[0][0];
-	}
-
 	async obtenerDatosRegistroAlojamiento() {
 		const caracteristicas = {
 			caracteristicas_espacios_uso_comun: null,

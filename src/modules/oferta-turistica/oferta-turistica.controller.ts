@@ -8,6 +8,7 @@ import {
 	Query,
 	Req,
 	UploadedFile,
+	UseGuards,
 	UseInterceptors,
 } from '@nestjs/common';
 import { OfertaTuristicaService } from './oferta-turistica.service';
@@ -28,7 +29,9 @@ import { RegistrarImagenOfertaDto } from './dto/imagenes/registrar-imagen-oferta
 import { Public } from 'src/common/decorators/public/public.decorator';
 import { RegistrarOfertaGuardadaDto } from './dto/guardadas/registrar-oferta-guardada.dto';
 import { ConsultarOfertaDto } from './dto/consultar-oferta.dto';
+import { OfertaOwnerGuard } from 'src/common/guards/authorization/oferta-owner.guard';
 import { ConsultarResumenOfertaDto } from './dto/consultar-resumen-oferta.dto';
+import { EliminarOfertaDto } from './dto/eliminar-oferta.dto';
 
 @ApiTags('Ofertas Turísticas')
 @ApiBearerAuth()
@@ -143,6 +146,36 @@ export class OfertaTuristicaController {
 		);
 	}
 
+	@ApiOperation({ summary: 'ELIMINAR OFERTA TURÍSTICA' })
+	@ApiResponse({
+		status: 200,
+		description: 'Oferta turística eliminada correctamente',
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 200,
+				},
+			},
+		},
+	})
+	@UseGuards(OfertaOwnerGuard)
+	@Delete('eliminar-oferta-turistica')
+	async eliminarOfertaTuristica(
+		@Req() req: Request,
+		@Body() eliminarOfertaDto: EliminarOfertaDto,
+	) {
+		return await this.ofertaTuristicaService.eliminarOfertaTuristica(
+			req,
+			eliminarOfertaDto,
+		);
+	}
+
 	@ApiOperation({ summary: 'REGISTRAR IMAGEN OFERTA TURÍSTICA' })
 	@ApiResponse({
 		status: 201,
@@ -181,6 +214,7 @@ export class OfertaTuristicaController {
 		},
 	})
 	@ApiConsumes('multipart/form-data')
+	@UseGuards(OfertaOwnerGuard)
 	@UseInterceptors(FileInterceptor('imagen', multerOfertaConfig))
 	@Post('registrar-imagen-oferta-turistica')
 	async registrarImagenOfertaTuristica(

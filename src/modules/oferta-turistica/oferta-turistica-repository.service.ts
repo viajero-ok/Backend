@@ -8,6 +8,7 @@ import { RegistrarImagenOfertaDto } from './dto/imagenes/registrar-imagen-oferta
 import { RegistrarOfertaGuardadaDto } from './dto/guardadas/registrar-oferta-guardada.dto';
 import { ConsultarOfertaDto } from './dto/consultar-oferta.dto';
 import { ConsultarResumenOfertaDto } from './dto/consultar-resumen-oferta.dto';
+import { EliminarOfertaDto } from './dto/eliminar-oferta.dto';
 
 @Injectable()
 export class OfertaTuristicaRepositoryService {
@@ -44,6 +45,58 @@ export class OfertaTuristicaRepositoryService {
 				id_usuario,
 			],
 		);
+		return result[0][0];
+	}
+
+	async eliminarOfertaTuristica(
+		id_usuario: string,
+		eliminarOfertaDto: EliminarOfertaDto,
+	) {
+		let result;
+		if (eliminarOfertaDto.id_tipo_oferta === 1) {
+			result = await this.entityManager.query(
+				'CALL SP_ABM_ALOJAMIENTO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				[
+					eliminarOfertaDto.id_oferta,
+					null,
+					null,
+					null,
+					null,
+					id_usuario,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					1,
+				],
+			);
+		} else if (eliminarOfertaDto.id_tipo_oferta === 2) {
+			result = await this.entityManager.query(
+				'CALL SP_ABM_ACTIVIDAD(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				[
+					eliminarOfertaDto.id_oferta,
+					null,
+					null,
+					null,
+					null,
+					null,
+					id_usuario,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					1,
+				],
+			);
+		}
 		return result[0][0];
 	}
 
