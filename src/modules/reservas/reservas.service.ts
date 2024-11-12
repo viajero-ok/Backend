@@ -39,6 +39,8 @@ export class ReservasService {
 			HttpStatus.CONFLICT,
 		);
 
+		console.log('RESULTADO RESERVAS', result.detalles_reserva);
+
 		for (const reserva of result.reservas) {
 			const detalles_reserva = result.detalles_reserva
 				.filter((detalle) => detalle.id_reserva === reserva.id_reserva)
@@ -54,11 +56,33 @@ export class ReservasService {
 			reserva.detalles_reserva = detalles_reserva;
 		}
 
-		result.detalles_reserva = result.detalles_reserva.map((detalle) => ({
-			id_oferta_turistica: detalle.id_oferta_turistica,
-			id_tipo_detalle: detalle.id_tipo_detalle,
-			nombre_tipo_detalle: detalle.nombre_tipo_detalle,
-		}));
+		// Crear nueva estructura agrupada por id_oferta_turistica
+		const detallesAgrupados = result.detalles_reserva.reduce(
+			(acc, detalle) => {
+				if (!acc[detalle.id_oferta_turistica]) {
+					acc[detalle.id_oferta_turistica] = {
+						id_oferta: detalle.id_oferta_turistica,
+						nombre_oferta: detalle.nombre_oferta,
+						detalles: [],
+					};
+				}
+				if (
+					!acc[detalle.id_oferta_turistica].detalles.some(
+						(d) => d.id_tipo_detalle === detalle.id_tipo_detalle,
+					)
+				) {
+					acc[detalle.id_oferta_turistica].detalles.push({
+						id_tipo_detalle: detalle.id_tipo_detalle,
+						nombre_tipo_detalle: detalle.nombre_tipo_detalle,
+					});
+				}
+
+				return acc;
+			},
+			{},
+		);
+
+		result.detalles_reserva = Object.values(detallesAgrupados);
 
 		return result;
 	}
