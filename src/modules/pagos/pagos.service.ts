@@ -5,12 +5,14 @@ import { v4 as uuidv4 } from 'uuid';
 import * as crypto from 'crypto';
 import { Response } from 'express';
 import { ExceptionHandlingService } from 'src/common/services/exception-handler.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class PagosService {
 	constructor(
 		private readonly pagosRepositoryService: PagosRepositoryService,
 		private readonly exceptionHandlingService: ExceptionHandlingService,
+		private readonly eventEmitter: EventEmitter2,
 	) {}
 
 	async generarOrden(req, id_reserva: string) {
@@ -231,6 +233,24 @@ export class PagosService {
 			});
 			const payment = await new Payment(client).get({ id: id_pago });
 			console.log('PAYMENT RESPONSE', payment);
+			const result =
+				await this.pagosRepositoryService.registrarPago(payment);
+			console.log('RESULT', result);
+
+			//enviar evento de mail
+			this.eventEmitter.emit(
+				'reserva.pagada',
+				result.nombre_turista,
+				result.apellido_turista,
+				result.nombre_prestador,
+				result.apellido_prestador,
+				result.mail_turista,
+				result.mail_prestador,
+				result.monto_final,
+				result.fecha_inicio,
+				result.fecha_fin,
+				result.nombre_oferta,
+			);
 		} else if (req.query.type === 'merchant_order') {
 			console.log('MERCHANT ORDER NOTIFICATION');
 			const merchant_order_id = req.query.data.id;

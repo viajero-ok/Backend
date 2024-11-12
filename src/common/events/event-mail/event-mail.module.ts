@@ -60,4 +60,93 @@ export class EventMailModule {
 			},
 		});
 	}
+
+	@OnEvent('reserva.created')
+	async handleReservaCreatedEvent(
+		mailTurista: string,
+		mailPrestador: string,
+		nombreTurista: string,
+		razonSocialPrestador: string,
+		urlPago: string,
+		detallesReserva: {
+			fechaInicio: string;
+			fechaFin: string;
+			nombreExperiencia: string;
+			precio: number;
+		},
+	) {
+		// Envío de correo al turista
+		await this.mailService.sendMail({
+			from: '"Viajero" <hi@viajeroturismo.com.ar>',
+			to: mailTurista,
+			subject: 'Confirmación de tu reserva 🧉',
+			template: 'confirmacion-reserva-turista',
+			context: {
+				nombre: nombreTurista,
+				prestador: razonSocialPrestador,
+				urlPago,
+				...detallesReserva,
+			},
+		});
+
+		// Envío de correo al prestador
+		await this.mailService.sendMail({
+			from: '"Viajero" <hi@viajeroturismo.com.ar>',
+			to: mailPrestador,
+			subject: 'Nueva reserva recibida 🧉',
+			template: 'confirmacion-reserva-prestador',
+			context: {
+				nombreTurista,
+				razonSocial: razonSocialPrestador,
+				...detallesReserva,
+			},
+		});
+	}
+
+	@OnEvent('reserva.pagada')
+	async handleReservaPagadaEvent(
+		nombreTurista: string,
+		apellidoTurista: string,
+		nombrePrestador: string,
+		apellidoPrestador: string,
+		mailTurista: string,
+		mailPrestador: string,
+		montoFinal: number,
+		fechaInicio: string,
+		fechaFin: string,
+		nombreOferta: string,
+	) {
+		// Envío de correo al turista
+		await this.mailService.sendMail({
+			from: '"Viajero" <hi@viajeroturismo.com.ar>',
+			to: mailTurista,
+			subject: 'Pago confirmado de tu reserva 🧉',
+			template: 'pago-confirmado-turista',
+			context: {
+				nombre: nombreTurista,
+				apellido: apellidoTurista,
+				prestador: `${nombrePrestador} ${apellidoPrestador}`,
+				fechaInicio,
+				fechaFin,
+				nombreExperiencia: nombreOferta,
+				precio: montoFinal,
+			},
+		});
+
+		// Envío de correo al prestador
+		await this.mailService.sendMail({
+			from: '"Viajero" <hi@viajeroturismo.com.ar>',
+			to: mailPrestador,
+			subject: 'Pago recibido por reserva 🧉',
+			template: 'pago-confirmado-prestador',
+			context: {
+				nombreTurista: `${nombreTurista} ${apellidoTurista}`,
+				razonSocial: `${nombrePrestador} ${apellidoPrestador}`,
+				fechaInicio,
+				fechaFin,
+				nombreExperiencia: nombreOferta,
+				precio: montoFinal,
+			},
+		});
+	}
 }
