@@ -67,9 +67,15 @@ export class PagosRepositoryService {
 			[id_reserva],
 		);
 		console.log('RESULT', result);
-		resultados.items = result[0];
-		if (result[1][0].access_token)
+
+		if (result[0]) {
+			resultados.items = result[0];
+		}
+
+		if (result[1]?.length > 0 && result[1][0]?.access_token) {
 			resultados.access_token = result[1][0].access_token;
+		}
+
 		return resultados;
 	}
 
