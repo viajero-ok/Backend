@@ -31,6 +31,16 @@ export class ReservasController {
 		);
 	}
 
+	@ApiOperation({ summary: 'OBTENER RESERVAS POR PRESTADOR' })
+	@ApiResponse({
+		status: 200,
+		description: 'Reservas obtenidas correctamente',
+	})
+	@Get('obtener-reservas-por-prestador')
+	async obtenerReservasPorPrestador(@Req() req: Request) {
+		return await this.reservasService.obtenerReservasPorPrestador(req);
+	}
+
 	@ApiOperation({ summary: 'RESERVAR ALOJAMIENTO' })
 	@ApiResponse({
 		status: 201,

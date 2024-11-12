@@ -27,6 +27,21 @@ export class ReservasService {
 		return { resultado: 'ok', statusCode: 200, ofertas_reservadas: result };
 	}
 
+	async obtenerReservasPorPrestador(req) {
+		const result =
+			await this.reservasRepositoryService.obtenerReservasPorPrestador(
+				req.user.id_usuario,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al obtener reservas por prestador',
+			HttpStatus.CONFLICT,
+		);
+
+		return result;
+	}
+
 	async reservarAlojamiento(
 		req,
 		registrarReservaDto: RegistrarReservaAlojamientoDto,

@@ -20,6 +20,14 @@ export class ReservasRepositoryService {
 		return result[0];
 	}
 
+	async obtenerReservasPorPrestador(id_usuario: string) {
+		const result = await this.entityManager.query(
+			'CALL SP_OBT_RESERVAS_PRESTADOR(?)',
+			[id_usuario],
+		);
+		return result[0];
+	}
+
 	async obtenerDatosRegistradosTarifa(id_oferta: string) {
 		const result = await this.entityManager.query(
 			'CALL SP_OBT_TARIFAS_X_OFERTA(?)',
