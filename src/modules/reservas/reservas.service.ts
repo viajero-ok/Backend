@@ -193,27 +193,39 @@ export class ReservasService {
 			const id_detalle =
 				(detalle as any).id_tipo_detalle ||
 				(detalle as any).id_tipo_entrada;
-			console.log('ID DETALLE', id_detalle);
+			console.log('ID DETALLE RESERVA', id_detalle);
 			if (!tarifas_por_detalle.has(id_detalle)) {
 				const tarifas_encontradas = tarifas.filter((tarifa) => {
 					const id_detalle_tarifa =
 						(tarifa as any).id_tipo_detalle ||
 						(tarifa as any).id_tipo_entrada;
+					console.log('ID DETALLE TARIFA', id_detalle_tarifa);
 					console.log(
 						'FECHA DESDE',
-						new Date(registrarReservaDto.fecha_desde).getDate(),
+						new Date(registrarReservaDto.fecha_desde).getTime(),
 					);
 					console.log(
 						'FECHA HASTA',
-						new Date(registrarReservaDto.fecha_hasta).getDate(),
+						new Date(registrarReservaDto.fecha_hasta).getTime(),
 					);
 					console.log(
 						'TARIFA FECHA DESDE',
-						new Date(tarifa.fecha_desde).getDate(),
+						new Date(tarifa.fecha_desde).getTime(),
 					);
 					console.log(
 						'TARIFA FECHA HASTA',
-						new Date(tarifa.fecha_hasta).getDate(),
+						new Date(tarifa.fecha_hasta).getTime(),
+					);
+					console.log('DETALLE', id_detalle === id_detalle_tarifa);
+					console.log(
+						'FECHA DESDE',
+						new Date(registrarReservaDto.fecha_desde).getTime() >=
+							new Date(tarifa.fecha_desde).getTime(),
+					);
+					console.log(
+						'FECHA HASTA',
+						new Date(registrarReservaDto.fecha_hasta).getTime() <=
+							new Date(tarifa.fecha_hasta).getTime(),
 					);
 					return (
 						id_detalle === id_detalle_tarifa &&
