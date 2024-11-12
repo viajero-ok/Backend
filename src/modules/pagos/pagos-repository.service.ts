@@ -114,7 +114,7 @@ export class PagosRepositoryService {
 	async registrarPago(datos_pago: any) {
 		console.log(datos_pago);
 		const result = await this.entityManager.query(
-			'CALL SP_REGISTRAR_PAGO_RESERVA(?, ?, ?, ?, ?, ?)',
+			'CALL SP_REGISTRAR_PAGO_RESERVA(?, ?, ?, ?, ?, ?, ?, ?)',
 			[
 				datos_pago.id,
 				datos_pago.external_reference,
