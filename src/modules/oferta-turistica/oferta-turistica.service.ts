@@ -225,6 +225,7 @@ export class OfertaTuristicaService {
 		resultado.domicilio.sin_numero =
 			resultado.domicilio.sin_numero === 1 ? true : false;
 
+		console.log('RESULTADO', resultado);
 		// Agrupar los detalles por tipo
 		let detallesAgrupados = [];
 		if (resultado.tipos_detalles.length > 0) {
