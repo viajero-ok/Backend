@@ -68,7 +68,8 @@ export class PagosRepositoryService {
 		);
 		console.log('RESULT', result);
 		resultados.items = result[0];
-		resultados.access_token = result[1][0].access_token;
+		if (result[1][0].access_token)
+			resultados.access_token = result[1][0].access_token;
 		return resultados;
 	}
 

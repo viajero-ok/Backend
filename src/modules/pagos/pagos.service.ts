@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PagosRepositoryService } from './pagos-repository.service';
 import { MercadoPagoConfig, Preference, Payment } from 'mercadopago';
 import { v4 as uuidv4 } from 'uuid';
@@ -20,6 +20,15 @@ export class PagosService {
 				id_reserva,
 			);
 		console.log('DATOS PREFERENCIA', datos_preferencia);
+		if (!datos_preferencia.access_token) {
+			throw new HttpException(
+				{
+					message: 'Error al obtener Access Token',
+					statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+				},
+				HttpStatus.INTERNAL_SERVER_ERROR,
+			);
+		}
 
 		this.exceptionHandlingService.handleError(
 			datos_preferencia,
@@ -72,7 +81,7 @@ export class PagosService {
 			id_usuario: req.user.id_usuario,
 		});
 
-		return /* { url: */ response /* .init_point } */;
+		return { url: response.init_point, preference_id: response.id };
 	}
 
 	async solicitarAutorizacionPrestador(id_usuario: string) {
