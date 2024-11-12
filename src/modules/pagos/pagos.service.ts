@@ -156,7 +156,7 @@ export class PagosService {
 			code: code,
 			redirect_uri: `${redirect_uri}`,
 			state: uuidv4(),
-			test_token: 'true',
+			test_token: 'false',
 		});
 
 		try {
