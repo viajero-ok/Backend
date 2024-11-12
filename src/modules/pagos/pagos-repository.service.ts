@@ -66,6 +66,7 @@ export class PagosRepositoryService {
 			'CALL SP_OBT_DATOS_PREFERENCIA(?)',
 			[id_reserva],
 		);
+		console.log('RESULT', result);
 		resultados.items = result[0];
 		resultados.access_token = result[1][0].access_token;
 		return resultados;
