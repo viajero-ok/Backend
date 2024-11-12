@@ -35,6 +35,127 @@ export class ReservasController {
 	@ApiResponse({
 		status: 200,
 		description: 'Reservas obtenidas correctamente',
+		schema: {
+			type: 'object',
+			properties: {
+				estados_reserva: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_estado: { type: 'number', example: 7 },
+							nombre_estado: {
+								type: 'string',
+								example: 'Pendiente de pago',
+							},
+						},
+					},
+				},
+				reservas: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_reserva: {
+								type: 'string',
+								example: '271185d8-a09e-11ef-82ba-0242ac140003',
+							},
+							fecha_inicio: {
+								type: 'string',
+								format: 'date-time',
+								example: '2024-12-05T03:00:00.000Z',
+							},
+							fecha_fin: {
+								type: 'string',
+								format: 'date-time',
+								example: '2024-12-07T03:00:00.000Z',
+							},
+							monto_final: { type: 'string', example: '0.00' },
+							id_oferta_turistica: {
+								type: 'string',
+								example: '2b1f6c72-9fb9-11ef-b3ca-0242ac140003',
+							},
+							nombre_oferta: {
+								type: 'string',
+								example: 'Hotel Paraíso 2',
+							},
+							descripcion_oferta: {
+								type: 'string',
+								example: 'Un hermoso hotel con vista al mar',
+							},
+							id_tipo_oferta: { type: 'number', example: 1 },
+							tipo_oferta: {
+								type: 'string',
+								example: 'Alojamiento',
+							},
+							id_sub_tipo_oferta: { type: 'number', example: 1 },
+							sub_tipo_oferta: {
+								type: 'string',
+								example: 'En habitaciones',
+							},
+							id_estado_reserva: { type: 'number', example: 7 },
+							estado_reserva: {
+								type: 'string',
+								example: 'Pendiente de pago',
+							},
+							id_turista: {
+								type: 'string',
+								example: 'f0223886-8590-11ef-8ae1-0242ac140002',
+							},
+							nombre_turista: {
+								type: 'string',
+								example: 'Federico',
+							},
+							apellido_turista: {
+								type: 'string',
+								example: 'Cañete',
+							},
+						},
+					},
+				},
+				detalles_reserva: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_reserva: {
+								type: 'string',
+								example: 'c5ce8267-a0a1-11ef-82ba-0242ac140003',
+							},
+							id_oferta_turistica: {
+								type: 'string',
+								example: '2b1f6c72-9fb9-11ef-b3ca-0242ac140003',
+							},
+							id_tipo_detalle: {
+								type: 'string',
+								example: 'e4a9a9ef-9a3b-11ef-9129-0242ac140007',
+							},
+							nombre_tipo_detalle: {
+								type: 'string',
+								example: 'Habitación triple',
+							},
+							id_tipo_entrada: { type: 'string', nullable: true },
+							nombre_tipo_entrada: {
+								type: 'string',
+								nullable: true,
+							},
+							cantidad_detalle_entrada: {
+								type: 'number',
+								example: 1,
+							},
+							precio_unitario: {
+								type: 'string',
+								example: '0.00',
+							},
+							monto_total_detalle: {
+								type: 'string',
+								example: '0.00',
+							},
+						},
+					},
+				},
+			},
+		},
 	})
 	@Get('obtener-reservas-por-prestador')
 	async obtenerReservasPorPrestador(@Req() req: Request) {

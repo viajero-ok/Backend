@@ -214,7 +214,6 @@ export class OfertaTuristicaController {
 		},
 	})
 	@ApiConsumes('multipart/form-data')
-	@UseGuards(OfertaOwnerGuard)
 	@UseInterceptors(FileInterceptor('imagen', multerOfertaConfig))
 	@Post('registrar-imagen-oferta-turistica')
 	async registrarImagenOfertaTuristica(
