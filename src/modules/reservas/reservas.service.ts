@@ -206,46 +206,64 @@ export class ReservasService {
 					const id_detalle_tarifa =
 						(tarifa as any).id_tipo_detalle ||
 						(tarifa as any).id_tipo_entrada;
+					const fecha_desde_reserva = new Date(
+						registrarReservaDto.fecha_desde,
+					);
+					const fecha_hasta_reserva = new Date(
+						registrarReservaDto.fecha_hasta,
+					);
+					const fecha_desde_tarifa = new Date(tarifa.fecha_desde);
+					const fecha_hasta_tarifa = new Date(tarifa.fecha_hasta);
+
+					//setear horas a 0
+					fecha_desde_reserva.setHours(0, 0, 0, 0);
+					fecha_hasta_reserva.setHours(0, 0, 0, 0);
+					fecha_desde_tarifa.setHours(0, 0, 0, 0);
+					fecha_hasta_tarifa.setHours(0, 0, 0, 0);
+
 					console.log('ID DETALLE TARIFA', id_detalle_tarifa);
-					console.log(
-						'FECHA DESDE',
-						new Date(registrarReservaDto.fecha_desde).getTime(),
-					);
-					console.log(
-						'FECHA HASTA',
-						new Date(registrarReservaDto.fecha_hasta).getTime(),
-					);
+					console.log('FECHA DESDE', fecha_desde_reserva.getTime());
+					console.log('FECHA HASTA', fecha_hasta_reserva.getTime());
 					console.log(
 						'TARIFA FECHA DESDE',
-						new Date(tarifa.fecha_desde).getTime(),
+						fecha_desde_tarifa.getTime(),
 					);
 					console.log(
 						'TARIFA FECHA HASTA',
-						new Date(tarifa.fecha_hasta).getTime(),
+						fecha_hasta_tarifa.getTime(),
 					);
 					console.log('DETALLE', id_detalle === id_detalle_tarifa);
 					console.log(
 						'FECHA DESDE',
-						new Date(registrarReservaDto.fecha_desde).getTime() >=
-							new Date(tarifa.fecha_desde).getTime(),
+						fecha_desde_reserva.getTime() >=
+							fecha_desde_tarifa.getTime(),
 					);
 					console.log(
 						'FECHA HASTA',
-						new Date(registrarReservaDto.fecha_hasta).getTime() <=
-							new Date(tarifa.fecha_hasta).getTime(),
+						fecha_hasta_reserva.getTime() <=
+							fecha_hasta_tarifa.getTime(),
 					);
 					return (
 						id_detalle === id_detalle_tarifa &&
-						new Date(registrarReservaDto.fecha_desde).getTime() >=
-							new Date(tarifa.fecha_desde).getTime() &&
-						new Date(registrarReservaDto.fecha_hasta).getTime() <=
-							new Date(tarifa.fecha_hasta).getTime()
+						fecha_desde_reserva.getTime() >=
+							fecha_desde_tarifa.getTime() &&
+						fecha_hasta_reserva.getTime() <=
+							fecha_hasta_tarifa.getTime()
 					);
 				});
 				console.log('TARIFAS ENCONTRADAS', tarifas_encontradas);
 
 				if (tarifas_encontradas.length > 0) {
 					tarifas_por_detalle.set(id_detalle, tarifas_encontradas);
+				} else {
+					throw new HttpException(
+						{
+							message:
+								'No hay tarifas disponibles para el detalle',
+							statusCode: HttpStatus.BAD_REQUEST,
+						},
+						HttpStatus.BAD_REQUEST,
+					);
 				}
 			}
 		}
