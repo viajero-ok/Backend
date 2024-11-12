@@ -256,6 +256,15 @@ export class ReservasService {
 		let precio_total = 0;
 		const subtotales_por_detalle = new Map();
 
+		const fecha_desde_reserva = new Date(registrarReservaDto.fecha_desde);
+		const fecha_hasta_reserva = new Date(registrarReservaDto.fecha_hasta);
+		fecha_desde_reserva.setHours(0, 0, 0, 0);
+		fecha_hasta_reserva.setHours(0, 0, 0, 0);
+		const cantidad_noches = Math.ceil(
+			(fecha_hasta_reserva.getTime() - fecha_desde_reserva.getTime()) /
+				(1000 * 60 * 60 * 24),
+		);
+
 		for (const detalle of registrarReservaDto.detalles) {
 			const id_detalle =
 				(detalle as any).id_tipo_detalle ||
@@ -340,7 +349,7 @@ export class ReservasService {
 
 		for (
 			let fecha_actual = fecha_inicio;
-			fecha_actual <= fecha_fin;
+			fecha_actual < fecha_fin;
 			fecha_actual.setDate(fecha_actual.getDate() + 1)
 		) {
 			for (const detalle of registrarReservaDto.detalles) {
@@ -364,6 +373,11 @@ export class ReservasService {
 						if (isNaN(subtotal_dia)) {
 							subtotal_dia = 0;
 						}
+						console.log('SUBTOTAL DÍA', subtotal_dia);
+						console.log(
+							'SUBTOTAL DETALLE',
+							subtotales_por_detalle.get(id_detalle),
+						);
 						subtotales_por_detalle.set(
 							id_detalle,
 							subtotales_por_detalle.get(id_detalle) +
@@ -374,6 +388,9 @@ export class ReservasService {
 				}
 			}
 		}
+		/* for (const [id_detalle, subtotal] of subtotales_por_detalle) {
+			subtotales_por_detalle.set(id_detalle, subtotal / cantidad_noches);
+		} */
 
 		return {
 			precio_total,
