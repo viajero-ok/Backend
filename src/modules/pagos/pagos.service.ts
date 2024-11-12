@@ -191,7 +191,7 @@ export class PagosService {
 
 	async notification(req) {
 		console.log('REQUEST QUERY', req.query);
-		console.log('REQ QUERY ID', req.query.id);
+		console.log('****REQUEST****', req);
 
 		// Determinar el tipo de notificación
 		if (req.query.type === 'payment') {
