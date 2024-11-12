@@ -154,6 +154,42 @@ export class ReservasController {
 						},
 					},
 				},
+				turistas: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_turista: {
+								type: 'string',
+								example: '2ac0a66c-576e-11ef-8d6a-0242ac140002',
+							},
+							nombre_turista: {
+								type: 'string',
+								example: 'Mariano',
+							},
+							apellido_turista: {
+								type: 'string',
+								example: 'Luque',
+							},
+						},
+					},
+				},
+				ofertas: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_oferta_turistica: {
+								type: 'string',
+								example: '0232c8de-9b26-11ef-9129-0242ac140007',
+							},
+							nombre_oferta: {
+								type: 'string',
+								example: 'Senderismo en la Sierra Nevada',
+							},
+						},
+					},
+				},
 			},
 		},
 	})

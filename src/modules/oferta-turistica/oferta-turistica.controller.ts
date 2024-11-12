@@ -695,4 +695,12 @@ export class OfertaTuristicaController {
 			id_oferta_guardada,
 		);
 	}
+
+	@ApiOperation({ summary: 'OBTENER UBICACIONES POR COINCIDENCIA' })
+	@Get('obtener-ubicaciones-por-coincidencia')
+	async obtenerUbicacionesPorCoincidencia(@Query() texto: string) {
+		/* return await this.ofertaTuristicaService.obtenerUbicacionesPorCoincidencia(
+			consultarUbicacionesDto,
+		); */
+	}
 }

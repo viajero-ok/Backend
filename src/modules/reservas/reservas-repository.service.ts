@@ -25,14 +25,18 @@ export class ReservasRepositoryService {
 			estados_reserva: [],
 			reservas: [],
 			detalles_reserva: [],
+			turistas: [],
+			ofertas: [],
 		};
 		const result = await this.entityManager.query(
 			'CALL SP_OBT_RESERVAS_PRESTADOR(?)',
 			[id_usuario],
 		);
 		resultados.estados_reserva = result[0];
-		resultados.reservas = result[1][0];
-		resultados.detalles_reserva = result[2][0];
+		resultados.reservas = result[1];
+		resultados.detalles_reserva = result[2];
+		resultados.turistas = result[3];
+		resultados.ofertas = result[4];
 		return resultados;
 	}
 
