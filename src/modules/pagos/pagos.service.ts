@@ -63,7 +63,7 @@ export class PagosService {
 				expires: true,
 				expiration_date_from: expiration_date_from,
 				expiration_date_to: expiration_date_to,
-				/* marketplace_fee: 2, */
+				marketplace_fee: 2,
 				statement_descriptor: 'viajero',
 				marketplace: 'viajero',
 				notification_url: `${process.env.NOTIFICATION_URL}`,
