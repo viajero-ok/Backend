@@ -366,117 +366,149 @@ export class OfertaTuristicaController {
 		schema: {
 			type: 'object',
 			properties: {
-				resultado: {
-					type: 'string',
-					example: 'ok',
+				datos_basicos: {
+					type: 'object',
+					properties: {
+						id_oferta_turistica: { type: 'string' },
+						nombre: { type: 'string' },
+						descripcion: { type: 'string' },
+						id_tipo_oferta: { type: 'number' },
+						tipo_oferta: { type: 'string' },
+						id_sub_tipo_oferta: { type: 'number' },
+						sub_tipo_oferta: { type: 'string' },
+						id_politica_cancelacion: { type: 'number' },
+						plazo_dias_cancelacion: { type: 'number' },
+						bl_solicita_garantia: { type: 'number' },
+						monto_garantia: { type: 'string' },
+						id_tipo_pago_anticipado: { type: 'number' },
+						porcentaje_pago_anticipado: { type: 'string' },
+						min_dias_estadia: { type: 'number' },
+						noches_estadia: { type: 'number' },
+					},
 				},
-				statusCode: {
-					type: 'number',
-					example: 200,
-				},
-				ofertas: {
+				metodos_pago: {
 					type: 'array',
 					items: {
 						type: 'object',
 						properties: {
-							id_oferta: {
-								type: 'string',
-								example: '67710514-9cb6-11ef-a123-0242ac140007',
-							},
-							nombre_oferta: {
-								type: 'string',
-								example: 'Hotel Paraíso 2',
-							},
-							descripcion: {
-								type: 'string',
-								example: 'Un hermoso hotel con vista al mar',
-							},
-							fecha_alta: {
-								type: 'string',
-								example: '2024-11-07T06:14:30.000Z',
-							},
-							fecha_baja: {
-								type: 'string',
-								nullable: true,
-								example: null,
-							},
-							id_establecimiento: {
-								type: 'number',
-								example: 21,
-							},
-							nombre_establecimiento: {
-								type: 'string',
-								example: 'La Aldea18',
-							},
-							razon_social_prestador: {
-								type: 'string',
-								example: 'La mejor razon social',
-							},
-							id_tipo_oferta: {
-								type: 'number',
-								example: 1,
-							},
-							id_subtipo_oferta: {
-								type: 'number',
-								example: 1,
-							},
-							subtipo_oferta: {
-								type: 'string',
-								example: 'En habitaciones',
-							},
-							garantia_alojamiento: {
-								type: 'string',
-								example: '100.00',
-							},
-							pago_anticipado: {
-								type: 'string',
-								nullable: true,
-								example: null,
-							},
-							porcentaje_pago_anticipado: {
-								type: 'string',
-								example: '10.00',
-							},
-							minimo_dias_estadia: {
-								type: 'number',
-								example: 4,
-							},
-							nombre_calle: {
-								type: 'string',
-								example: 'Punta del Oeste',
-							},
-							nombre_barrio: {
-								type: 'string',
-								nullable: true,
-								example: null,
-							},
-							id_localidad: {
-								type: 'string',
-								example: '1',
-							},
-							localidad: {
-								type: 'string',
-								example: 'Villa Santos Tesei',
-							},
-							id_departamento: {
-								type: 'string',
-								example: '1',
-							},
-							id_provincia: {
-								type: 'string',
-								example: '1',
-							},
-							precios_desde: {
-								type: 'string',
-								example: '34.50',
-							},
-							id_tipo_detalle: {
-								type: 'string',
-								example: '9a41791b-9cb6-11ef-a123-0242ac140007',
-							},
+							id_metodo_pago_oferta: { type: 'number' },
+							id_metodo_pago: { type: 'number' },
+							metodo_pago: { type: 'string' },
 						},
 					},
 				},
+				caracteristicas: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_caracteristica_oferta: { type: 'number' },
+							id_caracteristica: { type: 'number' },
+							caracteristica: { type: 'string' },
+							id_ambito: { type: 'number' },
+							ambito: { type: 'string' },
+						},
+					},
+				},
+				observaciones: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_observacion_oferta: { type: 'number' },
+							observacion: { type: 'string' },
+							id_tipo_observacion: { type: 'number' },
+							tipo_observacion: { type: 'string' },
+						},
+					},
+				},
+				horarios_check_in_out: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_horario: { type: 'number' },
+							check_in_hora: { type: 'number' },
+							check_in_minuto: { type: 'number' },
+							check_out_hora: { type: 'number' },
+							check_out_minuto: { type: 'number' },
+							aplica_lunes: { type: 'number' },
+							aplica_martes: { type: 'number' },
+							aplica_miercoles: { type: 'number' },
+							aplica_jueves: { type: 'number' },
+							aplica_viernes: { type: 'number' },
+							aplica_sabado: { type: 'number' },
+							aplica_domingo: { type: 'number' },
+							cupo_maximo: { type: 'number', nullable: true },
+							cupo_actual: { type: 'number', nullable: true },
+							sin_cupo: { type: 'number', nullable: true },
+						},
+					},
+				},
+				domicilio: {
+					type: 'object',
+					properties: {
+						nombre_calle: { type: 'string' },
+						nombre_barrio: { type: 'string', nullable: true },
+						id_localidad: { type: 'number' },
+						localidad: { type: 'string' },
+						id_departamento: { type: 'number' },
+						id_provincia: { type: 'number' },
+						latitud: { type: 'string' },
+						longitud: { type: 'string' },
+						numero: { type: 'string' },
+						codigo_postal: { type: 'string', nullable: true },
+						lote: { type: 'string', nullable: true },
+						manzana: { type: 'string', nullable: true },
+						piso: { type: 'string', nullable: true },
+						torre: { type: 'string', nullable: true },
+						sin_numero: { type: 'boolean' },
+						id_observacion_oferta: {
+							type: 'number',
+							nullable: true,
+						},
+						observacion: { type: 'string', nullable: true },
+					},
+				},
+				imagenes_oferta: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_imagen: { type: 'number' },
+							ruta_imagen: { type: 'string' },
+							imagen: { type: 'string' },
+						},
+					},
+				},
+				tarifas: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_tarifa: { type: 'number' },
+							id_oferta: { type: 'string' },
+							nombre_oferta: { type: 'string' },
+							id_tipo_detalle: { type: 'string' },
+							nombre_tipo_detalle: { type: 'string' },
+							id_tipo_entrada: { type: 'string', nullable: true },
+							nombre_tipo_entrada: {
+								type: 'string',
+								nullable: true,
+							},
+							descripcion_entrada: {
+								type: 'string',
+								nullable: true,
+							},
+							monto_tarifa: { type: 'string' },
+							fecha_desde: { type: 'string' },
+							fecha_hasta: { type: 'string' },
+							bl_gratis: { type: 'number', nullable: true },
+							id_horario: { type: 'number', nullable: true },
+						},
+					},
+				},
+				precio_total: { type: 'number' },
 			},
 		},
 	})
