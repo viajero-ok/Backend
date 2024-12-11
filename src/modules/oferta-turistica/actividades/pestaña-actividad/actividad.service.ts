@@ -29,6 +29,7 @@ export class ActividadService {
 	}
 
 	async registrarGuia(req, guiaDto: RegistrarGuiaDto) {
+		console.log(guiaDto);
 		const result = await this.actividadRepositoryService.registrarGuia(
 			req.user.id_usuario,
 			guiaDto,

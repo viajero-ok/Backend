@@ -116,6 +116,9 @@ importers:
       uuid:
         specifier: ^10.0.0
         version: 10.0.0
+      validator:
+        specifier: ^13.12.0
+        version: 13.12.0
     devDependencies:
       '@nestjs/cli':
         specifier: ^10.0.0

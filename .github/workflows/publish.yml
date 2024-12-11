@@ -1,109 +1,111 @@
 name: CI CD Backend
 
 on:
-  push: 
-    branches: [dev, test]
+    push:
+        branches: [dev, test]
 
 permissions:
-  contents: write
-  packages: write
+    contents: write
+    packages: write
 
 env:
-  REGISTRY: ghcr.io
-  REPOSITORIO: ${{ github.repository }} # Ejemplo: organizacion_o_usuario/nombre_repositorio
-  RAMA: ${{ github.ref_name }} # Ejemplo: dev
+    REGISTRY: ghcr.io
+    REPOSITORIO: ${{ github.repository }} # Ejemplo: organizacion_o_usuario/nombre_repositorio
+    RAMA: ${{ github.ref_name }} # Ejemplo: dev
 
 jobs:
-  build-and-push:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout del repositorio
-        uses: actions/checkout@v4
+    build-and-push:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout del repositorio
+              uses: actions/checkout@v4
 
-      - name: Login en GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }} # Se debe crear un token de GitHub con permisos de lectura y escritura en paquetes https://docs.github.com/en/actions/security-guides/automatic-token-authentication 
+            - name: Login en GitHub Container Registry
+              uses: docker/login-action@v3
+              with:
+                  registry: ${{ env.REGISTRY }}
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }} # Se debe crear un token de GitHub con permisos de lectura y escritura en paquetes https://docs.github.com/en/actions/security-guides/automatic-token-authentication
 
-      - name: Set lower case repository name
-        run: echo "REPOSITORIO_LC=${REPOSITORIO,,}" >> ${GITHUB_ENV}
+            - name: Set lower case repository name
+              run: echo "REPOSITORIO_LC=${REPOSITORIO,,}" >> ${GITHUB_ENV}
 
-      - name: Build y push de la imagen de Docker
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: Dockerfile.${{ env.RAMA }} # Ejemplo: Dockerfile.dev 
-          push: true
-          tags: ${{ env.REGISTRY }}/${{ env.REPOSITORIO_LC }}:${{ env.RAMA }} # Ejemplo: ghcr.io/organizacion_o_usuario/nombre_repositorio:dev
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build-and-push
-    steps:
-      - name: Install sshpass
-        run: sudo apt-get install -y sshpass
 
-      - name: Checkout del repositorio
-        uses: actions/checkout@v3
-        with:
-          sparse-checkout: |
-            backend.compose.yaml
-          sparse-checkout-cone-mode: false
+            - name: Build y push de la imagen de Docker
+              uses: docker/build-push-action@v6
+              with:
+                  context: .
+                  file: Dockerfile.${{ env.RAMA }} # Ejemplo: Dockerfile.dev
+                  push: true
+                  tags: ${{ env.REGISTRY }}/${{ env.REPOSITORIO_LC }}:${{ env.RAMA }} # Ejemplo: ghcr.io/organizacion_o_usuario/nombre_repositorio:dev
 
-      - name: Crear archivos .env
-        run: |
-          if [[ "${{ env.RAMA }}" == "dev" ]]; then
-            echo "${{ secrets.BACK_DEV_ENV_FILE }}" > .env.backend
-          elif [[ "${{ env.RAMA }}" == "test" ]]; then
-            echo "${{ secrets.BACK_TEST_ENV_FILE }}" > .env.backend
-          else
-            echo "Rama no reconocida: ${{ env.RAMA }}"
-            exit 1
-          fi
+    deploy:
+        runs-on: ubuntu-latest
+        needs: build-and-push
+        steps:
+            - name: Install sshpass
+              run: sudo apt-get install -y sshpass
 
-      - name: Deploy to VPS
-        env:
-          SSH_PASS: ${{ secrets.SSH_PASS }}
-          VPS_USER_Y_HOST: ${{ secrets.VPS_USER_Y_HOST }}
-          VPS_USER: ${{ secrets.VPS_USER }}
-          VPS_HOST: ${{ secrets.VPS_HOST }}
-        run: |
-          sshpass -p ${{ secrets.SSH_PASS }} sftp -o StrictHostKeyChecking=no ${{ secrets.VPS_USER_Y_HOST }} << EOF
-            cd apps/${{ env.RAMA }}
-            put .env.backend
-            put backend.compose.yaml
-            bye
-          EOF
-          sshpass -p ${{ secrets.SSH_PASS }} ssh -o StrictHostKeyChecking=no -v ${{ secrets.VPS_USER_Y_HOST }} "
-            cd apps/${{ env.RAMA }} &&
-            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin &&
-            docker compose --env-file .env.backend -f backend.compose.yaml pull &&
-            docker compose --env-file .env.backend -f backend.compose.yaml up -d
-          "
+            - name: Checkout del repositorio
+              uses: actions/checkout@v3
+              with:
+                  sparse-checkout: |
+                      backend.compose.yaml
+                  sparse-checkout-cone-mode: false
 
-      - name: Send Success Notification to Discord
-        if: success()
-        run: |
-          MENTION="@everyone"
+            - name: Crear archivos .env
+              run: |
+                  if [[ "${{ env.RAMA }}" == "dev" ]]; then
+                    echo "${{ secrets.BACK_DEV_ENV_FILE }}" > .env.backend
+                  elif [[ "${{ env.RAMA }}" == "test" ]]; then
+                    echo "${{ secrets.BACK_TEST_ENV_FILE }}" > .env.backend
+                  else
+                    echo "Rama no reconocida: ${{ env.RAMA }}"
+                    exit 1
+                  fi
 
-          IMAGE_URL="https://i.ibb.co/XXkzSdC/SUCCESS.png"
-          LINK_URL="https://github.com/${{ env.REPOSITORIO }}/actions/runs/${{ github.run_id }}"
+            - name: Deploy to VPS
+              env:
+                  SSH_PASS: ${{ secrets.SSH_PASS }}
+                  VPS_USER_Y_HOST: ${{ secrets.VPS_USER_Y_HOST }}
+                  VPS_USER: ${{ secrets.VPS_USER }}
+                  VPS_HOST: ${{ secrets.VPS_HOST }}
+              run: |
+                  sshpass -p ${{ secrets.SSH_PASS }} sftp -p 2222 -o StrictHostKeyChecking=no ${{ secrets.VPS_USER_Y_HOST }} << EOF
+                    cd apps/${{ env.RAMA }}
+                    put .env.backend
+                    put backend.compose.yaml
+                    bye
+                  EOF
+                  sshpass -p ${{ secrets.SSH_PASS }} ssh -p 2222 -o StrictHostKeyChecking=no -v ${{ secrets.VPS_USER_Y_HOST }} "
+                    cd apps/${{ env.RAMA }} &&
+                    echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin &&
+                    docker compose --env-file .env.backend -f backend.compose.yaml pull &&
+                    docker compose --env-file .env.backend -f backend.compose.yaml up -d
+                  "
 
-          curl -H "Content-Type: application/json" \
-          -X POST \
-          -d "{\"content\": \"✅ Despliegue exitoso para la rama \`${{ github.ref_name }}\` $MENTION\nPara más detalles, haz clic en el enlace a continuación:\", \"embeds\": [{\"title\": \"Más detalles aquí\", \"url\": \"$LINK_URL\", \"image\": {\"url\": \"$IMAGE_URL\"}}]}" \
-          ${{ secrets.DISCORD_WEBHOOK_URL }}
+            - name: Send Success Notification to Discord
+              if: success()
+              run: |
+                  MENTION="@everyone"
 
-      - name: Send Failure Notification to Discord
-        if: failure()
-        run: |
-          MENTION="@everyone"
-          IMAGE_URL="https://i.ibb.co/PjzYgQk/PANIC.png"
-          LINK_URL="https://github.com/${{ env.REPOSITORIO }}/actions/runs/${{ github.run_id }}"
+                  IMAGE_URL="https://i.ibb.co/XXkzSdC/SUCCESS.png"
+                  LINK_URL="https://github.com/${{ env.REPOSITORIO }}/actions/runs/${{ github.run_id }}"
 
-          curl -H "Content-Type: application/json" \
-            -X POST \
-            -d "{\"content\": \"❌ Despliegue fallido para la rama \`${{ github.ref_name }}\` $MENTION\nPara más info haz clic en el enlace a continuación.\", \"embeds\": [{\"title\": \"Más información sobre el error\", \"url\": \"$LINK_URL\", \"image\": {\"url\": \"$IMAGE_URL\"}}]}" \
-            ${{ secrets.DISCORD_WEBHOOK_URL }}
+                  curl -H "Content-Type: application/json" \
+                  -X POST \
+                  -d "{\"content\": \"✅ Despliegue exitoso para la rama \`${{ github.ref_name }}\` $MENTION\nPara más detalles, haz clic en el enlace a continuación:\", \"embeds\": [{\"title\": \"Más detalles aquí\", \"url\": \"$LINK_URL\", \"image\": {\"url\": \"$IMAGE_URL\"}}]}" \
+                  ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+            - name: Send Failure Notification to Discord
+              if: failure()
+              run: |
+                  MENTION="@everyone"
+                  IMAGE_URL="https://i.ibb.co/PjzYgQk/PANIC.png"
+                  LINK_URL="https://github.com/${{ env.REPOSITORIO }}/actions/runs/${{ github.run_id }}"
+
+                  curl -H "Content-Type: application/json" \
+                    -X POST \
+                    -d "{\"content\": \"❌ Despliegue fallido para la rama \`${{ github.ref_name }}\` $MENTION\nPara más info haz clic en el enlace a continuación.\", \"embeds\": [{\"title\": \"Más información sobre el error\", \"url\": \"$LINK_URL\", \"image\": {\"url\": \"$IMAGE_URL\"}}]}" \
+                    ${{ secrets.DISCORD_WEBHOOK_URL }}

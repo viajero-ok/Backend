@@ -13,10 +13,10 @@ export class AuthRepositoryService {
 		private entityManager: EntityManager,
 	) {}
 
-	async obtenerUsuarioPorMail(MAIL: string) {
+	async obtenerUsuarioPorMail(mail: string) {
 		const result = await this.entityManager.query(
 			'CALL SP_OBT_USUARIO_X_EMAIL(?)',
-			[MAIL],
+			[mail],
 		);
 		return result[0][0];
 	}

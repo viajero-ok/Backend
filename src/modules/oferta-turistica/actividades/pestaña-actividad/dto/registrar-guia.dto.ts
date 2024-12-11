@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
+import { SanitizeXSSTransform } from 'src/common/decorators/xss/sanitize-xss.validator';
 
 export class RegistrarGuiaDto {
 	@ApiProperty({
@@ -19,10 +20,11 @@ export class RegistrarGuiaDto {
 	nro_resolucion: string;
 
 	@ApiProperty({
-		description: 'Nombre de la oferta',
-		example: 'Ruta de senderismo',
+		description: 'Nombre del guia',
+		example: 'Franco Colapinto',
 	})
 	@IsString()
 	@IsNotEmpty()
+	@SanitizeXSSTransform()
 	nombre_y_apellido: string;
 }

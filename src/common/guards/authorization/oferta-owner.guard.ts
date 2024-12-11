@@ -1,32 +1,28 @@
+/* eslint-disable prettier/prettier */
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 
 @Injectable()
 export class OfertaOwnerGuard implements CanActivate {
-	constructor(@InjectEntityManager() private entityManager: EntityManager) {}
+	constructor(
+		@InjectEntityManager() private entityManager: EntityManager
+	) {}
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const request = context.switchToHttp().getRequest();
 		const id_usuario = request.user.id_usuario;
+		const id_oferta =
+			request.body?.id_oferta || request.params?.id_oferta;
 
-		const id_oferta = request.body?.id_oferta || request.params?.id_oferta;
+		if (!id_oferta) return false;
 
-		if (!id_oferta) {
-			return false;
-		}
-
-		// Verifica si la oferta pertenece al usuario
 		const resultado = await this.entityManager.query(
-			`CALL SP_LISTAR_IDS_OFERTAS_TURISTICAS_X_USUARIO(?)`,
-			[id_usuario],
+			`SELECT EXISTS( SELECT 1 FROM OFERTAS_TURISTICAS ot
+				INNER JOIN PRESTADORES p ON ot.ID_PRESTADOR = p.ID_PRESTADOR
+				WHERE ot.ID_OFERTA_TURISTICA = ? AND p.ID_USUARIO = ?
+			) as isOwner`, [id_oferta, id_usuario],
 		);
-		const ofertas_usuario = resultado[0];
-
-		const esOwner = ofertas_usuario.some(
-			(oferta) => oferta.id_oferta_turistica === id_oferta,
-		);
-
-		return esOwner;
+		return resultado[0].isOwner === '1';
 	}
 }

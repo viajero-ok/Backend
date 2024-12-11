@@ -31,6 +31,24 @@
 	"editor.fontSize": 13,
 	"debug.console.fontSize": 14,
 	"terminal.integrated.fontSize": 12,
-	"editor.minimap.sectionHeaderFontSize": 9
+	"editor.minimap.sectionHeaderFontSize": 9,
+	//Material Icon Theme nestjs
+	"material-icon-theme.folders.associations": {
+		"src": "src",
+		"public": "public",
+		"entities": "class",
+		"dto": "typescript"
+	},
+	"material-icon-theme.activeIconPack": "nest",
+	"workbench.colorCustomizations": {
+		"editor.background": "#010101",
+		"sideBar.background": "#000000",
+		"materialIcon.foreground": "#ff0000"
+	},
+	"material-icon-theme.files.associations": {
+		"*.interface.ts": "typescript-def"
+	},
+	"[nginx]": {
+		"editor.defaultFormatter": "ahmadalli.vscode-nginx-conf"
+	}
 }
-

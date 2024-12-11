@@ -13,6 +13,29 @@ import { setupSwagger } from './setup-swagger';
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 	app.enableCors({
+		origin: (origin, callback) => {
+			// Lista de dominios permitidos
+			const allowedOrigins = [
+				'https://viajeroturismo.com.ar',
+				/\.viajeroturismo\.com\.ar$/, // Subdominios
+				'https://accounts.google.com',
+				'https://www.mercadopago.com',
+			];
+
+			if (
+				!origin ||
+				allowedOrigins.some((pattern) =>
+					typeof pattern === 'string'
+						? pattern === origin
+						: pattern.test(origin),
+				)
+			) {
+				callback(null, true);
+			} else {
+				callback(new Error('Not allowed by CORS'));
+			}
+		},
+		methods: ['GET', 'POST', 'PUT', 'DELETE'],
 		credentials: true,
 	});
 
