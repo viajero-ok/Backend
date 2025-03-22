@@ -85,6 +85,17 @@ jobs:
                     docker compose --env-file .env.backend -f backend.compose.yaml up -d
                   "
 
+            - name: Cleanup old Docker images
+              if: success()
+              env:
+                  SSH_PASS: ${{ secrets.SSH_PASS }}
+                  VPS_USER_Y_HOST: ${{ secrets.VPS_USER_Y_HOST }}
+              run: |
+                  sshpass -p ${{ secrets.SSH_PASS }} ssh -p 2222 -o StrictHostKeyChecking=no ${{ secrets.VPS_USER_Y_HOST }} "
+                    docker image prune -a -f &&
+                    docker system prune -f
+                  "
+
             - name: Send Success Notification to Discord
               if: success()
               run: |
