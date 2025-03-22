@@ -35,7 +35,7 @@ async function bootstrap() {
 				callback(new Error('Not allowed by CORS'));
 			}
 		}, */
-		origin: '*',
+		origin: true,
 		methods: ['GET', 'POST', 'PUT', 'DELETE'],
 		credentials: true,
 	});
