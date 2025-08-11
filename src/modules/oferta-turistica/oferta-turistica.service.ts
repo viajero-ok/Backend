@@ -491,4 +491,19 @@ export class OfertaTuristicaService {
 			texto,
 		);
 	}
+
+	async obtenerDatosBasicos(_, id_oferta: string) {
+		const result =
+			await this.ofertaTuristicaRepositoryService.obtenerDatosBasicos(
+				id_oferta,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al obtener los datos básicos de la oferta',
+			HttpStatus.CONFLICT,
+		);
+
+		return result;
+	}
 }

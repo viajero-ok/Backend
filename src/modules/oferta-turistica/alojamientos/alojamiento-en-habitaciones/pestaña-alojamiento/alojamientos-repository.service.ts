@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
-import { AlojamientoDto } from './dto/alojamiento.dto';
 import { TipoObservacion } from '../../../enum/tipo-observacion.enum';
-import { HorarioVacioDto } from './dto/horario-vacio.dto';
+import { AlojamientoDto } from './dto/alojamiento.dto';
+import { HorarioDto, HorarioNuevoDto } from './dto/horarios.dto';
 
 @Injectable()
 export class AlojamientosRepositoryService {
@@ -134,47 +134,48 @@ export class AlojamientosRepositoryService {
 					);
 				}
 
+				/** TODO: mover a un controller separado */
 				//horarios checkin-checkout
-				for (const horario of alojamientoDto.check_in_out) {
-					const {
-						check_in,
-						check_out,
-						dias_semana,
-						aplica_todos_los_dias,
-					} = horario;
-					if (aplica_todos_los_dias) {
-						dias_semana.aplica_lunes = true;
-						dias_semana.aplica_martes = true;
-						dias_semana.aplica_miercoles = true;
-						dias_semana.aplica_jueves = true;
-						dias_semana.aplica_viernes = true;
-						dias_semana.aplica_sabado = true;
-						dias_semana.aplica_domingo = true;
-					}
-					const resultado = await manager.query(
-						`CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-						[
-							alojamientoDto.id_oferta,
-							check_in.hora_check_in,
-							check_in.minuto_check_in,
-							check_out.hora_check_out,
-							check_out.minuto_check_out,
-							dias_semana.aplica_lunes,
-							dias_semana.aplica_martes,
-							dias_semana.aplica_miercoles,
-							dias_semana.aplica_jueves,
-							dias_semana.aplica_viernes,
-							dias_semana.aplica_sabado,
-							dias_semana.aplica_domingo,
-							horario.id_horario,
-							null,
-							null,
-							null,
-							0,
-						],
-					);
-					resultados.horarios.push(resultado[0][0]);
-				}
+				// for (const horario of alojamientoDto.check_in_out) {
+				// 	const {
+				// 		check_in,
+				// 		check_out,
+				// 		dias_semana,
+				// 		aplica_todos_los_dias,
+				// 	} = horario;
+				// 	if (aplica_todos_los_dias) {
+				// 		dias_semana.aplica_lunes = true;
+				// 		dias_semana.aplica_martes = true;
+				// 		dias_semana.aplica_miercoles = true;
+				// 		dias_semana.aplica_jueves = true;
+				// 		dias_semana.aplica_viernes = true;
+				// 		dias_semana.aplica_sabado = true;
+				// 		dias_semana.aplica_domingo = true;
+				// 	}
+				// 	const resultado = await manager.query(
+				// 		`CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+				// 		[
+				// 			alojamientoDto.id_oferta,
+				// 			check_in.hora_check_in,
+				// 			check_in.minuto_check_in,
+				// 			check_out.hora_check_out,
+				// 			check_out.minuto_check_out,
+				// 			dias_semana.aplica_lunes,
+				// 			dias_semana.aplica_martes,
+				// 			dias_semana.aplica_miercoles,
+				// 			dias_semana.aplica_jueves,
+				// 			dias_semana.aplica_viernes,
+				// 			dias_semana.aplica_sabado,
+				// 			dias_semana.aplica_domingo,
+				// 			horario.id_horario,
+				// 			null,
+				// 			null,
+				// 			null,
+				// 			0,
+				// 		],
+				// 	);
+				// 	resultados.horarios.push(resultado[0][0]);
+				// }
 
 				//metodos de pago
 				const resultado_metodos_pago = await manager.query(
@@ -256,7 +257,7 @@ export class AlojamientosRepositoryService {
 		);
 		return {
 			datos_basicos: result[0][0],
-			metodos_pago: result[1],
+			metodos_de_pago: result[1],
 			caracteristicas: result[2],
 			observaciones: result[3],
 			horarios_checkin_checkout: result[4],
@@ -271,27 +272,53 @@ export class AlojamientosRepositoryService {
 		return result[0];
 	}
 
-	async registrarHorario(horarioVacioDto: HorarioVacioDto) {
+	async registrarHorario(horarioNuevoDto: HorarioNuevoDto) {
 		const result = await this.entityManager.query(
 			'CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
-				horarioVacioDto.id_oferta,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				0,
+				horarioNuevoDto.id_oferta,
+				horarioNuevoDto.check_in.hora_check_in,
+				horarioNuevoDto.check_in.minuto_check_in,
+				horarioNuevoDto.check_out.hora_check_out,
+				horarioNuevoDto.check_out.minuto_check_out,
+				horarioNuevoDto.dias_semana.aplica_lunes,
+				horarioNuevoDto.dias_semana.aplica_martes,
+				horarioNuevoDto.dias_semana.aplica_miercoles,
+				horarioNuevoDto.dias_semana.aplica_jueves,
+				horarioNuevoDto.dias_semana.aplica_viernes,
+				horarioNuevoDto.dias_semana.aplica_sabado,
+				horarioNuevoDto.dias_semana.aplica_domingo,
+				null, // id_horario, es null porque es alta
+				null, // cupo máximo, null porque no hay cupos en esta versión
+				null, // cupo mínimo, null porque no hay cupos en esta versión
+				true, // bl_sin_cupo, true porque no hay cupos en esta versión
+				0, // 0 se inserta o modifica, en este caos se inserta
+			],
+		);
+		return result[0][0];
+	}
+
+	async modificarHorario(horarioDto: HorarioDto) {
+		const result = await this.entityManager.query(
+			'CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			[
+				horarioDto.id_oferta,
+				horarioDto.check_in.hora_check_in,
+				horarioDto.check_in.minuto_check_in,
+				horarioDto.check_out.hora_check_out,
+				horarioDto.check_out.minuto_check_out,
+				horarioDto.dias_semana.aplica_lunes,
+				horarioDto.dias_semana.aplica_martes,
+				horarioDto.dias_semana.aplica_miercoles,
+				horarioDto.dias_semana.aplica_jueves,
+				horarioDto.dias_semana.aplica_viernes,
+				horarioDto.dias_semana.aplica_sabado,
+				horarioDto.dias_semana.aplica_domingo,
+				horarioDto.id_horario,
+				null, // cupo máximo, null porque no hay cupos en esta versión
+				null, // cupo mínimo, null porque no hay cupos en esta versión
+				true, // bl_sin_cupo, true porque no hay cupos en esta versión
+				0, // 0 se inserta o modifica, en este caos se inserta
 			],
 		);
 		return result[0][0];
@@ -321,5 +348,14 @@ export class AlojamientosRepositoryService {
 			],
 		);
 		return result[0][0];
+	}
+
+	async obtenerHorariosRegistrados(id_oferta: string) {
+		const result = await this.entityManager.query(
+			'CALL SP_OBT_HORARIOS_X_OFERTA(?)',
+			[id_oferta],
+		);
+
+		return result[0];
 	}
 }

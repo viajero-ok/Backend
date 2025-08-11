@@ -17,7 +17,7 @@ export class UbicacionRepositoryService {
 	) {
 		const resultados = { ubicacion: null, observacion: null };
 		await this.entityManager.transaction(async (manager) => {
-			if (!ubicacionDto.id_establecimiento) {
+			if (!ubicacionDto.misma_ubicacion_establecimiento) {
 				const resultado_ubicacion = await manager.query(
 					'CALL SP_ABM_DOMICILIO_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 					[
@@ -36,44 +36,82 @@ export class UbicacionRepositoryService {
 					],
 				);
 				resultados.ubicacion = resultado_ubicacion[0][0];
-			} else {
-				const resultado_ubicacion = await manager.query(
-					'CALL SP_ABM_DOMICILIO_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-					[
-						ubicacionDto.id_oferta,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						0,
-						ubicacionDto.id_establecimiento,
-					],
-				);
-				resultados.ubicacion = resultado_ubicacion[0][0];
+
+				if (
+					ubicacionDto.observaciones !== null &&
+					ubicacionDto.observaciones !== ''
+				) {
+					const resultado_observacion = await manager.query(
+						'CALL SP_ABM_OBSERVACIONES_X_OFERTA(?, ?, ?, ?, ?)',
+						[
+							ubicacionDto.id_oferta,
+							TipoObservacion.DOMICILIOS,
+							ubicacionDto.observaciones,
+							id_usuario,
+							0,
+						],
+					);
+					resultados.observacion = resultado_observacion[0][0];
+				}
+				return;
 			}
-			if (
-				ubicacionDto.observaciones !== null &&
-				ubicacionDto.observaciones !== ''
-			) {
-				const resultado_observacion = await manager.query(
-					'CALL SP_ABM_OBSERVACIONES_X_OFERTA(?, ?, ?, ?, ?)',
-					[
-						ubicacionDto.id_oferta,
-						TipoObservacion.DOMICILIOS,
-						ubicacionDto.observaciones,
-						id_usuario,
-						0,
-					],
-				);
-				resultados.observacion = resultado_observacion[0][0];
-			}
+
+			const idEstablecimiento = (
+				await manager.query(
+					`SELECT ot.ID_ESTABLECIMIENTO FROM ofertas_turisticas ot WHERE ot.ID_OFERTA_TURISTICA = ?`,
+					[ubicacionDto.id_oferta],
+				)
+			)[0].ID_ESTABLECIMIENTO;
+			const resultado_ubicacion = await manager.query(
+				'CALL SP_ABM_DOMICILIO_OFERTA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				[
+					ubicacionDto.id_oferta,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					0,
+					idEstablecimiento,
+				],
+			);
+			resultados.ubicacion = resultado_ubicacion[0][0];
+			return;
 		});
 		return resultados;
+	}
+
+	async obtenerUbicacionEstablecimiento(
+		id_usuario: string,
+		id_oferta: string,
+	) {
+		const result = await this.entityManager.query(
+			`select
+				d.TX_LATITUD,
+				d.TX_LONGITUD
+			from
+				domicilios d
+			inner join establecimientos e on
+				e.ID_DOMICILIO = d.ID_DOMICILIO
+			inner join ofertas_turisticas ot on
+				ot.ID_ESTABLECIMIENTO = e.ID_ESTABLECIMIENTO
+				and ot.ID_OFERTA_TURISTICA = ?
+			inner join prestadores p on
+				p.ID_PRESTADOR = ot.ID_PRESTADOR
+			inner join usuarios u on
+				u.ID_USUARIO = p.ID_USUARIO
+				and u.ID_USUARIO = ?;`,
+			[id_oferta, id_usuario],
+		);
+		return {
+			latitud: result[0]?.TX_LATITUD ?? null,
+			longitud: result[0]?.TX_LONGITUD ?? null,
+			sin_establecimiento: result.length == 0,
+		};
 	}
 
 	async obtenerDatosRegistradosUbicacion(

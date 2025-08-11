@@ -705,4 +705,18 @@ export class OfertaTuristicaController {
 			texto_coincidencia,
 		);
 	}
+
+	@ApiOperation({ summary: 'Obtener datos básicos de la oferta' })
+	@ApiResponse({ status: 200 })
+	@UseGuards(OfertaOwnerGuard)
+	@Get('obtener-datos-basicos/:id_oferta')
+	async obtenerDatosBasicos(
+		@Req() req: Request,
+		@Param('id_oferta') id_oferta: string,
+	) {
+		return await this.ofertaTuristicaService.obtenerDatosBasicos(
+			req,
+			id_oferta,
+		);
+	}
 }

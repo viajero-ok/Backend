@@ -12,11 +12,7 @@ import { setupSwagger } from './setup-swagger';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
-	app.enableCors({
-		allowedHeaders: ['Content-type', 'Authorization'],
-		origin: 'http://localhost:5173',
-		credentials: true,
-	});
+	app.enableCors();
 	// app.enableCors({
 	// 	/* origin: (origin, callback) => {
 	// 		// Lista de dominios permitidos

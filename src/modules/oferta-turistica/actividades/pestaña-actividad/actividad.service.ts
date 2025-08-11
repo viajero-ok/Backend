@@ -117,13 +117,8 @@ export class ActividadService {
 				id_oferta,
 			);
 
-		const datosImagenes =
-			await this.actividadRepositoryService.obtenerImagenes(id_oferta);
-		const imagenes = await this.obtenerImagenesOferta(datosImagenes);
-
 		return {
 			datos_actividad: result,
-			imagenes,
 		};
 	}
 

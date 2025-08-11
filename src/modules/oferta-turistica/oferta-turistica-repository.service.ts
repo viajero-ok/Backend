@@ -287,4 +287,12 @@ export class OfertaTuristicaRepositoryService {
 		);
 		return result[0];
 	}
+
+	async obtenerDatosBasicos(id_oferta) {
+		const result = await this.entityManager.query(
+			`CALL SP_OBT_DATOS_OFERTA_TURISTICA(?)`,
+			[id_oferta],
+		);
+		return result[0][0];
+	}
 }

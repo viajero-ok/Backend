@@ -6,6 +6,7 @@ import {
 	ValidateNested,
 	Min,
 	Max,
+	IsString,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -146,4 +147,55 @@ export class CheckInOutDto {
 	@IsNotEmpty()
 	@Type(() => DiasSemanaDto)
 	readonly dias_semana: DiasSemanaDto;
+}
+
+export class HorarioNuevoDto {
+	@ApiProperty({
+		description: 'ID del horario',
+		example: '123e4567-e89b-12d3-a456-426614174000',
+	})
+	@IsNotEmpty()
+	@IsString()
+	readonly id_oferta: string;
+
+	@ApiProperty({ type: CheckInDto })
+	@IsNotEmpty()
+	@ValidateNested()
+	@Type(() => CheckInDto)
+	readonly check_in: CheckInDto;
+
+	@ApiProperty({ type: CheckOutDto })
+	@IsNotEmpty()
+	@ValidateNested()
+	@Type(() => CheckOutDto)
+	readonly check_out: CheckOutDto;
+
+	@ApiProperty({
+		description: 'Indica si aplica todos los días',
+		example: false,
+	})
+	@IsNotEmpty()
+	@IsBoolean()
+	readonly aplica_todos_los_dias: boolean;
+
+	@ApiProperty({
+		description: 'Dias de la semana que aplica este check in/out',
+		type: DiasSemanaDto,
+		required: false,
+	})
+	@ValidateNested()
+	@IsNotEmpty()
+	@Type(() => DiasSemanaDto)
+	readonly dias_semana: DiasSemanaDto;
+}
+
+export class HorarioDto extends HorarioNuevoDto {
+	@ApiProperty({
+		description: 'ID del horario',
+		example: 1,
+	})
+	@IsNotEmpty()
+	@IsNumber()
+	@Min(1)
+	readonly id_horario: number;
 }

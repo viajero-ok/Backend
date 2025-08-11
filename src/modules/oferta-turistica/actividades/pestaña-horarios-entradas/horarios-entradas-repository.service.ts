@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
-import { HorarioVacioDto } from './dto/horario-vacio.dto';
-import { EntradaVaciaDto } from './dto/entrada-vacia.dto';
+import { EntradaDto, EntradaNuevaDto } from './dto/entradas.dto';
 import { FinalizarRegistroDto } from './dto/finalizar-registro.dto';
+import { HorariosTurnosNuevoDto } from './dto/horario-nuevo.dto';
+import { HorariosTurnosDto } from './dto/horarios.dto';
 
 @Injectable()
 export class HorariosEntradasRepositoryService {
@@ -12,27 +13,53 @@ export class HorariosEntradasRepositoryService {
 		private entityManager: EntityManager,
 	) {}
 
-	async registrarHorario(horarioVacioDto: HorarioVacioDto) {
+	async registrarHorario(horarioNuevoDto: HorariosTurnosNuevoDto) {
 		const result = await this.entityManager.query(
 			'CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
-				horarioVacioDto.id_oferta,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				0,
+				horarioNuevoDto.id_oferta,
+				horarioNuevoDto.check_in.hora_check_in,
+				horarioNuevoDto.check_in.minuto_check_in,
+				horarioNuevoDto.check_out.hora_check_out,
+				horarioNuevoDto.check_out.minuto_check_out,
+				horarioNuevoDto.dias_semana.aplica_lunes,
+				horarioNuevoDto.dias_semana.aplica_martes,
+				horarioNuevoDto.dias_semana.aplica_miercoles,
+				horarioNuevoDto.dias_semana.aplica_jueves,
+				horarioNuevoDto.dias_semana.aplica_viernes,
+				horarioNuevoDto.dias_semana.aplica_sabado,
+				horarioNuevoDto.dias_semana.aplica_domingo,
+				null, // id_horario es null, por lo cual se hace un alta en BD
+				horarioNuevoDto.cupo_maximo,
+				horarioNuevoDto.cupo_maximo,
+				horarioNuevoDto.bl_sin_cupo,
+				0, // si es 1, se realiza una Baja; si es 0, se inserta o modifica
+			],
+		);
+		return result[0][0];
+	}
+
+	async actualizarHorario(horarioDto: HorariosTurnosDto) {
+		const result = await this.entityManager.query(
+			'CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			[
+				horarioDto.id_oferta,
+				horarioDto.check_in.hora_check_in,
+				horarioDto.check_in.minuto_check_in,
+				horarioDto.check_out.hora_check_out,
+				horarioDto.check_out.minuto_check_out,
+				horarioDto.dias_semana.aplica_lunes,
+				horarioDto.dias_semana.aplica_martes,
+				horarioDto.dias_semana.aplica_miercoles,
+				horarioDto.dias_semana.aplica_jueves,
+				horarioDto.dias_semana.aplica_viernes,
+				horarioDto.dias_semana.aplica_sabado,
+				horarioDto.dias_semana.aplica_domingo,
+				horarioDto.id_horario, // id_horario es null, por lo cual se hace un alta en BD
+				horarioDto.cupo_maximo,
+				horarioDto.cupo_maximo,
+				horarioDto.bl_sin_cupo,
+				0, // si es 1, se realiza una Baja; si es 0, se inserta o modifica
 			],
 		);
 		return result[0][0];
@@ -64,13 +91,32 @@ export class HorariosEntradasRepositoryService {
 		return result[0][0];
 	}
 
-	async registrarEntrada(
-		id_usuario: string,
-		entradaVaciaDto: EntradaVaciaDto,
-	) {
+	async registrarEntrada(id_usuario: string, entradaNueva: EntradaNuevaDto) {
 		const result = await this.entityManager.query(
 			'CALL SP_ABM_TIPOS_ENTRADA_X_OFERTA(?, ?, ?, ?, ?, ?)',
-			[null, null, entradaVaciaDto.id_oferta, id_usuario, null, 0],
+			[
+				entradaNueva.nombre,
+				entradaNueva.descripcion,
+				entradaNueva.id_oferta,
+				id_usuario,
+				null, // id_entrada, para baja y modificación
+				0, // Bandera para baja
+			],
+		);
+		return result[0][0];
+	}
+
+	async actualizarEntrada(id_usuario: string, entrada: EntradaDto) {
+		const result = await this.entityManager.query(
+			'CALL SP_ABM_TIPOS_ENTRADA_X_OFERTA(?, ?, ?, ?, ?, ?)',
+			[
+				entrada.nombre,
+				entrada.descripcion,
+				entrada.id_oferta,
+				id_usuario,
+				entrada.id_entrada, // id_entrada, para baja y modificación
+				0, // Bandera para baja
+			],
 		);
 		return result[0][0];
 	}
@@ -112,8 +158,6 @@ export class HorariosEntradasRepositoryService {
 					dias_semana.aplica_sabado = true;
 					dias_semana.aplica_domingo = true;
 				}
-				console.log('bl', bl_sin_cupo);
-				console.log('cupo', cupo_maximo);
 				const resultado = await manager.query(
 					`CALL SP_ABM_HORARIOS_CHECK(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 					[
@@ -182,7 +226,19 @@ export class HorariosEntradasRepositoryService {
 			`CALL SP_OBT_HORARIOS_X_OFERTA(?)`,
 			[id_oferta],
 		);
-		resultados.horarios_turnos = resultado_horarios[0];
+		resultados.horarios_turnos = resultado_horarios[0].map(
+			(horario: any) => ({
+				...horario,
+				aplica_lunes: horario.aplica_lunes ?? false,
+				aplica_martes: horario.aplica_martes ?? false,
+				aplica_miercoles: horario.aplica_miercoles ?? false,
+				aplica_jueves: horario.aplica_jueves ?? false,
+				aplica_viernes: horario.aplica_viernes ?? false,
+				aplica_sabado: horario.aplica_sabado ?? false,
+				aplica_domingo: horario.aplica_domingo ?? false,
+				bl_sin_cupo: horario.bl_sin_cupo == 1 ? true : false,
+			}),
+		);
 		return resultados;
 	}
 }

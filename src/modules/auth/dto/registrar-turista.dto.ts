@@ -74,11 +74,6 @@ export class RegistrarTuristaDto {
 	@IsInt()
 	readonly id_provincia: number;
 
-	@ApiProperty({ example: 1, description: 'ID del país' })
-	@IsNotEmpty()
-	@IsInt()
-	readonly id_pais: number;
-
 	@ApiProperty({ example: 1, description: 'ID del idioma' })
 	@IsNotEmpty()
 	@IsInt()
