@@ -568,6 +568,14 @@ export class OfertaTuristicaController {
 		);
 	}
 
+	@ApiOperation({ summary: 'OBTENER DATOS PARA RESERVAR OFERTA' })
+	@Get('obtener-datos-reserva-oferta-turistica')
+	async obtenerDatosReservaOfertaTuristica(@Req() req: Request) {
+		return await this.ofertaTuristicaService.obtenerDatosReservaOfertaTuristica(
+			req,
+		);
+	}
+
 	@ApiOperation({ summary: 'OBTENER OFERTAS GUARDADAS POR USUARIO' })
 	@ApiResponse({
 		status: 200,

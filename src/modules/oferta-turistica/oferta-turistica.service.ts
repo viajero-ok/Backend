@@ -432,6 +432,21 @@ export class OfertaTuristicaService {
 		};
 	}
 
+	async obtenerDatosReservaOfertaTuristica(req) {
+		const result =
+			await this.ofertaTuristicaRepositoryService.obtenerDatosReservaOfertaTuristica(
+				req.user.id_usuario,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al registrar oferta turística guardada',
+			HttpStatus.CONFLICT,
+		);
+
+		return result;
+	}
+
 	async registrarOfertaTuristicaGuardada(
 		req,
 		registrarOfertaGuardadaDto: RegistrarOfertaGuardadaDto,
