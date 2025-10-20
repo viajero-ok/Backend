@@ -9,6 +9,33 @@ import { TimeOutInterceptor } from './common/interceptors/time-out/time-out.inte
 import * as session from 'express-session';
 import * as passport from 'passport';
 import { setupSwagger } from './setup-swagger';
+import * as os from 'os';
+
+function getLocalExternalIp(): string | null {
+	const nets = os.networkInterfaces();
+	for (const name of Object.keys(nets)) {
+		console.log(
+			'name: ',
+			name,
+		); /** Print de las interfaces de red que tenes activas en tu PC */
+		if (name != 'WiFi') continue;
+		/**
+		 * Nota para marianito:
+		 * Arriba el console log va a printear todas tus interfaces de red, reemplaza en el if con el nombre de la interfaz que estás usando.
+		 * Haciendo eso te va a printear la dirección IP que deberías usar en el frontend mobile para poder pegarle al backend desde la misma
+		 * red local de tu ksa.
+		 *
+		 * xoxo
+		 */
+		for (const net of nets[name] ?? []) {
+			// Skip over internal (i.e. 127.0.0.1) and non-IPv4 addresses
+			if (net.family === 'IPv4' && !net.internal) {
+				return net.address;
+			}
+		}
+	}
+	return null;
+}
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
@@ -75,6 +102,13 @@ async function bootstrap() {
 
 	//Iniciar la aplicación
 	const PORT = process.env.PORT || 3000;
-	await app.listen(PORT);
+	await app.listen(PORT, '0.0.0.0');
+
+	const localIp = getLocalExternalIp();
+	console.log(`🚀 App running at:`);
+	console.log(`   Local:   http://localhost:${PORT}`);
+	if (localIp) {
+		console.log(`   Network: http://${localIp}:${PORT}`);
+	}
 }
 bootstrap();
