@@ -1,6 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import {
+	CallHandler,
+	ExecutionContext,
+	Injectable,
+	NestInterceptor,
+	ValidationPipe,
+} from '@nestjs/common';
 import { AuthorizationGuard } from './common/guards/authorization/authorization.guard'; // Import the AuthorizationGuard
 import { GlobalJwtGuard } from './common/guards/jwt/global-jwt.guard';
 import { JwtRefreshInterceptor } from './common/interceptors/jwt-refresh/jwt-refresh.interceptor';
@@ -10,6 +16,57 @@ import * as session from 'express-session';
 import * as passport from 'passport';
 import { setupSwagger } from './setup-swagger';
 import * as os from 'os';
+import { catchError, tap } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+
+/**
+ * Interceptor para mostrar los resultados de los endpoints.
+ * Principalmente para que sea más facil el debugging en mobile.
+ */
+@Injectable()
+export class EndpointLogInterceptor implements NestInterceptor {
+	intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+		const req = context.switchToHttp().getRequest();
+		const { method, url, body, params, query } = req;
+
+		const GREEN = '\x1b[42m\x1b[30m'; // fondo verde, texto negro
+		const RED = '\x1b[41m\x1b[37m'; // fondo rojo, texto blanco
+		const CYAN = '\x1b[46m\x1b[30m';
+		const RESET = '\x1b[0m';
+
+		const started = Date.now();
+
+		return next.handle().pipe(
+			tap((data) => {
+				const ms = Date.now() - started;
+				console.log(
+					`${GREEN} ✔ ${method} ${url} [${ms}ms] 200 OK ${RESET}`,
+				);
+				console.log(data);
+			}),
+			catchError((err) => {
+				const ms = Date.now() - started;
+				const bodyStr = Object.keys(body || {}).length
+					? JSON.stringify(body, null, 2)
+					: '(empty)';
+				const paramsStr = Object.keys(params || {}).length
+					? JSON.stringify(params, null, 2)
+					: '(empty)';
+				const queryStr = Object.keys(query || {}).length
+					? JSON.stringify(query, null, 2)
+					: '(empty)';
+				console.error(
+					`${RED} ✖ [${err.status}] ${method} ${url} [${ms}ms] ${RESET}\n` +
+						`${CYAN} → Params: ${paramsStr} ${RESET}\n` +
+						`${CYAN} → Query: ${queryStr} ${RESET}\n` +
+						`${CYAN} → Body: ${bodyStr} ${RESET}\n` +
+						`${RED} Error: ${err.response.message ?? 'no msg'} ${RESET}\n`,
+				);
+				return throwError(() => err);
+			}),
+		);
+	}
+}
 
 function getLocalExternalIp(): string | null {
 	const nets = os.networkInterfaces();
@@ -94,6 +151,7 @@ async function bootstrap() {
 			cookie: { maxAge: 86400000 }, // 1 dia 86400000
 		}),
 	);
+	app.useGlobalInterceptors(new EndpointLogInterceptor());
 	//Inicializar passport
 	app.use(passport.initialize());
 	app.use(passport.session());
