@@ -60,7 +60,7 @@ export class EndpointLogInterceptor implements NestInterceptor {
 						`${CYAN} → Params: ${paramsStr} ${RESET}\n` +
 						`${CYAN} → Query: ${queryStr} ${RESET}\n` +
 						`${CYAN} → Body: ${bodyStr} ${RESET}\n` +
-						`${RED} Error: ${err.response.message ?? 'no msg'} ${RESET}\n`,
+						`${RED} Error: ${err?.response?.message ?? 'no msg'} ${RESET}\n`,
 				);
 				return throwError(() => err);
 			}),
