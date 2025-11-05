@@ -151,7 +151,7 @@ export class OfertaTuristicaService {
 		const ofertasConImagenes = await Promise.all(
 			result.map(async (oferta) => {
 				const camas_array = oferta.camas_cantidad
-					.split(',')
+					?.split(',')
 					.map((item) => {
 						const [nombre_cama, cantidad] = item.trim().split(':');
 						return {

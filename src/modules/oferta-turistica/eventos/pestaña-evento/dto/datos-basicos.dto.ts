@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 // ot.ID_OFERTA_TURISTICA AS id_oferta_turistica,
 //         ot.TX_OFERTA AS nombre,
@@ -15,12 +15,13 @@ import { IsNotEmpty, IsNumber } from 'class-validator';
 
 export class GuardarDatosBasicosEventoDto {
 	@IsNotEmpty()
-	@IsNumber()
-	readonly id_oferta_turistica: number;
+	@IsString()
+	readonly id_oferta: string;
 
 	nombre: string;
 	descripcion: string;
 	id_sub_categoria: number;
 	requisitos: string;
 	url_venta_entradas: string;
+	observaciones: string;
 }
