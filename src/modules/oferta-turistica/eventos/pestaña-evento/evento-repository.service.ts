@@ -55,6 +55,7 @@ export class EventoRepositoryService {
 			`CALL SP_OBT_INFO_EVENTO(?)`,
 			[id_oferta],
 		);
+
 		return {
 			datos_basicos: result[0][0],
 			redes_sociales: result[1],
