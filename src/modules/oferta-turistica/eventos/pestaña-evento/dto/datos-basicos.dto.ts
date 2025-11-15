@@ -18,10 +18,12 @@ export class GuardarDatosBasicosEventoDto {
 	@IsString()
 	readonly id_oferta: string;
 
-	nombre: string;
-	descripcion: string;
-	id_sub_categoria: number;
-	requisitos: string;
-	url_venta_entradas: string;
-	observaciones: string;
+	readonly nombre: string;
+	readonly descripcion: string;
+	readonly id_sub_categoria: number;
+	readonly requisitos: string;
+	readonly url_venta_entradas: string;
+	readonly fecha_hora_inicio: Date;
+	readonly fecha_hora_fin: Date;
+	readonly observaciones: string;
 }
