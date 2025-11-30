@@ -71,8 +71,9 @@ export class HabitacionesRepositoryService {
 
 				for (const plaza of plazas) {
 					const resultado = await manager.query(
-						`CALL SP_ABM_CAMAS_X_OFERTA(?, ?, ?, ?)`,
+						`CALL SP_ABM_CAMAS_X_OFERTA(?, ?, ?, ?, ?)`,
 						[
+							id_oferta,
 							id_tipo_detalle,
 							plaza.id_tipo_cama,
 							plaza.cantidad_camas,

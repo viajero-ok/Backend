@@ -7,7 +7,6 @@ import {
 	Patch,
 	Post,
 	Req,
-	UseGuards,
 } from '@nestjs/common';
 import {
 	ApiBearerAuth,
@@ -15,17 +14,20 @@ import {
 	ApiResponse,
 	ApiTags,
 } from '@nestjs/swagger';
-import { Request } from 'express';
+import { UseGuards } from '@nestjs/common';
+import { AlojamientoParticularService } from './alojamiento-particular.service';
 import { OfertaOwnerGuard } from 'src/common/guards/authorization/oferta-owner.guard';
-import { AlojamientosService } from './alojamientos.service';
-import { AlojamientoDto } from './dto/alojamiento.dto';
-import { HorarioDto, HorarioNuevoDto } from './dto/horarios.dto';
+import { HorarioNuevoDto } from './dto/horarios.dto';
+import { HorarioDto } from './dto/horarios.dto';
+import { AlojamientoParticularDto } from './dto/alojamiento.dto';
 
-@ApiTags('Alojamientos/Alojamiento en Habitaciones/Viviendas')
+@ApiTags('Alojamientos/Alojamiento Particular')
 @ApiBearerAuth()
-@Controller('alojamientos/alojamiento-con-tipologias/pestaña-alojamiento')
-export class AlojamientosController {
-	constructor(private readonly alojamientosService: AlojamientosService) {}
+@Controller('alojamientos/alojamiento-particular')
+export class AlojamientoParticularController {
+	constructor(
+		private readonly alojamientoParticularService: AlojamientoParticularService,
+	) {}
 
 	@ApiOperation({ summary: 'OBTENER DATOS REGISTRO ALOJAMIENTO' })
 	@ApiResponse({
@@ -174,7 +176,7 @@ export class AlojamientosController {
 	})
 	@Get('datos-registro-alojamiento')
 	async obtenerDatosRegistroAlojamiento() {
-		return await this.alojamientosService.obtenerDatosRegistroAlojamiento();
+		return await this.alojamientoParticularService.obtenerDatosRegistroAlojamiento();
 	}
 
 	@ApiOperation({ summary: 'ACTUALIZAR ALOJAMIENTO' })
@@ -273,11 +275,11 @@ export class AlojamientosController {
 	async actualizarAlojamiento(
 		@Req() req: Request,
 		@Body()
-		alojamientoDto: AlojamientoDto,
+		alojamientoParticularDto: AlojamientoParticularDto,
 	) {
-		return await this.alojamientosService.actualizarAlojamiento(
+		return await this.alojamientoParticularService.actualizarAlojamiento(
 			req,
-			alojamientoDto,
+			alojamientoParticularDto,
 		);
 	}
 
@@ -308,7 +310,9 @@ export class AlojamientosController {
 		@Req() req: Request,
 		@Body() horarioNuevoDto: HorarioNuevoDto,
 	) {
-		return await this.alojamientosService.registrarHorario(horarioNuevoDto);
+		return await this.alojamientoParticularService.registrarHorario(
+			horarioNuevoDto,
+		);
 	}
 
 	@ApiOperation({ summary: 'MODIFICAR HORARIO' })
@@ -321,7 +325,9 @@ export class AlojamientosController {
 		@Req() req: Request,
 		@Body() horarioDto: HorarioDto,
 	) {
-		return await this.alojamientosService.modificarHorario(horarioDto);
+		return await this.alojamientoParticularService.modificarHorario(
+			horarioDto,
+		);
 	}
 
 	@ApiOperation({ summary: 'ELIMINAR HORARIO' })
@@ -346,7 +352,23 @@ export class AlojamientosController {
 		@Req() req: Request,
 		@Param('id_horario') id_horario: string,
 	) {
-		return await this.alojamientosService.eliminarHorario(req, id_horario);
+		return await this.alojamientoParticularService.eliminarHorario(
+			req,
+			id_horario,
+		);
+	}
+
+	@ApiOperation({ summary: 'Obtener horarios registrados' })
+	@ApiResponse({ status: 200 })
+	@UseGuards(OfertaOwnerGuard)
+	@Get('obtener-horarios-registrados/:id_oferta')
+	async obtenerHorariosRegistrados(
+		@Req() req: Request,
+		@Param('id_oferta') id_oferta: string,
+	) {
+		return await this.alojamientoParticularService.obtenerHorariosRegistrados(
+			id_oferta,
+		);
 	}
 
 	@ApiOperation({ summary: 'OBTENER DATOS REGISTRADOS' })
@@ -473,21 +495,8 @@ export class AlojamientosController {
 		@Req() req: Request,
 		@Param('id_oferta') id_oferta: string,
 	) {
-		return await this.alojamientosService.obtenerDatosRegistradosAlojamiento(
+		return await this.alojamientoParticularService.obtenerDatosRegistradosAlojamiento(
 			req,
-			id_oferta,
-		);
-	}
-
-	@ApiOperation({ summary: 'Obtener horarios registrados' })
-	@ApiResponse({ status: 200 })
-	@UseGuards(OfertaOwnerGuard)
-	@Get('obtener-horarios-registrados/:id_oferta')
-	async obtenerHorariosRegistrados(
-		@Req() req: Request,
-		@Param('id_oferta') id_oferta: string,
-	) {
-		return await this.alojamientosService.obtenerHorariosRegistrados(
 			id_oferta,
 		);
 	}

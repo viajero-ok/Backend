@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
-import { TipoObservacion } from '../../../enum/tipo-observacion.enum';
-import { AlojamientoDto } from './dto/alojamiento.dto';
-import { HorarioDto, HorarioNuevoDto } from './dto/horarios.dto';
+import { HorarioDto } from './dto/horarios.dto';
+import { HorarioNuevoDto } from './dto/horarios.dto';
+import { TipoObservacion } from 'src/modules/oferta-turistica/enum/tipo-observacion.enum';
+import { AlojamientoParticularDto } from './dto/alojamiento.dto';
 
 @Injectable()
-export class AlojamientosRepositoryService {
+export class AlojamientoParticularRepositoryService {
 	constructor(
 		@InjectEntityManager()
 		private entityManager: EntityManager,
@@ -14,17 +15,20 @@ export class AlojamientosRepositoryService {
 
 	async actualizarAlojamiento(
 		id_usuario: string,
-		alojamientoDto: AlojamientoDto,
+		alojamientoParticularDto: AlojamientoParticularDto,
 	) {
 		return this.entityManager.transaction(
 			async (manager: EntityManager) => {
 				const datos_basicos =
-					alojamientoDto.politicas_reserva_y_datos_basicos
+					alojamientoParticularDto.politicas_reserva_y_datos_basicos
 						.datos_basicos;
 				const politicas_reserva =
-					alojamientoDto.politicas_reserva_y_datos_basicos
+					alojamientoParticularDto.politicas_reserva_y_datos_basicos
 						.politicas_reserva;
-				const observaciones = alojamientoDto.observaciones;
+				const observaciones = alojamientoParticularDto.observaciones;
+
+				//const caracteristicas_vivienda =
+				alojamientoParticularDto.caracteristicas_de_la_vivienda;
 
 				const resultados = {
 					alojamiento: null,
@@ -32,13 +36,14 @@ export class AlojamientosRepositoryService {
 					observaciones: [],
 					horarios: [],
 					metodos_pago: null,
+					caracteristicas_vivienda: null,
 				};
 
 				//datos basicos
 				const resultado_alojamiento = await manager.query(
 					`CALL SP_ABM_ALOJAMIENTO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 					[
-						alojamientoDto.id_oferta,
+						alojamientoParticularDto.id_oferta,
 						1,
 						1,
 						datos_basicos.nombre_alojamiento,
@@ -56,12 +61,12 @@ export class AlojamientosRepositoryService {
 				);
 				resultados.alojamiento = resultado_alojamiento[0][0];
 
-				if (alojamientoDto.caracteristicas) {
+				if (alojamientoParticularDto.caracteristicas) {
 					const resultado_caracteristicas = await manager.query(
 						`CALL SP_ABM_CARACTERISTICAS_OFERTA(?, ?)`,
 						[
-							alojamientoDto.id_oferta,
-							alojamientoDto.caracteristicas.join(','),
+							alojamientoParticularDto.id_oferta,
+							alojamientoParticularDto.caracteristicas.join(','),
 						],
 					);
 					resultados.caracteristicas =
@@ -76,7 +81,7 @@ export class AlojamientosRepositoryService {
 						await manager.query(
 							`CALL SP_ABM_OBSERVACIONES_X_OFERTA(?, ?, ?, ?, ?)`,
 							[
-								alojamientoDto.id_oferta,
+								alojamientoParticularDto.id_oferta,
 								TipoObservacion.COMODIDADES_SERVICIOS_ESTABLECIMIENTO, // ID de tipo de observación
 								observaciones.texto_observacion_comodidades_y_servicios_oferta,
 								id_usuario,
@@ -92,7 +97,7 @@ export class AlojamientosRepositoryService {
 					const resultado_canchas_deportes = await manager.query(
 						`CALL SP_ABM_OBSERVACIONES_X_OFERTA(?, ?, ?, ?, ?)`,
 						[
-							alojamientoDto.id_oferta,
+							alojamientoParticularDto.id_oferta,
 							TipoObservacion.TIPO_CANCHA_DEPORTIVA, // ID de tipo de observación
 							observaciones.texto_observacion_canchas_deportes,
 							id_usuario,
@@ -108,7 +113,7 @@ export class AlojamientosRepositoryService {
 					const resultado_normas = await manager.query(
 						`CALL SP_ABM_OBSERVACIONES_X_OFERTA(?, ?, ?, ?, ?)`,
 						[
-							alojamientoDto.id_oferta,
+							alojamientoParticularDto.id_oferta,
 							TipoObservacion.NORMAS, // ID de tipo de observación hardcodeado
 							observaciones.texto_observacion_normas,
 							id_usuario,
@@ -122,7 +127,7 @@ export class AlojamientosRepositoryService {
 					const resultado_politica_garantia = await manager.query(
 						`CALL SP_ABM_OBSERVACIONES_X_OFERTA(?, ?, ?, ?, ?)`,
 						[
-							alojamientoDto.id_oferta,
+							alojamientoParticularDto.id_oferta,
 							TipoObservacion.POLITICA_GARANTIA, // ID de tipo de observación hardcodeado
 							observaciones.texto_observacion_politica_garantia,
 							id_usuario,
@@ -181,12 +186,14 @@ export class AlojamientosRepositoryService {
 				const resultado_metodos_pago = await manager.query(
 					`CALL SP_ABM_METODOS_PAGO_X_OFERTA(?, ?, ?)`,
 					[
-						alojamientoDto.id_oferta,
-						alojamientoDto.metodos_de_pago.join(','),
+						alojamientoParticularDto.id_oferta,
+						alojamientoParticularDto.metodos_de_pago.join(','),
 						id_usuario,
 					],
 				);
 				resultados.metodos_pago = resultado_metodos_pago[0][0];
+
+				//caracteristicas de la vivienda
 
 				return resultados;
 			},
@@ -199,6 +206,7 @@ export class AlojamientosRepositoryService {
 			caracteristicas_servicios: null,
 			caracteristicas_entretenimiento: null,
 			caracteristicas_normas: null,
+			caracteristicas_habitacion: null,
 		};
 		const resultados = {
 			caracteristicas,
@@ -229,6 +237,12 @@ export class AlojamientosRepositoryService {
 		resultados.caracteristicas.caracteristicas_normas = (
 			await this.entityManager.query(
 				'CALL SP_LISTAR_CARACTERISTICAS_X_AMBITO(4)',
+			)
+		)[0];
+
+		resultados.caracteristicas.caracteristicas_habitacion = (
+			await this.entityManager.query(
+				'CALL SP_LISTAR_CARACTERISTICAS_X_AMBITO(6)',
 			)
 		)[0];
 
