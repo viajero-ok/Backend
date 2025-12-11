@@ -31,8 +31,14 @@ export class EventoRepositoryService {
 				datosBasicosDto.descripcion,
 				datosBasicosDto.requisitos,
 				datosBasicosDto.url_venta_entradas,
-				datosBasicosDto.fecha_hora_inicio,
-				datosBasicosDto.fecha_hora_fin,
+				new Date(datosBasicosDto.fecha_hora_inicio)
+					.toISOString()
+					.slice(0, 19)
+					.replace('T', ' '),
+				new Date(datosBasicosDto.fecha_hora_fin)
+					.toISOString()
+					.slice(0, 19)
+					.replace('T', ' '),
 				id_usuario,
 				0,
 			],

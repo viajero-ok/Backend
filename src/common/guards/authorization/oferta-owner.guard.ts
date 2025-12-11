@@ -10,10 +10,15 @@ export class OfertaOwnerGuard implements CanActivate {
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const request = context.switchToHttp().getRequest();
 		const id_usuario = request.user.id_usuario;
-		const id_oferta = request.body?.id_oferta || request.params?.id_oferta;
+		const id_oferta =
+			request.body?.id_oferta ||
+			request.params?.id_oferta ||
+			request.query?.id_oferta;
 		const user = request.user;
 		const method = request.method;
 		const url = request.route.path;
+
+		console.log('params: ', request.params);
 
 		if (!id_oferta) return false;
 
