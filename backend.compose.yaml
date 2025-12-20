@@ -11,6 +11,8 @@ services:
       TZ: "America/Argentina/Buenos_Aires"
     volumes:
       - mysql-data:/var/lib/mysql
+    tmpfs:
+      - /tmp
     ports:
       - "${DB_PORT}:3306"
     networks:
