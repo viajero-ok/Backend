@@ -80,6 +80,7 @@ jobs:
                     cd apps/${{ env.RAMA }} &&
                     echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin &&
                     docker compose --env-file .env.backend -f backend.compose.yaml pull &&
+                    docker compose --env-file .env.backend -f backend.compose.yaml down &&
                     docker compose --env-file .env.backend -f backend.compose.yaml up -d
                   "
 
