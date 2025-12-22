@@ -27,6 +27,15 @@ export class DatosBasicosDto {
 	@IsNotEmpty()
 	@IsString()
 	descripcion_alojamiento: string;
+
+	@ApiProperty({
+		description: 'ID de la subcategoría de alojamiento',
+		example: 1,
+	})
+	@IsNotEmpty()
+	@IsNumber()
+	@Min(1)
+	id_sub_categoria_alojamiento: number;
 }
 
 export class PoliticasReservaDto {

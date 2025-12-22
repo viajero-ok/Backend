@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
 	ArrayMinSize,
 	IsArray,
@@ -7,10 +8,9 @@ import {
 	IsUUID,
 	ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
-import { EntradasDto } from './entradas.dto';
-import { HorariosTurnosDto } from './horarios.dto';
 import { ValidateHorariosTurnos } from '../../utils/horarios-turnos.validator';
+import { EntradaDto } from './entradas.dto';
+import { HorariosTurnosDto } from './horarios.dto';
 
 export class FinalizarRegistroDto {
 	@ApiProperty({
@@ -23,15 +23,15 @@ export class FinalizarRegistroDto {
 	id_oferta: string;
 
 	@ApiProperty({
-		type: [EntradasDto],
+		type: [EntradaDto],
 		description: 'Entradas de la oferta',
 	})
 	@IsNotEmpty()
 	@ArrayMinSize(1)
 	@IsArray()
 	@ValidateNested({ each: true })
-	@Type(() => EntradasDto)
-	readonly entradas: EntradasDto[];
+	@Type(() => EntradaDto)
+	readonly entradas: EntradaDto[];
 
 	@ApiProperty({
 		type: [HorariosTurnosDto],

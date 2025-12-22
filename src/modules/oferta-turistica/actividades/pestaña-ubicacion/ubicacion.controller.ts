@@ -13,9 +13,9 @@ import {
 	ApiResponse,
 	ApiTags,
 } from '@nestjs/swagger';
-import { UbicacionService } from './ubicacion.service';
-import { UbicacionActividadDto } from './dto/ubicacion-actividad.dto';
 import { OfertaOwnerGuard } from 'src/common/guards/authorization/oferta-owner.guard';
+import { UbicacionActividadDto } from './dto/ubicacion-actividad.dto';
+import { UbicacionService } from './ubicacion.service';
 
 @ApiTags('Actividades/Ubicacion')
 @ApiBearerAuth()
@@ -45,11 +45,29 @@ export class UbicacionController {
 	@Post('registrar-ubicacion-actividad')
 	async registrarUbicacionActividad(
 		@Req() req: Request,
-		@Body() ubicacionDto: UbicacionActividadDto,
+		@Body()
+		ubicacionDto: UbicacionActividadDto,
 	) {
 		return await this.ubicacionService.registrarUbicacionActividad(
 			req,
 			ubicacionDto,
+		);
+	}
+
+	@ApiOperation({ summary: 'OBTENER UBICACION DEL ESTABLECIMIENTO ASOCIADO' })
+	@ApiResponse({
+		status: 200,
+		description: 'Ubicación del establecimiento asociado',
+	})
+	@UseGuards(OfertaOwnerGuard)
+	@Get('obtener-ubicacion-establecimiento/:id_oferta')
+	async obtenerUbicacionEstablecimiento(
+		@Req() req,
+		@Param('id_oferta') id_oferta: string,
+	) {
+		return await this.ubicacionService.obtenerUbicacionEstablecimiento(
+			req,
+			id_oferta,
 		);
 	}
 

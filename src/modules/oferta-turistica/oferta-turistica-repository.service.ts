@@ -287,4 +287,50 @@ export class OfertaTuristicaRepositoryService {
 		);
 		return result[0];
 	}
+
+	async obtenerDatosBasicos(id_oferta) {
+		const result = await this.entityManager.query(
+			`CALL SP_OBT_DATOS_OFERTA_TURISTICA(?)`,
+			[id_oferta],
+		);
+		return result[0][0];
+	}
+
+	async obtenerDatosReservaOfertaTuristica(id_usuario) {
+		const datosUsuario = await this.entityManager.query(
+			`select
+				u.TX_NOMBRE as nombre,
+				u.TX_APELLIDO as apellido,
+				u.ID_TIPO_DOCUMENTO_IDENTIDAD as id_tipo_documento,
+				u.NRO_DOCUMENTO_IDENTIDAD as nro_documento,
+				u.NRO_TELEFONO as telefono,
+				u.TX_MAIL as email,
+				d.ID_PAIS as id_pais
+			from
+				usuarios u
+			inner join domicilios d on d.ID_DOMICILIO = u.ID_DOMICILIO
+			where u.ID_USUARIO = "02ba3dda-5e6c-11f0-865c-fa3c06c871bb"`,
+			[id_usuario],
+		);
+
+		const tiposDocumento = await this.entityManager.query(`
+			select
+				tdi.ID_TIPO_DOCUMENTO_IDENTIDAD as id_tipo_documento,
+				tdi.TX_TIPO_DOCUMENTO_IDENTIDAD as tipo_documento
+			from tipos_documento_identidad tdi	
+		`);
+
+		const paises = await this.entityManager.query(`
+			select
+				p.ID_PAIS as id_pais,
+				p.TX_PAIS as pais
+			from paises p	
+		`);
+
+		return {
+			datosUsuario: datosUsuario[0],
+			tiposDocumento,
+			paises,
+		};
+	}
 }

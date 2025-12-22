@@ -233,7 +233,7 @@ export class HabitacionesService {
 
 		this.exceptionHandlingService.handleError(
 			result,
-			'Error al finalizar registro de alojamiento',
+			`Error al finalizar registro de alojamiento. ${JSON.stringify(result)}`,
 			HttpStatus.CONFLICT,
 		);
 

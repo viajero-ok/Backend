@@ -1,17 +1,18 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import {
-	IsNotEmpty,
-	IsBoolean,
-	IsNumber,
-	ValidateNested,
-	Min,
-	Max,
-	IsOptional,
-	ValidateIf,
-} from 'class-validator';
 import { Type } from 'class-transformer';
+import {
+	IsBoolean,
+	IsNotEmpty,
+	IsNumber,
+	IsOptional,
+	IsString,
+	Max,
+	Min,
+	ValidateIf,
+	ValidateNested,
+} from 'class-validator';
 
-class HorarioEntradaDto {
+export class HorarioEntradaDto {
 	@ApiProperty({
 		description: 'Hora de Check In',
 		example: 14,
@@ -37,7 +38,7 @@ class HorarioEntradaDto {
 	readonly minuto_check_in: number;
 }
 
-class HorarioSalidaDto {
+export class HorarioSalidaDto {
 	@ApiProperty({
 		description: 'Hora de Check Out',
 		example: 11,
@@ -63,7 +64,7 @@ class HorarioSalidaDto {
 	readonly minuto_check_out: number;
 }
 
-class DiasSemanaDto {
+export class DiasSemanaDto {
 	@ApiProperty({ description: 'Indica si aplica los lunes', example: true })
 	@IsNotEmpty()
 	@IsBoolean()
@@ -110,6 +111,14 @@ class DiasSemanaDto {
 }
 
 export class HorariosTurnosDto {
+	@ApiProperty({
+		description: 'ID de la oferta',
+		example: 'dfdgfff12312gd-asdasdas12312',
+	})
+	@IsNotEmpty()
+	@IsString()
+	readonly id_oferta: string;
+
 	@ApiProperty({
 		description: 'ID del horario',
 		example: 1,

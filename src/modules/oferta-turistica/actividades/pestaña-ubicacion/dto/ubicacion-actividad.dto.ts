@@ -15,7 +15,9 @@ export class UbicacionActividadDto {
 		example: '123e4567-e89b-12d3-a456-426614174000',
 	})
 	@ValidateIf(
-		(o) => !o.id_establecimiento || o.id_establecimiento === undefined,
+		(o) =>
+			!o.misma_ubicacion_establecimiento ||
+			o.misma_ubicacion_establecimiento === undefined,
 	)
 	@IsNotEmpty()
 	@IsString()
@@ -26,7 +28,9 @@ export class UbicacionActividadDto {
 		example: 'Calle Falsa',
 	})
 	@ValidateIf(
-		(o) => !o.id_establecimiento || o.id_establecimiento === undefined,
+		(o) =>
+			!o.misma_ubicacion_establecimiento ||
+			o.misma_ubicacion_establecimiento === undefined,
 	)
 	@IsNotEmpty()
 	@IsString()
@@ -34,7 +38,9 @@ export class UbicacionActividadDto {
 
 	@ApiProperty({ description: 'Si la calle no tiene altura', example: true })
 	@ValidateIf(
-		(o) => !o.id_establecimiento || o.id_establecimiento === undefined,
+		(o) =>
+			!o.misma_ubicacion_establecimiento ||
+			o.misma_ubicacion_establecimiento === undefined,
 	)
 	@IsNotEmpty()
 	@IsBoolean()
@@ -47,7 +53,8 @@ export class UbicacionActividadDto {
 	@ValidateIf(
 		(o) =>
 			(!o.sin_numero || o.sin_numero === undefined) &&
-			(!o.id_establecimiento || o.id_establecimiento === undefined),
+			(!o.misma_ubicacion_establecimiento ||
+				o.misma_ubicacion_establecimiento === undefined),
 	)
 	@IsNotEmpty()
 	@IsString()
@@ -55,7 +62,9 @@ export class UbicacionActividadDto {
 
 	@ApiProperty({ description: 'ID de la localidad', example: 1 })
 	@ValidateIf(
-		(o) => !o.id_establecimiento || o.id_establecimiento === undefined,
+		(o) =>
+			!o.misma_ubicacion_establecimiento ||
+			o.misma_ubicacion_establecimiento === undefined,
 	)
 	@IsNotEmpty()
 	@IsInt()
@@ -64,7 +73,9 @@ export class UbicacionActividadDto {
 
 	@ApiProperty({ description: 'ID del departamento', example: 1 })
 	@ValidateIf(
-		(o) => !o.id_establecimiento || o.id_establecimiento === undefined,
+		(o) =>
+			!o.misma_ubicacion_establecimiento ||
+			o.misma_ubicacion_establecimiento === undefined,
 	)
 	@IsNotEmpty()
 	@IsInt()
@@ -73,7 +84,9 @@ export class UbicacionActividadDto {
 
 	@ApiProperty({ description: 'ID de la provincia', example: 1 })
 	@ValidateIf(
-		(o) => !o.id_establecimiento || o.id_establecimiento === undefined,
+		(o) =>
+			!o.misma_ubicacion_establecimiento ||
+			o.misma_ubicacion_establecimiento === undefined,
 	)
 	@IsNotEmpty()
 	@IsInt()
@@ -85,7 +98,9 @@ export class UbicacionActividadDto {
 		example: '-31.123456',
 	})
 	@ValidateIf(
-		(o) => !o.id_establecimiento || o.id_establecimiento === undefined,
+		(o) =>
+			!o.misma_ubicacion_establecimiento ||
+			o.misma_ubicacion_establecimiento === undefined,
 	)
 	@IsNotEmpty()
 	@IsString()
@@ -96,7 +111,9 @@ export class UbicacionActividadDto {
 		example: '-64.123456',
 	})
 	@ValidateIf(
-		(o) => !o.id_establecimiento || o.id_establecimiento === undefined,
+		(o) =>
+			!o.misma_ubicacion_establecimiento ||
+			o.misma_ubicacion_establecimiento === undefined,
 	)
 	@IsNotEmpty()
 	@IsString()
@@ -111,10 +128,10 @@ export class UbicacionActividadDto {
 	readonly observaciones?: string;
 
 	@ApiPropertyOptional({
-		description: 'ID del establecimiento',
-		example: 1,
+		description: 'Misma ubicación que el establecimiento de la oferta',
+		example: true,
 	})
 	@IsOptional()
-	@IsInt()
-	readonly id_establecimiento?: number;
+	@IsBoolean()
+	readonly misma_ubicacion_establecimiento?: boolean;
 }

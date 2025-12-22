@@ -10,7 +10,7 @@ import {
 } from 'class-validator';
 
 export class RegistrarPrestadorDto {
-	@IsOptional()
+	@IsOptional() // TODO: remover, se toma desde el jwt
 	id_usuario: string;
 
 	@ApiProperty({ example: 'Mariano', description: 'Nombre del usuario' })

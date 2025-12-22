@@ -151,7 +151,7 @@ export class OfertaTuristicaService {
 		const ofertasConImagenes = await Promise.all(
 			result.map(async (oferta) => {
 				const camas_array = oferta.camas_cantidad
-					.split(',')
+					?.split(',')
 					.map((item) => {
 						const [nombre_cama, cantidad] = item.trim().split(':');
 						return {
@@ -432,6 +432,21 @@ export class OfertaTuristicaService {
 		};
 	}
 
+	async obtenerDatosReservaOfertaTuristica(req) {
+		const result =
+			await this.ofertaTuristicaRepositoryService.obtenerDatosReservaOfertaTuristica(
+				req.user.id_usuario,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al registrar oferta turística guardada',
+			HttpStatus.CONFLICT,
+		);
+
+		return result;
+	}
+
 	async registrarOfertaTuristicaGuardada(
 		req,
 		registrarOfertaGuardadaDto: RegistrarOfertaGuardadaDto,
@@ -490,5 +505,20 @@ export class OfertaTuristicaService {
 		return await this.ofertaTuristicaRepositoryService.obtenerUbicacionesPorCoincidencia(
 			texto,
 		);
+	}
+
+	async obtenerDatosBasicos(_, id_oferta: string) {
+		const result =
+			await this.ofertaTuristicaRepositoryService.obtenerDatosBasicos(
+				id_oferta,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al obtener los datos básicos de la oferta',
+			HttpStatus.CONFLICT,
+		);
+
+		return result;
 	}
 }

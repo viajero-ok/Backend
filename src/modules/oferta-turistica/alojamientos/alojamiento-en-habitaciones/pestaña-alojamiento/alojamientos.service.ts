@@ -1,10 +1,10 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { AlojamientosRepositoryService } from './alojamientos-repository.service';
-import { AlojamientoDto } from './dto/alojamiento.dto';
-import { ExceptionHandlingService } from 'src/common/services/exception-handler.service';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { HorarioVacioDto } from './dto/horario-vacio.dto';
+import { ExceptionHandlingService } from 'src/common/services/exception-handler.service';
+import { AlojamientosRepositoryService } from './alojamientos-repository.service';
+import { AlojamientoDto } from './dto/alojamiento.dto';
+import { HorarioDto, HorarioNuevoDto } from './dto/horarios.dto';
 
 @Injectable()
 export class AlojamientosService {
@@ -131,10 +131,10 @@ export class AlojamientosService {
 		return imagenes.filter((imagen) => imagen !== null);
 	}
 
-	async registrarHorario(req, horarioVacioDto: HorarioVacioDto) {
+	async registrarHorario(horarioNuevoDto: HorarioNuevoDto) {
 		const result =
 			await this.alojamientosRepositoryService.registrarHorario(
-				horarioVacioDto,
+				horarioNuevoDto,
 			);
 
 		this.exceptionHandlingService.handleError(
@@ -148,6 +148,21 @@ export class AlojamientosService {
 			statusCode: 201,
 			id_horario: result.id_horario,
 		};
+	}
+
+	async modificarHorario(horarioDto: HorarioDto) {
+		const result =
+			await this.alojamientosRepositoryService.modificarHorario(
+				horarioDto,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al registrar horario',
+			HttpStatus.CONFLICT,
+		);
+
+		return result;
 	}
 
 	async eliminarHorario(req, id_horario: string) {
@@ -165,6 +180,25 @@ export class AlojamientosService {
 		return {
 			resultado: 'ok',
 			statusCode: 200,
+		};
+	}
+
+	async obtenerHorariosRegistrados(id_oferta: string) {
+		const result =
+			await this.alojamientosRepositoryService.obtenerHorariosRegistrados(
+				id_oferta,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al obtener horarios',
+			HttpStatus.CONFLICT,
+		);
+
+		return {
+			resultado: 'ok',
+			statusCode: 200,
+			result,
 		};
 	}
 }

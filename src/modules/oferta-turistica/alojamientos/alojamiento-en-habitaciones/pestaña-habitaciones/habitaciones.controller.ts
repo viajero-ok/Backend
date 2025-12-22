@@ -27,7 +27,7 @@ import { RegistrarImagenHabitacionDto } from './dto/registrar-imagen-habitacion.
 import { OfertaOwnerGuard } from 'src/common/guards/authorization/oferta-owner.guard';
 
 @ApiTags('Alojamientos/Habitaciones')
-@Controller('alojamientos')
+@Controller('alojamientos/alojamiento-con-tipologias/pestaña-tipologias')
 export class HabitacionesController {
 	constructor(private readonly habitacionesService: HabitacionesService) {}
 
