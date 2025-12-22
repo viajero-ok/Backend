@@ -50,6 +50,7 @@ jobs:
               with:
                   sparse-checkout: |
                       backend.compose.yaml
+                      viajerodump.sql
                   sparse-checkout-cone-mode: false
 
             - name: Crear archivos .env
