@@ -50,7 +50,6 @@ jobs:
               with:
                   sparse-checkout: |
                       backend.compose.yaml
-                      viajerodump.sql
                   sparse-checkout-cone-mode: false
 
             - name: Crear archivos .env
@@ -75,7 +74,6 @@ jobs:
                     cd apps/${{ env.RAMA }}
                     put .env.backend
                     put backend.compose.yaml
-                    put viajerodump.sql
                     bye
                   EOF
                   sshpass -p ${{ secrets.SSH_PASS }} ssh -p 2222 -o StrictHostKeyChecking=no -v ${{ secrets.VPS_USER_Y_HOST }} "
