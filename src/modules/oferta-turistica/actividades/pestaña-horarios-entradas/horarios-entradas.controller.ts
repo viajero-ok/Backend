@@ -14,11 +14,12 @@ import {
 	ApiResponse,
 	ApiTags,
 } from '@nestjs/swagger';
-import { HorariosEntradasService } from './horarios-entradas.service';
-import { HorarioVacioDto } from './dto/horario-vacio.dto';
 import { OfertaOwnerGuard } from 'src/common/guards/authorization/oferta-owner.guard';
-import { EntradaVaciaDto } from './dto/entrada-vacia.dto';
+import { EntradaDto, EntradaNuevaDto } from './dto/entradas.dto';
 import { FinalizarRegistroDto } from './dto/finalizar-registro.dto';
+import { HorariosTurnosNuevoDto } from './dto/horario-nuevo.dto';
+import { HorariosTurnosDto } from './dto/horarios.dto';
+import { HorariosEntradasService } from './horarios-entradas.service';
 
 @ApiTags('Actividades/HorariosEntradas')
 @ApiBearerAuth()
@@ -53,11 +54,44 @@ export class HorariosEntradasController {
 	@Post('registrar-horario')
 	async registrarHorario(
 		@Req() req: Request,
-		@Body() horarioVacioDto: HorarioVacioDto,
+		@Body() horarioNuevoDto: HorariosTurnosNuevoDto,
 	) {
 		return await this.horariosEntradasService.registrarHorario(
 			req,
-			horarioVacioDto,
+			horarioNuevoDto,
+		);
+	}
+
+	@ApiOperation({ summary: 'ACTUALIZAR HORARIO' })
+	@ApiResponse({
+		status: 200,
+		schema: {
+			type: 'object',
+			properties: {
+				resultado: {
+					type: 'string',
+					example: 'ok',
+				},
+				statusCode: {
+					type: 'number',
+					example: 200,
+				},
+				id_horario: {
+					type: 'string',
+					example: '123e4567-e89b-12d3-a456-426614174000',
+				},
+			},
+		},
+	})
+	@UseGuards(OfertaOwnerGuard)
+	@Post('actualizar-horario')
+	async actualizarHorario(
+		@Req() req: Request,
+		@Body() horarioDto: HorariosTurnosDto,
+	) {
+		return await this.horariosEntradasService.actualizarHorario(
+			req,
+			horarioDto,
 		);
 	}
 
@@ -94,11 +128,21 @@ export class HorariosEntradasController {
 	@Post('registrar-entrada')
 	async registrarEntrada(
 		@Req() req: Request,
-		@Body() entradaVaciaDto: EntradaVaciaDto,
+		@Body() entradaNueva: EntradaNuevaDto,
 	) {
 		return await this.horariosEntradasService.registrarEntrada(
 			req,
-			entradaVaciaDto,
+			entradaNueva,
+		);
+	}
+
+	@ApiOperation({ summary: 'ACTUALIZAR ENTRADA' })
+	@UseGuards(OfertaOwnerGuard)
+	@Post('actualizar-entrada')
+	async actualizarEntrada(@Req() req: Request, @Body() entrada: EntradaDto) {
+		return await this.horariosEntradasService.actualizarEntrada(
+			req,
+			entrada,
 		);
 	}
 

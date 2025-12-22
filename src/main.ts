@@ -1,6 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import {
+	CallHandler,
+	ExecutionContext,
+	Injectable,
+	NestInterceptor,
+	ValidationPipe,
+} from '@nestjs/common';
 import { AuthorizationGuard } from './common/guards/authorization/authorization.guard'; // Import the AuthorizationGuard
 import { GlobalJwtGuard } from './common/guards/jwt/global-jwt.guard';
 import { JwtRefreshInterceptor } from './common/interceptors/jwt-refresh/jwt-refresh.interceptor';
@@ -9,14 +15,88 @@ import { TimeOutInterceptor } from './common/interceptors/time-out/time-out.inte
 import * as session from 'express-session';
 import * as passport from 'passport';
 import { setupSwagger } from './setup-swagger';
+import * as os from 'os';
+import { catchError, tap } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+
+/**
+ * Interceptor para mostrar los resultados de los endpoints.
+ * Principalmente para que sea más facil el debugging en mobile.
+ */
+@Injectable()
+export class EndpointLogInterceptor implements NestInterceptor {
+	intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+		const req = context.switchToHttp().getRequest();
+		const { method, url, body, params, query } = req;
+
+		const GREEN = '\x1b[42m\x1b[30m'; // fondo verde, texto negro
+		const RED = '\x1b[41m\x1b[37m'; // fondo rojo, texto blanco
+		const CYAN = '\x1b[46m\x1b[30m';
+		const RESET = '\x1b[0m';
+
+		const started = Date.now();
+
+		return next.handle().pipe(
+			tap((data) => {
+				const ms = Date.now() - started;
+				console.log(
+					`${GREEN} ✔ ${method} ${url} [${ms}ms] 200 OK ${RESET}`,
+				);
+				console.log(data);
+			}),
+			catchError((err) => {
+				const ms = Date.now() - started;
+				const bodyStr = Object.keys(body || {}).length
+					? JSON.stringify(body, null, 2)
+					: '(empty)';
+				const paramsStr = Object.keys(params || {}).length
+					? JSON.stringify(params, null, 2)
+					: '(empty)';
+				const queryStr = Object.keys(query || {}).length
+					? JSON.stringify(query, null, 2)
+					: '(empty)';
+				console.error(
+					`${RED} ✖ [${err.status}] ${method} ${url} [${ms}ms] ${RESET}\n` +
+						`${CYAN} → Params: ${paramsStr} ${RESET}\n` +
+						`${CYAN} → Query: ${queryStr} ${RESET}\n` +
+						`${CYAN} → Body: ${bodyStr} ${RESET}\n` +
+						`${RED} Error: ${err?.response?.message ?? 'no msg'} ${RESET}\n`,
+				);
+				return throwError(() => err);
+			}),
+		);
+	}
+}
+
+function getLocalExternalIp(): string | null {
+	const nets = os.networkInterfaces();
+	for (const name of Object.keys(nets)) {
+		console.log(
+			'name: ',
+			name,
+		); /** Print de las interfaces de red que tenes activas en tu PC */
+		if (name != 'WiFi') continue;
+		/**
+		 * Nota para marianito:
+		 * Arriba el console log va a printear todas tus interfaces de red, reemplaza en el if con el nombre de la interfaz que estás usando.
+		 * Haciendo eso te va a printear la dirección IP que deberías usar en el frontend mobile para poder pegarle al backend desde la misma
+		 * red local de tu ksa.
+		 *
+		 * xoxo
+		 */
+		for (const net of nets[name] ?? []) {
+			// Skip over internal (i.e. 127.0.0.1) and non-IPv4 addresses
+			if (net.family === 'IPv4' && !net.internal) {
+				return net.address;
+			}
+		}
+	}
+	return null;
+}
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
-	app.enableCors({
-		allowedHeaders: ['Content-type', 'Authorization'],
-		origin: 'http://localhost:5173',
-		credentials: true,
-	});
+	app.enableCors();
 	// app.enableCors({
 	// 	/* origin: (origin, callback) => {
 	// 		// Lista de dominios permitidos
@@ -71,6 +151,7 @@ async function bootstrap() {
 			cookie: { maxAge: 86400000 }, // 1 dia 86400000
 		}),
 	);
+	app.useGlobalInterceptors(new EndpointLogInterceptor());
 	//Inicializar passport
 	app.use(passport.initialize());
 	app.use(passport.session());
@@ -79,6 +160,13 @@ async function bootstrap() {
 
 	//Iniciar la aplicación
 	const PORT = process.env.PORT || 3000;
-	await app.listen(PORT);
+	await app.listen(PORT, '0.0.0.0');
+
+	const localIp = getLocalExternalIp();
+	console.log(`🚀 App running at:`);
+	console.log(`   Local:   http://localhost:${PORT}`);
+	if (localIp) {
+		console.log(`   Network: http://${localIp}:${PORT}`);
+	}
 }
 bootstrap();

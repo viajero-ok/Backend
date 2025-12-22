@@ -1,29 +1,29 @@
 import {
 	Body,
 	Controller,
-	Get,
-	Post,
-	Req,
 	Delete,
+	Get,
 	Param,
 	Patch,
+	Post,
+	Req,
 	UseGuards,
 } from '@nestjs/common';
-import { AlojamientosService } from './alojamientos.service';
 import {
 	ApiBearerAuth,
 	ApiOperation,
 	ApiResponse,
 	ApiTags,
 } from '@nestjs/swagger';
-import { AlojamientoDto } from './dto/alojamiento.dto';
 import { Request } from 'express';
-import { HorarioVacioDto } from './dto/horario-vacio.dto';
 import { OfertaOwnerGuard } from 'src/common/guards/authorization/oferta-owner.guard';
+import { AlojamientosService } from './alojamientos.service';
+import { AlojamientoDto } from './dto/alojamiento.dto';
+import { HorarioDto, HorarioNuevoDto } from './dto/horarios.dto';
 
-@ApiTags('Alojamientos/Alojamiento')
+@ApiTags('Alojamientos/Alojamiento en Habitaciones/Viviendas')
 @ApiBearerAuth()
-@Controller('alojamientos')
+@Controller('alojamientos/alojamiento-con-tipologias/pestaña-alojamiento')
 export class AlojamientosController {
 	constructor(private readonly alojamientosService: AlojamientosService) {}
 
@@ -145,6 +145,26 @@ export class AlojamientosController {
 							metodo_pago: {
 								type: 'string',
 								example: 'Transferencia',
+							},
+						},
+					},
+				},
+				subcategorias_alojamiento: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_sub_categoria_oferta: {
+								type: 'number',
+								example: 1,
+							},
+							id_sub_tipo_oferta: {
+								type: 'number',
+								example: 1,
+							},
+							nombre_sub_categoria_oferta: {
+								type: 'string',
+								example: 'Hotel paraiso',
 							},
 						},
 					},
@@ -286,12 +306,22 @@ export class AlojamientosController {
 	@Post('registrar-horario')
 	async registrarHorario(
 		@Req() req: Request,
-		@Body() horarioVacioDto: HorarioVacioDto,
+		@Body() horarioNuevoDto: HorarioNuevoDto,
 	) {
-		return await this.alojamientosService.registrarHorario(
-			req,
-			horarioVacioDto,
-		);
+		return await this.alojamientosService.registrarHorario(horarioNuevoDto);
+	}
+
+	@ApiOperation({ summary: 'MODIFICAR HORARIO' })
+	@ApiResponse({
+		status: 200,
+	})
+	@UseGuards(OfertaOwnerGuard)
+	@Post('modificar-horario')
+	async modificarHorario(
+		@Req() req: Request,
+		@Body() horarioDto: HorarioDto,
+	) {
+		return await this.alojamientosService.modificarHorario(horarioDto);
 	}
 
 	@ApiOperation({ summary: 'ELIMINAR HORARIO' })
@@ -345,6 +375,10 @@ export class AlojamientosController {
 								id_tipo_pago_anticipado: { type: 'number' },
 								porcentaje_pago_anticipado: { type: 'string' },
 								min_dias_estadia: { type: 'number' },
+								id_sub_categoria: {
+									type: 'number',
+								},
+								sub_categoria: { type: 'string' },
 							},
 						},
 						metodos_pago: {
@@ -441,6 +475,19 @@ export class AlojamientosController {
 	) {
 		return await this.alojamientosService.obtenerDatosRegistradosAlojamiento(
 			req,
+			id_oferta,
+		);
+	}
+
+	@ApiOperation({ summary: 'Obtener horarios registrados' })
+	@ApiResponse({ status: 200 })
+	@UseGuards(OfertaOwnerGuard)
+	@Get('obtener-horarios-registrados/:id_oferta')
+	async obtenerHorariosRegistrados(
+		@Req() req: Request,
+		@Param('id_oferta') id_oferta: string,
+	) {
+		return await this.alojamientosService.obtenerHorariosRegistrados(
 			id_oferta,
 		);
 	}

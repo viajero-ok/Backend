@@ -1,20 +1,17 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
-	IsNotEmpty,
-	IsString,
 	IsArray,
-	ValidateNested,
-	IsUUID,
+	IsNotEmpty,
 	IsNumber,
 	IsOptional,
-	ArrayMinSize,
+	IsString,
+	IsUUID,
 	Min,
+	ValidateNested,
 } from 'class-validator';
-import { PoliticasReservaYDatosBasicosDto } from './politicas-reserva-y-datos-basicos.dto';
-import { CheckInOutDto } from './horarios.dto';
-import { ValidateCheckInOut } from '../../utils/check-in-out.validator';
 import { ObservacionesAlojamientoDto } from './observaciones-alojamiento.dto';
+import { PoliticasReservaYDatosBasicosDto } from './politicas-reserva-y-datos-basicos.dto';
 
 export class AlojamientoDto {
 	@ApiProperty({
@@ -66,15 +63,15 @@ export class AlojamientoDto {
 	@Type(() => PoliticasReservaYDatosBasicosDto)
 	readonly politicas_reserva_y_datos_basicos: PoliticasReservaYDatosBasicosDto;
 
-	@ApiProperty({
-		type: [CheckInOutDto],
-		description: 'Horarios de check-in y check-out',
-	})
-	@IsNotEmpty()
-	@ArrayMinSize(1)
-	@IsArray()
-	@ValidateNested({ each: true })
-	@ValidateCheckInOut()
-	@Type(() => CheckInOutDto)
-	readonly check_in_out: CheckInOutDto[];
+	// @ApiProperty({
+	// 	type: [CheckInOutDto],
+	// 	description: 'Horarios de check-in y check-out',
+	// })
+	// @IsNotEmpty()
+	// @ArrayMinSize(1)
+	// @IsArray()
+	// @ValidateNested({ each: true })
+	// //@ValidateCheckInOut()
+	// @Type(() => CheckInOutDto)
+	// readonly check_in_out: CheckInOutDto[];
 }

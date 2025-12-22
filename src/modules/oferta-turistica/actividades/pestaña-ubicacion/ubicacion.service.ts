@@ -1,7 +1,7 @@
-import { ExceptionHandlingService } from 'src/common/services/exception-handler.service';
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { UbicacionRepositoryService } from './ubicacion-repository.service';
+import { ExceptionHandlingService } from 'src/common/services/exception-handler.service';
 import { UbicacionActividadDto } from './dto/ubicacion-actividad.dto';
+import { UbicacionRepositoryService } from './ubicacion-repository.service';
 
 @Injectable()
 export class UbicacionService {
@@ -14,7 +14,6 @@ export class UbicacionService {
 		req,
 		ubicacionDto: UbicacionActividadDto,
 	) {
-		console.log(ubicacionDto);
 		const result =
 			await this.ubicacionRepositoryService.registrarUbicacionActividad(
 				req.user.id_usuario,
@@ -30,7 +29,7 @@ export class UbicacionService {
 		if (result.observacion) {
 			this.exceptionHandlingService.handleError(
 				result.observacion,
-				'Error al registrar la ubicación de la actividad',
+				'Error al registrar la observación de la ubicación',
 				HttpStatus.CONFLICT,
 			);
 		}
@@ -39,6 +38,22 @@ export class UbicacionService {
 			resultado: 'ok',
 			statusCode: HttpStatus.CREATED,
 		};
+	}
+
+	async obtenerUbicacionEstablecimiento(req, id_oferta: string) {
+		const result =
+			await this.ubicacionRepositoryService.obtenerUbicacionEstablecimiento(
+				req.user.id_usuario,
+				id_oferta,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al obtener la ubicación del establecimiento asociado',
+			HttpStatus.CONFLICT,
+		);
+
+		return { datos_ubicacion: result };
 	}
 
 	async obtenerDatosRegistradosUbicacion(req, id_oferta: string) {

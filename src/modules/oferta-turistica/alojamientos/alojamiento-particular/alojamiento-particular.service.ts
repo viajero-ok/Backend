@@ -1,0 +1,209 @@
+import { HttpStatus, Injectable } from '@nestjs/common';
+import { ExceptionHandlingService } from 'src/common/services/exception-handler.service';
+import { AlojamientoParticularRepositoryService } from './alojamiento-particular-repository.service';
+import { HorarioDto, HorarioNuevoDto } from './dto/horarios.dto';
+import { AlojamientoParticularDto } from './dto/alojamiento.dto';
+import * as path from 'path';
+import * as fs from 'fs/promises';
+
+@Injectable()
+export class AlojamientoParticularService {
+	constructor(
+		private readonly alojamientoParticularRepositoryService: AlojamientoParticularRepositoryService,
+		private readonly exceptionHandlingService: ExceptionHandlingService,
+	) {}
+
+	async actualizarAlojamiento(
+		req,
+		alojamientoParticularDto: AlojamientoParticularDto,
+	) {
+		try {
+			const resultados =
+				await this.alojamientoParticularRepositoryService.actualizarAlojamiento(
+					req.user.id_usuario,
+					alojamientoParticularDto,
+				);
+			// Verificar resultados individuales
+			this.exceptionHandlingService.handleError(
+				resultados.alojamiento,
+				'Error al registrar alojamiento',
+				HttpStatus.CONFLICT,
+			);
+			this.exceptionHandlingService.handleError(
+				resultados.caracteristicas,
+				'Error al registrar características del alojamiento',
+				HttpStatus.CONFLICT,
+			);
+			this.exceptionHandlingService.handleError(
+				resultados.metodos_pago,
+				'Error al registrar métodos de pago del alojamiento',
+				HttpStatus.CONFLICT,
+			);
+
+			resultados.observaciones.forEach((observacion, index) => {
+				this.exceptionHandlingService.handleError(
+					observacion,
+					`Error al registrar observación ${index + 1}`,
+					HttpStatus.CONFLICT,
+				);
+			});
+
+			resultados.horarios.forEach((horario, index) => {
+				this.exceptionHandlingService.handleError(
+					horario,
+					`Error al registrar horario ${index + 1}`,
+					HttpStatus.CONFLICT,
+				);
+			});
+
+			return {
+				resultado: 'ok',
+				statusCode: 201,
+				id_oferta: resultados.alojamiento.id_oferta,
+			};
+		} catch (error) {
+			throw error;
+		}
+	}
+
+	async obtenerDatosRegistroAlojamiento() {
+		return await this.alojamientoParticularRepositoryService.obtenerDatosRegistroAlojamiento();
+	}
+
+	async obtenerDatosRegistradosAlojamiento(req, id_oferta: string) {
+		const result =
+			await this.alojamientoParticularRepositoryService.obtenerDatosRegistradosAlojamiento(
+				id_oferta,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al obtener datos registrados',
+			HttpStatus.CONFLICT,
+		);
+
+		result.horarios_checkin_checkout.forEach((horario) => {
+			if (
+				horario.aplica_lunes === 1 &&
+				horario.aplica_martes === 1 &&
+				horario.aplica_miercoles === 1 &&
+				horario.aplica_jueves === 1 &&
+				horario.aplica_viernes === 1 &&
+				horario.aplica_sabado === 1 &&
+				horario.aplica_domingo === 1
+			) {
+				horario.aplica_todos_dias = true;
+			} else {
+				horario.aplica_todos_dias = false;
+			}
+		});
+
+		const datosImagenes =
+			await this.alojamientoParticularRepositoryService.obtenerImagenes(
+				id_oferta,
+			);
+		const imagenes = await this.obtenerImagenesOferta(datosImagenes);
+
+		return {
+			datos: result,
+			imagenes,
+		};
+	}
+
+	async obtenerImagenesOferta(
+		datosImagenes: any[],
+	): Promise<{ id_imagen: number; nombre: string; datos: string }[]> {
+		const directorio = path.join(process.cwd(), 'uploads');
+		const archivos = await fs.readdir(directorio);
+
+		const imagenesPromesas = archivos.map(async (archivo) => {
+			const rutaCompleta = path.join(directorio, archivo);
+			const imagenCorrespondiente = datosImagenes.find(
+				(img) => img.nombre_unico === archivo,
+			);
+			if (imagenCorrespondiente) {
+				const datos = await fs.readFile(rutaCompleta);
+				return {
+					id_imagen: imagenCorrespondiente.id_imagen,
+					nombre: imagenCorrespondiente.nombre_original,
+					datos: datos.toString('base64'),
+				};
+			}
+			return null;
+		});
+
+		const imagenes = await Promise.all(imagenesPromesas);
+		return imagenes.filter((imagen) => imagen !== null);
+	}
+
+	async registrarHorario(horarioNuevoDto: HorarioNuevoDto) {
+		const result =
+			await this.alojamientoParticularRepositoryService.registrarHorario(
+				horarioNuevoDto,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al registrar horario',
+			HttpStatus.CONFLICT,
+		);
+
+		return {
+			resultado: 'ok',
+			statusCode: 201,
+			id_horario: result.id_horario,
+		};
+	}
+
+	async modificarHorario(horarioDto: HorarioDto) {
+		const result =
+			await this.alojamientoParticularRepositoryService.modificarHorario(
+				horarioDto,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al modificar horario',
+			HttpStatus.CONFLICT,
+		);
+
+		return result;
+	}
+
+	async eliminarHorario(req, id_horario: string) {
+		const result =
+			await this.alojamientoParticularRepositoryService.eliminarHorario(
+				id_horario,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al eliminar horario',
+			HttpStatus.CONFLICT,
+		);
+
+		return {
+			resultado: 'ok',
+			statusCode: 200,
+		};
+	}
+
+	async obtenerHorariosRegistrados(id_oferta: string) {
+		const result =
+			await this.alojamientoParticularRepositoryService.obtenerHorariosRegistrados(
+				id_oferta,
+			);
+
+		this.exceptionHandlingService.handleError(
+			result,
+			'Error al obtener horarios',
+			HttpStatus.CONFLICT,
+		);
+
+		return {
+			resultado: 'ok',
+			statusCode: 200,
+			result,
+		};
+	}
+}

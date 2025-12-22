@@ -568,6 +568,14 @@ export class OfertaTuristicaController {
 		);
 	}
 
+	@ApiOperation({ summary: 'OBTENER DATOS PARA RESERVAR OFERTA' })
+	@Get('obtener-datos-reserva-oferta-turistica')
+	async obtenerDatosReservaOfertaTuristica(@Req() req: Request) {
+		return await this.ofertaTuristicaService.obtenerDatosReservaOfertaTuristica(
+			req,
+		);
+	}
+
 	@ApiOperation({ summary: 'OBTENER OFERTAS GUARDADAS POR USUARIO' })
 	@ApiResponse({
 		status: 200,
@@ -703,6 +711,20 @@ export class OfertaTuristicaController {
 	) {
 		return await this.ofertaTuristicaService.obtenerUbicacionesPorCoincidencia(
 			texto_coincidencia,
+		);
+	}
+
+	@ApiOperation({ summary: 'Obtener datos básicos de la oferta' })
+	@ApiResponse({ status: 200 })
+	@UseGuards(OfertaOwnerGuard)
+	@Get('obtener-datos-basicos/:id_oferta')
+	async obtenerDatosBasicos(
+		@Req() req: Request,
+		@Param('id_oferta') id_oferta: string,
+	) {
+		return await this.ofertaTuristicaService.obtenerDatosBasicos(
+			req,
+			id_oferta,
 		);
 	}
 }

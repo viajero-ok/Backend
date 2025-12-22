@@ -67,7 +67,7 @@ export class AuthRepositoryService {
 				registrarTuristaDto.id_localidad,
 				registrarTuristaDto.id_departamento,
 				registrarTuristaDto.id_provincia,
-				registrarTuristaDto.id_pais,
+				1, // Solo permitimos Argentina
 				registrarTuristaDto.id_idioma,
 				registrarTuristaDto.id_genero,
 			],
