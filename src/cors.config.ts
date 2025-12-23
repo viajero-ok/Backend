@@ -7,7 +7,7 @@ export const corsConfig: CorsOptions = {
 	) {
 		const allowedDomains = [
 			// Dominios estáticos
-			'https://viajeroturismo.com.ar',
+			'https://viajeroturismo.me',
 			'http://localhost:3000',
 			'http://localhost:5173',
 

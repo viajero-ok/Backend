@@ -13,7 +13,7 @@ export class MercadoPagoOriginGuard implements CanActivate {
 
 		const allowedDomains = [
 			'auth.mercadopago.com.ar',
-			'dev.viajeroturismo.com.ar',
+			'dev.viajeroturismo.me',
 		];
 
 		if (

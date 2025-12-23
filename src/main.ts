@@ -101,7 +101,7 @@ async function bootstrap() {
 	// 	/* origin: (origin, callback) => {
 	// 		// Lista de dominios permitidos
 	// 		const allowedOrigins = [
-	// 			'https://viajeroturismo.com.ar',
+	// 			'https://viajeroturismo.me',
 	// 			/\.viajeroturismo\.com\.ar$/, // Subdominios
 	// 			'https://accounts.google.com',
 	// 			'https://www.mercadopago.com',

@@ -23,7 +23,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 						},
 					},
 					defaults: {
-						from: `"Viajero" <hi@viajeroturismo.com.ar>`,
+						from: `"Viajero" <hi@viajeroturismo.me>`,
 					},
 					template: {
 						dir: __dirname + '/templates',

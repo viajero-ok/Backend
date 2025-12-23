@@ -14,7 +14,7 @@ export class EventMailModule {
 	) {
 		const url_verificacion = `${process.env.URL_FRONT}?codigo_verificacion=${codigo_verificacion}&&id_usuario=${id_usuario}`;
 		await this.mailService.sendMail({
-			from: '"Viajero" <hi@viajeroturismo.com.ar>',
+			from: '"Viajero" <hi@viajeroturismo.me>',
 			to: mail,
 			subject: 'Viajero - Verificación de cuenta 🧉',
 			template: 'verificacion',
@@ -35,7 +35,7 @@ export class EventMailModule {
 		const template =
 			idioma === 'Español' ? 'bienvenido-turista' : 'welcome';
 		await this.mailService.sendMail({
-			from: '"Viajero" <hi@viajeroturismo.com.ar>',
+			from: '"Viajero" <hi@viajeroturismo.me>',
 			to: mail,
 			subject: 'Bienvenido Viajero 🧉',
 			template,
@@ -49,7 +49,7 @@ export class EventMailModule {
 	@OnEvent('prestador.created')
 	async handlePrestadorCreatedEvent(mail: string, razon_social: string) {
 		await this.mailService.sendMail({
-			from: '"Viajero" <hi@viajeroturismo.com.ar>',
+			from: '"Viajero" <hi@viajeroturismo.me>',
 			to: mail,
 			subject: 'Bienvenido Viajero 🧉',
 			template: 'bienvenido-prestador',
@@ -77,7 +77,7 @@ export class EventMailModule {
 	) {
 		// Envío de correo al turista
 		await this.mailService.sendMail({
-			from: '"Viajero" <hi@viajeroturismo.com.ar>',
+			from: '"Viajero" <hi@viajeroturismo.me>',
 			to: mailTurista,
 			subject: 'Confirmación de tu reserva 🧉',
 			template: 'confirmacion-reserva-turista',
@@ -91,7 +91,7 @@ export class EventMailModule {
 
 		// Envío de correo al prestador
 		await this.mailService.sendMail({
-			from: '"Viajero" <hi@viajeroturismo.com.ar>',
+			from: '"Viajero" <hi@viajeroturismo.me>',
 			to: mailPrestador,
 			subject: 'Nueva reserva recibida 🧉',
 			template: 'confirmacion-reserva-prestador',
@@ -118,7 +118,7 @@ export class EventMailModule {
 	) {
 		// Envío de correo al turista
 		await this.mailService.sendMail({
-			from: '"Viajero" <hi@viajeroturismo.com.ar>',
+			from: '"Viajero" <hi@viajeroturismo.me>',
 			to: mailTurista,
 			subject: 'Pago confirmado de tu reserva 🧉',
 			template: 'pago-confirmado-turista',
@@ -135,7 +135,7 @@ export class EventMailModule {
 
 		// Envío de correo al prestador
 		await this.mailService.sendMail({
-			from: '"Viajero" <hi@viajeroturismo.com.ar>',
+			from: '"Viajero" <hi@viajeroturismo.me>',
 			to: mailPrestador,
 			subject: 'Pago recibido por reserva 🧉',
 			template: 'pago-confirmado-prestador',
