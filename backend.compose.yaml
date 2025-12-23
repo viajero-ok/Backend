@@ -19,7 +19,9 @@ services:
     networks:
       - app-network
     restart: unless-stopped
-    command: --default-time-zone='+00:00'
+    command: 
+      --default-time-zone='+00:00'
+      --lower_case_table_names=1
 
   nestjs-app:
     image: ${BACK_IMAGE}
