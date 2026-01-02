@@ -6,6 +6,7 @@ import {
 	IsOptional,
 	IsString,
 	IsUUID,
+	Min,
 	ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
@@ -42,6 +43,15 @@ export class ViviendaDto {
 	@ValidateNested({ each: true })
 	@Type(() => PlazasViviendaDto)
 	readonly plazas: PlazasViviendaDto[];
+
+	@ApiProperty({
+		description: 'Cantidad de dormitorios',
+		example: 2,
+	})
+	@IsNotEmpty()
+	@IsNumber()
+	@Min(1)
+	cantidad_dormitorios: number;
 
 	@ApiProperty({ type: BañosViviendaDto })
 	@ValidateNested()

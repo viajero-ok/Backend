@@ -45,6 +45,7 @@ export class ViviendasRepositoryService {
 					plazas,
 					caracteristicas,
 					observaciones,
+					cantidad_dormitorios,
 				} = viviendaDto;
 
 				const resultados = {
@@ -62,7 +63,8 @@ export class ViviendasRepositoryService {
 						tipologia.nombre_tipologia,
 						tipologia.cantidad,
 						baño.cantidad_baños,
-						baño.bl_baño_compartido ? 1 : 0,
+						cantidad_dormitorios,
+						0,
 						baño.bl_baño_adaptado ? 1 : 0,
 						id_usuario,
 						0,
@@ -118,7 +120,18 @@ export class ViviendasRepositoryService {
 		const { id_oferta } = registrarViviendaDto;
 		const resultado = await this.entityManager.query(
 			'CALL SP_ABM_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?, ?)',
-			[id_oferta, null, null, null, null, null, null, id_usuario, 0],
+			[
+				id_oferta,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				id_usuario,
+				0,
+			],
 		);
 		return resultado[0][0];
 	}
@@ -129,6 +142,7 @@ export class ViviendasRepositoryService {
 			[
 				null,
 				id_tipo_detalle,
+				null,
 				null,
 				null,
 				null,

@@ -59,6 +59,7 @@ export class HabitacionesRepositoryService {
 						tipologia.nombre_tipologia,
 						tipologia.cantidad,
 						baño.cantidad_baños,
+						null,
 						baño.bl_baño_compartido ? 1 : 0,
 						baño.bl_baño_adaptado ? 1 : 0,
 						id_usuario,
@@ -115,7 +116,18 @@ export class HabitacionesRepositoryService {
 		const { id_oferta } = registrarHabitacionDto;
 		const resultado = await this.entityManager.query(
 			'CALL SP_ABM_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?, ?)',
-			[id_oferta, null, null, null, null, null, null, id_usuario, 0],
+			[
+				id_oferta,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				id_usuario,
+				0,
+			],
 		);
 		return resultado[0][0];
 	}
@@ -126,6 +138,7 @@ export class HabitacionesRepositoryService {
 			[
 				null,
 				id_tipo_detalle,
+				null,
 				null,
 				null,
 				null,

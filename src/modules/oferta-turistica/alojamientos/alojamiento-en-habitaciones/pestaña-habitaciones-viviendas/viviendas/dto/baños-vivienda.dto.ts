@@ -11,14 +11,6 @@ export class BañosViviendaDto {
 	cantidad_baños: number;
 
 	@ApiProperty({
-		description: 'Indica si el baño es compartido',
-		example: false,
-	})
-	@IsNotEmpty()
-	@IsBoolean()
-	bl_baño_compartido: boolean;
-
-	@ApiProperty({
 		description:
 			'Indica si el baño está adaptado para personas con discapacidad',
 		example: false,
