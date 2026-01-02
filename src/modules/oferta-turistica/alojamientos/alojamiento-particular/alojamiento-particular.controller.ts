@@ -21,9 +21,9 @@ import { HorarioNuevoDto } from './dto/horarios.dto';
 import { HorarioDto } from './dto/horarios.dto';
 import { AlojamientoParticularDto } from './dto/alojamiento.dto';
 
-@ApiTags('Alojamientos/Alojamiento Particular')
+@ApiTags('Alojamientos/Alojamiento Individual')
 @ApiBearerAuth()
-@Controller('alojamientos/alojamiento-particular')
+@Controller('alojamientos/alojamiento-individual')
 export class AlojamientoParticularController {
 	constructor(
 		private readonly alojamientoParticularService: AlojamientoParticularService,
