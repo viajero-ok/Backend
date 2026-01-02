@@ -17,7 +17,7 @@ import { OfertaOwnerGuard } from 'src/common/guards/authorization/oferta-owner.g
 
 @ApiTags('Alojamientos/Habitaciones')
 @Controller(
-	'alojamientos/alojamiento-con-tipologias/pestaña-tipologias/habitaciones',
+	'alojamientos/alojamiento-con-tipologias/pestanna-tipologias/habitaciones',
 )
 export class HabitacionesController {
 	constructor(private readonly habitacionesService: HabitacionesService) {}

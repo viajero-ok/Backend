@@ -23,7 +23,7 @@ import { HorarioDto, HorarioNuevoDto } from './dto/horarios.dto';
 
 @ApiTags('Alojamientos/Alojamiento en Habitaciones/Viviendas')
 @ApiBearerAuth()
-@Controller('alojamientos/alojamiento-con-tipologias/pestaña-alojamiento')
+@Controller('alojamientos/alojamiento-con-tipologias/pestanna-alojamiento')
 export class AlojamientosController {
 	constructor(private readonly alojamientosService: AlojamientosService) {}
 
