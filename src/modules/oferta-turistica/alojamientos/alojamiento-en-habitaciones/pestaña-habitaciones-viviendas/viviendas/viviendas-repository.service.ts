@@ -15,13 +15,13 @@ export class ViviendasRepositoryService {
 	async obtenerDatosRegistroVivienda() {
 		const resultados = {
 			tipos_camas: null,
-			caracteristicas_viviendas: null,
+			caracteristicas_comodidades_y_servicios: null,
 			caracteristicas_comunes: null,
 		};
 		resultados.tipos_camas = (
 			await this.entityManager.query('CALL SP_LISTAR_TIPOS_CAMA()')
 		)[0];
-		resultados.caracteristicas_viviendas = (
+		resultados.caracteristicas_comodidades_y_servicios = (
 			await this.entityManager.query(
 				'CALL SP_LISTAR_CARACTERISTICAS_X_AMBITO(6)',
 			)
