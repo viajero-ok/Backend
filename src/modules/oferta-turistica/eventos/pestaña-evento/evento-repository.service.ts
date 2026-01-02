@@ -22,7 +22,7 @@ export class EventoRepositoryService {
 		datosBasicosDto: GuardarDatosBasicosEventoDto,
 	) {
 		await this.entityManager.query(
-			`CALL SP_ABM_EVENTO(?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+			`CALL SP_ABM_EVENTO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 			[
 				datosBasicosDto.id_oferta,
 				3, // Porque es un evento
@@ -31,6 +31,14 @@ export class EventoRepositoryService {
 				datosBasicosDto.descripcion,
 				datosBasicosDto.requisitos,
 				datosBasicosDto.url_venta_entradas,
+				new Date(datosBasicosDto.fecha_hora_inicio)
+					.toISOString()
+					.slice(0, 19)
+					.replace('T', ' '),
+				new Date(datosBasicosDto.fecha_hora_fin)
+					.toISOString()
+					.slice(0, 19)
+					.replace('T', ' '),
 				id_usuario,
 				0,
 			],
