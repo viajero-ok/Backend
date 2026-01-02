@@ -1,75 +1,19 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { ExceptionHandlingService } from 'src/common/services/exception-handler.service';
-import { ImagenProcesadaDto } from '../dto/imagen-procesada.dto';
-import { eliminarArchivo } from 'src/modules/oferta-turistica/utils/eliminar-archivo';
 import { HabitacionesRepositoryService } from './habitaciones-repository.service';
 import { HabitacionDto } from './dto/habitacion.dto';
-import * as fs from 'fs/promises';
-import * as path from 'path';
 import { RegistrarHabitacionDto } from './dto/registrar-habitacion.dto';
-import { RegistrarImagenHabitacionDto } from './dto/registrar-imagen-habitacion.dto';
+import { ImagenesTipoDetalleService } from '../imagenes/imagenes-tipo-detalle.service';
+import { ImagenesTipoDetalleRepositoryService } from '../imagenes/imagenes-tipo-detalle-repository.service';
 
 @Injectable()
 export class HabitacionesService {
 	constructor(
 		private readonly habitacionesRepositoryService: HabitacionesRepositoryService,
 		private readonly exceptionHandlingService: ExceptionHandlingService,
+		private readonly imagenesService: ImagenesTipoDetalleService,
+		private readonly imagenesRepositoryService: ImagenesTipoDetalleRepositoryService,
 	) {}
-
-	async registrarImagenHabitacion(
-		req,
-		file: Express.Multer.File,
-		registrarImagenHabitacionDto: RegistrarImagenHabitacionDto,
-	) {
-		try {
-			const imagenProcesada = new ImagenProcesadaDto();
-			imagenProcesada.nombre_original = file.originalname;
-			imagenProcesada.nombre_unico = file.filename;
-			imagenProcesada.ruta = file.path;
-			imagenProcesada.mime_type = file.mimetype;
-			imagenProcesada.tamaño = file.size;
-
-			const result =
-				await this.habitacionesRepositoryService.registrarImagenHabitacion(
-					registrarImagenHabitacionDto,
-					req.user.id_usuario,
-					imagenProcesada,
-				);
-
-			this.exceptionHandlingService.handleError(
-				result,
-				'Error al registrar imagen de la habitación',
-				HttpStatus.CONFLICT,
-			);
-
-			return {
-				resultado: 'ok',
-				statusCode: 201,
-				id_imagen: result.id_imagen,
-			};
-		} catch (error) {
-			await eliminarArchivo(file.path);
-			throw error;
-		}
-	}
-
-	async eliminarImagenHabitacion(req, id_imagen: string) {
-		const result =
-			await this.habitacionesRepositoryService.eliminarImagenHabitacion(
-				req.user.id_usuario,
-				id_imagen,
-			);
-
-		this.exceptionHandlingService.handleError(
-			result,
-			'Error al eliminar imagen de la habitación',
-			HttpStatus.CONFLICT,
-		);
-
-		await eliminarArchivo(result.ruta_archivo);
-
-		return { resultado: 'ok', statusCode: 200 };
-	}
 
 	async obtenerDatosRegistroHabitacion() {
 		return await this.habitacionesRepositoryService.obtenerDatosRegistroHabitacion();
@@ -182,11 +126,11 @@ export class HabitacionesService {
 
 		for (const tipo_detalle of respuesta) {
 			const datosImagenes =
-				await this.habitacionesRepositoryService.obtenerImagenes(
+				await this.imagenesRepositoryService.obtenerImagenes(
 					tipo_detalle.id_tipo_detalle,
 				);
 			tipo_detalle.imagenes =
-				await this.obtenerImagenesOferta(datosImagenes);
+				await this.imagenesService.obtenerImagenesOferta(datosImagenes);
 			tipo_detalle.bl_baño_compartido =
 				tipo_detalle.bl_baño_compartido === 1 ? true : false;
 			tipo_detalle.bl_baño_adaptado =
@@ -195,51 +139,6 @@ export class HabitacionesService {
 
 		return {
 			datos: respuesta,
-		};
-	}
-
-	async obtenerImagenesOferta(
-		datosImagenes: any[],
-	): Promise<{ id_imagen: number; nombre: string; datos: string }[]> {
-		const directorio = path.join(process.cwd(), 'uploads');
-		const archivos = await fs.readdir(directorio);
-
-		const imagenesPromesas = archivos.map(async (archivo) => {
-			const rutaCompleta = path.join(directorio, archivo);
-			const imagenCorrespondiente = datosImagenes.find(
-				(img) => img.nombre_unico === archivo,
-			);
-			if (imagenCorrespondiente) {
-				const datos = await fs.readFile(rutaCompleta);
-				return {
-					id_imagen: imagenCorrespondiente.id_imagen_x_tipo_detalle,
-					nombre: imagenCorrespondiente.nombre_original,
-					datos: datos.toString('base64'),
-				};
-			}
-			return null;
-		});
-
-		const imagenes = await Promise.all(imagenesPromesas);
-		return imagenes.filter((imagen) => imagen !== null);
-	}
-
-	async finalizarRegistroAlojamiento(req, id_oferta: string) {
-		const result =
-			await this.habitacionesRepositoryService.finalizarRegistroAlojamiento(
-				req.user.id_usuario,
-				id_oferta,
-			);
-
-		this.exceptionHandlingService.handleError(
-			result,
-			`Error al finalizar registro de alojamiento. ${JSON.stringify(result)}`,
-			HttpStatus.CONFLICT,
-		);
-
-		return {
-			resultado: 'ok',
-			statusCode: 200,
 		};
 	}
 }

@@ -7,27 +7,18 @@ import {
 	Patch,
 	Post,
 	Req,
-	UploadedFile,
 	UseGuards,
-	UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import {
-	ApiBody,
-	ApiConsumes,
-	ApiOperation,
-	ApiResponse,
-	ApiTags,
-} from '@nestjs/swagger';
-import { multerHabitacionConfig } from '../utils/multer-habitacion.config';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HabitacionesService } from './habitaciones.service';
 import { HabitacionDto } from './dto/habitacion.dto';
 import { RegistrarHabitacionDto } from './dto/registrar-habitacion.dto';
-import { RegistrarImagenHabitacionDto } from './dto/registrar-imagen-habitacion.dto';
 import { OfertaOwnerGuard } from 'src/common/guards/authorization/oferta-owner.guard';
 
 @ApiTags('Alojamientos/Habitaciones')
-@Controller('alojamientos/alojamiento-con-tipologias/pestaña-tipologias')
+@Controller(
+	'alojamientos/alojamiento-con-tipologias/pestaña-tipologias/habitaciones',
+)
 export class HabitacionesController {
 	constructor(private readonly habitacionesService: HabitacionesService) {}
 
@@ -61,6 +52,22 @@ export class HabitacionesController {
 							caracteristica: {
 								type: 'string',
 								example: 'Apta personas con movilidad reducida',
+							},
+						},
+					},
+				},
+				caracteristicas_servicios: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_caracteristica: {
+								type: 'number',
+								example: 8,
+							},
+							caracteristica: {
+								type: 'string',
+								example: 'Cochera',
 							},
 						},
 					},
@@ -161,86 +168,6 @@ export class HabitacionesController {
 		);
 	}
 
-	@ApiOperation({ summary: 'REGISTRAR IMAGEN HABITACIÓN' })
-	@ApiResponse({
-		status: 201,
-		schema: {
-			type: 'object',
-			properties: {
-				resultado: {
-					type: 'string',
-					example: 'ok',
-				},
-				statusCode: {
-					type: 'number',
-					example: 201,
-				},
-				id_imagen: {
-					type: 'number',
-					example: 1,
-				},
-			},
-		},
-	})
-	@ApiBody({
-		schema: {
-			type: 'object',
-			properties: {
-				imagen: {
-					type: 'string',
-					format: 'binary',
-					description: 'Archivo de imagen del alojamiento',
-				},
-				id_tipo_detalle: {
-					type: 'string',
-					description: 'ID de la habitación del alojamiento',
-				},
-			},
-		},
-	})
-	@ApiConsumes('multipart/form-data')
-	@Post('registrar-imagen-habitacion')
-	@UseInterceptors(FileInterceptor('imagen', multerHabitacionConfig))
-	async registrarImagenHabitacion(
-		@Req() req: Request,
-		@UploadedFile() imagen: Express.Multer.File,
-		@Body() registrarImagenHabitacionDto: RegistrarImagenHabitacionDto,
-	) {
-		return await this.habitacionesService.registrarImagenHabitacion(
-			req,
-			imagen,
-			registrarImagenHabitacionDto,
-		);
-	}
-
-	@ApiOperation({ summary: 'ELIMINAR IMAGEN HABITACIÓN' })
-	@ApiResponse({
-		status: 200,
-		schema: {
-			type: 'object',
-			properties: {
-				resultado: {
-					type: 'string',
-					example: 'ok',
-				},
-				statusCode: {
-					type: 'number',
-					example: 200,
-				},
-			},
-		},
-	})
-	@Delete('eliminar-imagen-habitacion/:id_imagen')
-	async eliminarImagenHabitacion(
-		@Req() req: Request,
-		@Param('id_imagen') id_imagen: string,
-	) {
-		return await this.habitacionesService.eliminarImagenHabitacion(
-			req,
-			id_imagen,
-		);
-	}
-
 	@ApiOperation({ summary: 'OBTENER DATOS REGISTRADOS HABITACIONES' })
 	@ApiResponse({
 		status: 200,
@@ -302,19 +229,6 @@ export class HabitacionesController {
 		@Param('id_oferta') id_oferta: string,
 	) {
 		return await this.habitacionesService.obtenerDatosRegistradosHabitacion(
-			req,
-			id_oferta,
-		);
-	}
-
-	@ApiOperation({ summary: 'FINALIZAR REGISTRO ALOJAMIENTO' })
-	@ApiResponse({})
-	@Post('finalizar-registro-alojamiento/:id_oferta')
-	async finalizarRegistroAlojamiento(
-		@Req() req: Request,
-		@Param('id_oferta') id_oferta: string,
-	) {
-		return await this.habitacionesService.finalizarRegistroAlojamiento(
 			req,
 			id_oferta,
 		);

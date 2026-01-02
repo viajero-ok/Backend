@@ -1,39 +1,40 @@
 import { Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
-import { TipoObservacion } from '../../../enum/tipo-observacion.enum';
-import { ImagenProcesadaDto } from '../dto/imagen-procesada.dto';
-import { HabitacionDto } from './dto/habitacion.dto';
-import { RegistrarHabitacionDto } from './dto/registrar-habitacion.dto';
-import { RegistrarImagenHabitacionDto } from './dto/registrar-imagen-habitacion.dto';
+import { TipoObservacion } from '../../../../enum/tipo-observacion.enum';
+import { ViviendaDto } from './dto/vivienda.dto';
+import { RegistrarViviendaDto } from './dto/registrar-vivienda.dto';
 
 @Injectable()
-export class HabitacionesRepositoryService {
+export class ViviendasRepositoryService {
 	constructor(
 		@InjectEntityManager()
 		private entityManager: EntityManager,
 	) {}
 
-	async obtenerDatosRegistroHabitacion() {
+	async obtenerDatosRegistroVivienda() {
 		const resultados = {
 			tipos_camas: null,
-			caracteristicas_habitaciones: null,
+			caracteristicas_viviendas: null,
+			caracteristicas_comunes: null,
 		};
 		resultados.tipos_camas = (
 			await this.entityManager.query('CALL SP_LISTAR_TIPOS_CAMA()')
 		)[0];
-		resultados.caracteristicas_habitaciones = (
+		resultados.caracteristicas_viviendas = (
 			await this.entityManager.query(
 				'CALL SP_LISTAR_CARACTERISTICAS_X_AMBITO(6)',
+			)
+		)[0];
+		resultados.caracteristicas_comunes = (
+			await this.entityManager.query(
+				'CALL SP_LISTAR_CARACTERISTICAS_X_AMBITO(1)',
 			)
 		)[0];
 		return resultados;
 	}
 
-	async actualizarHabitacion(
-		id_usuario: string,
-		habitacionDto: HabitacionDto,
-	) {
+	async actualizarVivienda(id_usuario: string, viviendaDto: ViviendaDto) {
 		return this.entityManager.transaction(
 			async (manager: EntityManager) => {
 				const {
@@ -44,7 +45,7 @@ export class HabitacionesRepositoryService {
 					plazas,
 					caracteristicas,
 					observaciones,
-				} = habitacionDto;
+				} = viviendaDto;
 
 				const resultados = {
 					tipo_detalle: null,
@@ -89,20 +90,20 @@ export class HabitacionesRepositoryService {
 				);
 				resultados.caracteristicas = resultado_caracteristicas[0][0];
 
-				const resultado_comodidades_y_servicios_habitacion =
+				const resultado_comodidades_y_servicios_vivienda =
 					await manager.query(
 						`CALL SP_ABM_OBSERVACIONES_X_OFERTA(?, ?, ?, ?, ?)`,
 						[
 							id_oferta,
 							TipoObservacion.COMODIDADES_DETALLE_OFERTA, // ID de tipo de observación
-							observaciones.texto_observacion_comodidades_y_servicios_habitacion ??
+							observaciones.texto_observacion_comodidades_y_servicios_vivienda ??
 								'',
 							id_usuario,
 							0,
 						],
 					);
 				resultados.observaciones.push(
-					resultado_comodidades_y_servicios_habitacion[0][0],
+					resultado_comodidades_y_servicios_vivienda[0][0],
 				);
 
 				return resultados;
@@ -110,11 +111,11 @@ export class HabitacionesRepositoryService {
 		);
 	}
 
-	async registrarHabitacion(
+	async registrarVivienda(
 		id_usuario: string,
-		registrarHabitacionDto: RegistrarHabitacionDto,
+		registrarViviendaDto: RegistrarViviendaDto,
 	) {
-		const { id_oferta } = registrarHabitacionDto;
+		const { id_oferta } = registrarViviendaDto;
 		const resultado = await this.entityManager.query(
 			'CALL SP_ABM_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[id_oferta, null, null, null, null, null, null, id_usuario, 0],
@@ -122,7 +123,7 @@ export class HabitacionesRepositoryService {
 		return resultado[0][0];
 	}
 
-	async eliminarHabitacion(id_usuario: string, id_tipo_detalle: string) {
+	async eliminarVivienda(id_usuario: string, id_tipo_detalle: string) {
 		const resultado = await this.entityManager.query(
 			'CALL SP_ABM_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
@@ -140,47 +141,9 @@ export class HabitacionesRepositoryService {
 		return resultado[0][0];
 	}
 
-	async registrarImagenHabitacion(
-		registrarImagenHabitacionDto: RegistrarImagenHabitacionDto,
-		id_usuario: string,
-		imagen: ImagenProcesadaDto,
-	) {
-		const resultado = await this.entityManager.query(
-			'CALL SP_ABM_IMAGEN_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?, ?)',
-			[
-				imagen.nombre_original,
-				imagen.nombre_unico,
-				imagen.ruta,
-				imagen.mime_type,
-				registrarImagenHabitacionDto.id_tipo_detalle,
-				id_usuario,
-				imagen.tamaño,
-				null,
-				0,
-			],
-		);
-		return resultado[0][0];
-	}
-
-	async eliminarImagenHabitacion(id_usuario: string, id_imagen: string) {
-		const resultado = await this.entityManager.query(
-			'CALL SP_ABM_IMAGEN_TIPO_DETALLE(?, ?, ?, ?, ?, ?, ?, ?, ?)',
-			[null, null, null, null, null, id_usuario, null, id_imagen, 1],
-		);
-		return resultado[0][0];
-	}
-
-	async obtenerImagenes(id_tipo_detalle: string) {
-		const resultado = await this.entityManager.query(
-			'CALL SP_OBT_IMAGENES_X_TIPO_DETALLE(?)',
-			[id_tipo_detalle],
-		);
-		return resultado[0];
-	}
-
-	async obtenerDatosRegistradosHabitacion(id_oferta: string) {
+	async obtenerDatosRegistradosVivienda(id_oferta: string) {
 		const resultados = {
-			habitaciones: [],
+			viviendas: [],
 			plazas: [],
 			caracteristicas: [],
 		};
@@ -188,17 +151,9 @@ export class HabitacionesRepositoryService {
 			'CALL SP_OBT_DATOS_HABITACIONES_X_OFERTA(?)',
 			[id_oferta],
 		);
-		resultados.habitaciones = resultado[0];
+		resultados.viviendas = resultado[0];
 		resultados.plazas = resultado[1];
 		resultados.caracteristicas = resultado[2];
 		return resultados;
-	}
-
-	async finalizarRegistroAlojamiento(id_usuario: string, id_oferta: string) {
-		const resultado = await this.entityManager.query(
-			'CALL SP_REGISTRAR_OFERTA(?, ?)',
-			[id_oferta, id_usuario],
-		);
-		return resultado[0][0];
 	}
 }
