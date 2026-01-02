@@ -42,7 +42,7 @@ export class ViviendasController {
 						},
 					},
 				},
-				caracteristicas_viviendas: {
+				caracteristicas_comodidades_y_servicios: {
 					type: 'array',
 					items: {
 						type: 'object',
@@ -50,7 +50,20 @@ export class ViviendasController {
 							id_caracteristica: { type: 'number', example: 28 },
 							caracteristica: {
 								type: 'string',
-								example: 'Apta personas con movilidad reducida',
+								example: 'Cochera',
+							},
+						},
+					},
+				},
+				caracteristicas_comunes: {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							id_caracteristica: { type: 'number', example: 17 },
+							caracteristica: {
+								type: 'string',
+								example: 'Pileta',
 							},
 						},
 					},
