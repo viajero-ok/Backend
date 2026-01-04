@@ -250,7 +250,7 @@ export class AlojamientosRepositoryService {
 
 		resultados.subcategorias_alojamiento = (
 			await this.entityManager.query(
-				'CALL SP_LISTAR_SUBCATEGORIAS_OFERTA()',
+				'CALL SP_LISTAR_SUB_CATEGORIAS_OFERTA()',
 			)
 		)[0];
 
