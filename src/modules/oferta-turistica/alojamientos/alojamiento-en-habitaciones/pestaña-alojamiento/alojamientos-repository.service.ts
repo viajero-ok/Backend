@@ -36,11 +36,12 @@ export class AlojamientosRepositoryService {
 
 				//datos basicos
 				const resultado_alojamiento = await manager.query(
-					`CALL SP_ABM_ALOJAMIENTO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+					`CALL SP_ABM_ALOJAMIENTO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 					[
 						alojamientoDto.id_oferta,
 						1,
 						1,
+						alojamientoDto.id_sub_categoria_alojamiento,
 						datos_basicos.nombre_alojamiento,
 						datos_basicos.descripcion_alojamiento,
 						id_usuario,

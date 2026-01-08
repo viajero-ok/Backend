@@ -26,6 +26,14 @@ export class AlojamientoParticularDto {
 	@IsUUID()
 	id_oferta: string;
 
+	@ApiProperty({
+		description: 'ID de la subcategoría de alojamiento',
+		example: 1,
+	})
+	@IsNumber()
+	@Min(1)
+	id_sub_categoria_alojamiento: number;
+
 	@ApiPropertyOptional({
 		type: [Number],
 		description: 'Características del alojamiento',

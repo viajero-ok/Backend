@@ -55,9 +55,10 @@ export class OfertaTuristicaRepositoryService {
 		let result;
 		if (eliminarOfertaDto.id_tipo_oferta === 1) {
 			result = await this.entityManager.query(
-				'CALL SP_ABM_ALOJAMIENTO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				'CALL SP_ABM_ALOJAMIENTO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				[
 					eliminarOfertaDto.id_oferta,
+					null,
 					null,
 					null,
 					null,
