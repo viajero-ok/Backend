@@ -181,10 +181,10 @@ export class PublicacionesAlojamientosController {
 		);
 	}
 
-	@ApiOperation({ summary: 'PUBLICAR ACTIVIDAD' })
+	@ApiOperation({ summary: 'PUBLICAR ALOJAMIENTO' })
 	@ApiResponse({
 		status: 201,
-		description: 'ACTIVIDAD PUBLICADA',
+		description: 'ALOJAMIENTO PUBLICADO',
 	})
 	@UseGuards(OfertaOwnerGuard)
 	@Post('publicar-alojamiento/:id_oferta')
