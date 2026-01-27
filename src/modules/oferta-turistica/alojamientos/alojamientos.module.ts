@@ -17,6 +17,15 @@ import { ImagenesTipoDetalleRepositoryService } from './alojamiento-en-habitacio
 import { CommonController } from './alojamiento-en-habitaciones/pestaña-habitaciones-viviendas/common/common.controller';
 import { CommonService } from './alojamiento-en-habitaciones/pestaña-habitaciones-viviendas/common/common.service';
 import { CommonRepositoryService } from './alojamiento-en-habitaciones/pestaña-habitaciones-viviendas/common/common-repository.service';
+import { PestañaDatosBasicosController } from './alojamientos-camping/pestaña-datos-basicos/pestaña-datos-basicos.controller';
+import { PestañaDatosBasicosService } from './alojamientos-camping/pestaña-datos-basicos/pestaña-datos-basicos.service';
+import { PestañaDatosBasicosRepositoryService } from './alojamientos-camping/pestaña-datos-basicos/pestaña-datos-basicos-repository.service';
+import { PestañaUbicacionController } from './alojamientos-camping/pestaña-ubicacion/pestaña-ubicacion.controller';
+import { PestañaUbicacionService } from './alojamientos-camping/pestaña-ubicacion/pestaña-ubicacion.service';
+import { PestañaUbicacionRepositoryService } from './alojamientos-camping/pestaña-ubicacion/pestaña-ubicacion-repository.service';
+import { PestañaEntradasController } from './alojamientos-camping/pestaña-entradas/pestaña-entradas.controller';
+import { PestañaEntradasService } from './alojamientos-camping/pestaña-entradas/pestaña-entradas.service';
+import { PestañaEntradasRepositoryService } from './alojamientos-camping/pestaña-entradas/pestaña-entradas-repository.service';
 @Module({
 	controllers: [
 		AlojamientosController,
@@ -25,6 +34,9 @@ import { CommonRepositoryService } from './alojamiento-en-habitaciones/pestaña-
 		ViviendasController,
 		ImagenesTipoDetalleController,
 		CommonController,
+		PestañaDatosBasicosController,
+		PestañaUbicacionController,
+		PestañaEntradasController,
 	],
 	providers: [
 		AlojamientosService,
@@ -39,6 +51,12 @@ import { CommonRepositoryService } from './alojamiento-en-habitaciones/pestaña-
 		ImagenesTipoDetalleRepositoryService,
 		CommonService,
 		CommonRepositoryService,
+		PestañaDatosBasicosService,
+		PestañaDatosBasicosRepositoryService,
+		PestañaUbicacionService,
+		PestañaUbicacionRepositoryService,
+		PestañaEntradasService,
+		PestañaEntradasRepositoryService,
 	],
 })
 export class AlojamientosModule {}
